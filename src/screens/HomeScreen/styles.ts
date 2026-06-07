@@ -1,0 +1,377 @@
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width: SW } = Dimensions.get('window');
+
+export const rootStyles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: '#080B14' },
+  scroll: { flex: 1 },
+  scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
+});
+
+export const headerStyles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  greeting: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 12,
+    color: 'rgba(232,221,181,0.5)',
+    letterSpacing: 0.5,
+  },
+  title: {
+    fontFamily: 'CinzelDecorative_900Black',
+    fontSize: 22,
+    color: '#FFD700',
+    letterSpacing: 2,
+    textShadowColor: 'rgba(255,215,0,0.4)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarLetter: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 18,
+    color: '#0A0D1A',
+  },
+});
+
+export const heroStyles = StyleSheet.create({
+  card: {
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(255,215,0,0.25)',
+    overflow: 'hidden',
+    marginBottom: 28,
+    height: 150,
+  },
+  glow: {
+    position: 'absolute',
+    inset: 0,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(255,215,0,0.15)',
+  },
+  gems: {
+    position: 'absolute',
+    flexDirection: 'row',
+    right: 12,
+    top: 12,
+    gap: -4,
+    opacity: 0.7,
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  plusCircle: { marginBottom: 4 },
+  plusGradient: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  label: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 16,
+    color: '#FFD700',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  sub: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 12,
+    color: 'rgba(232,221,181,0.55)',
+  },
+});
+
+export const sectionStyles = StyleSheet.create({
+  container: { marginBottom: 24 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 6,
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: '#FFD700',
+  },
+  title: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 11,
+    color: 'rgba(232,221,181,0.7)',
+    letterSpacing: 2.5,
+    textTransform: 'uppercase',
+    flex: 1,
+  },
+  count: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 12,
+    color: 'rgba(232,221,181,0.35)',
+  },
+  cardRow: { gap: 12, paddingRight: 4 },
+});
+
+export const activeCardStyles = StyleSheet.create({
+  card: {
+    width: 180,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255,215,0,0.15)',
+    padding: 14,
+    gap: 6,
+    overflow: 'hidden',
+  },
+  name: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 13,
+    color: '#E8DDB5',
+    letterSpacing: 0.5,
+  },
+  radius: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 11,
+    color: 'rgba(232,221,181,0.45)',
+  },
+  progressBg: {
+    height: 4,
+    backgroundColor: 'rgba(255,215,0,0.12)',
+    borderRadius: 2,
+    marginTop: 4,
+  },
+  progressFill: {
+    height: 4,
+    backgroundColor: '#FFD700',
+    borderRadius: 2,
+  },
+  progressLabel: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 10,
+    color: 'rgba(232,221,181,0.4)',
+  },
+  gems: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: -6,
+    marginTop: 2,
+  },
+  moreGems: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 10,
+    color: 'rgba(232,221,181,0.4)',
+    marginLeft: 8,
+  },
+  resumeBtn: { marginTop: 6 },
+  resumeGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    borderRadius: 8,
+    paddingVertical: 7,
+  },
+  resumeText: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 10,
+    color: '#0A0D1A',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+  },
+});
+
+export const finishedRowStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(232,221,181,0.08)',
+    gap: 12,
+  },
+  icon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: 'rgba(232,221,181,0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconPerfect: {
+    borderColor: 'rgba(255,215,0,0.4)',
+    backgroundColor: 'rgba(255,215,0,0.08)',
+  },
+  info: { flex: 1 },
+  name: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 13,
+    color: '#E8DDB5',
+    letterSpacing: 0.3,
+  },
+  meta: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 11,
+    color: 'rgba(232,221,181,0.4)',
+    marginTop: 2,
+  },
+  gems: {
+    flexDirection: 'row',
+    gap: -8,
+    alignItems: 'center',
+  },
+});
+
+export const wizardStyles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.65)',
+    justifyContent: 'flex-end',
+  },
+  sheet: {
+    backgroundColor: '#0E1220',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderTopWidth: 1,
+    borderColor: 'rgba(255,215,0,0.15)',
+    paddingHorizontal: 20,
+  },
+  handle: {
+    alignSelf: 'center',
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(232,221,181,0.2)',
+    marginTop: 12,
+    marginBottom: 20,
+  },
+  stepRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 24,
+    justifyContent: 'center',
+  },
+  stepDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(232,221,181,0.15)',
+  },
+  stepDotActive: {
+    backgroundColor: '#FFD700',
+    width: 20,
+  },
+  stepContent: { gap: 10, minHeight: 220 },
+  stepTitle: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 18,
+    color: '#E8DDB5',
+    letterSpacing: 1,
+  },
+  stepSub: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 13,
+    color: 'rgba(232,221,181,0.5)',
+    marginBottom: 8,
+  },
+  inputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,215,0,0.18)',
+    height: 54,
+    paddingHorizontal: 16,
+  },
+  input: {
+    flex: 1,
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 15,
+    color: '#E8DDB5',
+  },
+  radiusGrid: {
+    flexDirection: 'row',
+    gap: 10,
+    flexWrap: 'wrap',
+  },
+  radiusBtn: {
+    flex: 1,
+    minWidth: (SW - 72) / 2,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(232,221,181,0.15)',
+    height: 72,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    overflow: 'hidden',
+  },
+  radiusBtnActive: { borderColor: '#FFD700' },
+  radiusLabel: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 13,
+    color: 'rgba(232,221,181,0.6)',
+    letterSpacing: 1,
+  },
+  radiusLabelActive: { color: '#0A0D1A' },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 24,
+    gap: 12,
+  },
+  backBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+  },
+  backBtnText: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 14,
+    color: 'rgba(232,221,181,0.5)',
+  },
+  nextBtnWrap: { flex: 1 },
+  nextBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 12,
+    height: 52,
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  nextBtnText: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 14,
+    color: '#0A0D1A',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+  },
+});
