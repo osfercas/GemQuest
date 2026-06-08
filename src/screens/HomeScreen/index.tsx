@@ -35,7 +35,7 @@ export default function HomeScreen({ navigation }: Props) {
 
   return (
     <View style={[s.root, { paddingTop: insets.top }]}>
-      <Header />
+      <Header onDevTools={() => navigation.navigate('DevTools')} />
 
       <ScrollView style={s.scroll} contentContainerStyle={[s.scrollContent, { paddingBottom: insets.bottom + 16 }]} showsVerticalScrollIndicator={false}>
         <HeroCard onPress={() => setWizardOpen(true)} />
