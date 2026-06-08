@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { RootStackParamList } from '../../../App';
-import { MOCK_GAMES } from './types';
+import type { Game } from './types';
+import { loadGames, deleteGame } from '../../storage/gameStorage';
 import { rootStyles as s, sectionStyles } from './styles';
 import Header from './Header';
 import HeroCard from './HeroCard';
 import ActiveGameCard from './ActiveGameCard';
 import FinishedGameRow from './FinishedGameRow';
 import NewGameWizard from './NewGameWizard';
+import DeleteConfirmSheet from './DeleteConfirmSheet';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export default function HomeScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [games, setGames] = useState<Game[]>([]);
+  const [pendingDelete, setPendingDelete] = useState<Game | null>(null);
 
-  const activeGames   = MOCK_GAMES.filter(g => g.status === 'active');
-  const finishedGames = MOCK_GAMES.filter(g => g.status === 'finished');
+  useFocusEffect(
+    useCallback(() => {
+      loadGames().then(setGames);
+    }, []),
+  );
+
+  const activeGames   = games.filter(g => g.status === 'active');
+  const finishedGames = games.filter(g => g.status === 'finished');
 
   return (
     <View style={[s.root, { paddingTop: insets.top }]}>
@@ -37,7 +48,14 @@ export default function HomeScreen({ navigation }: Props) {
               <Text style={sectionStyles.count}>{activeGames.length}</Text>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={sectionStyles.cardRow}>
-              {activeGames.map(game => <ActiveGameCard key={game.id} game={game} />)}
+              {activeGames.map(game => (
+                <ActiveGameCard
+                  key={game.id}
+                  game={game}
+                  onResume={() => navigation.navigate('Map', { gameId: game.id })}
+                  onDelete={() => setPendingDelete(game)}
+                />
+              ))}
             </ScrollView>
           </View>
         )}
@@ -55,10 +73,26 @@ export default function HomeScreen({ navigation }: Props) {
 
       </ScrollView>
 
+      <DeleteConfirmSheet
+        gameName={pendingDelete?.name ?? null}
+        onConfirm={async () => {
+          if (pendingDelete) {
+            await deleteGame(pendingDelete.id);
+            setPendingDelete(null);
+            loadGames().then(setGames);
+          }
+        }}
+        onCancel={() => setPendingDelete(null)}
+        bottomInset={insets.bottom}
+      />
+
       <NewGameWizard
         visible={wizardOpen}
         onClose={() => setWizardOpen(false)}
-        onStart={(name, radius) => navigation.navigate('Map', { name, radius })}
+        onStart={(gameId) => {
+          setWizardOpen(false);
+          navigation.navigate('Map', { gameId });
+        }}
         bottomInset={insets.bottom}
       />
     </View>

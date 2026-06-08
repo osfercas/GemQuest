@@ -7,6 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { RootStackParamList } from '../../../App';
+import type { Game } from '../HomeScreen/types';
+import { loadGames, upsertGame, loadGameState, saveGameState } from '../../storage/gameStorage';
 import { GemMarker, generateGemsOSM, distanceMeters, COLLECT_RADIUS_M, GLOW_RADIUS_M } from './types';
 import { mapStyles as s, centerBtnStyles as cs } from './styles';
 import GameHUD from './GameHUD';
@@ -17,9 +19,10 @@ import PermissionGate from './PermissionGate';
 type Props = NativeStackScreenProps<RootStackParamList, 'Map'>;
 
 export default function MapScreen({ route, navigation }: Props) {
-  const { name = 'Aventura', radius = 0.5 } = route.params ?? {};
+  const { gameId } = route.params;
   const insets = useSafeAreaInsets();
 
+  const [game, setGame] = useState<Game | null>(null);
   const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [gems, setGems] = useState<GemMarker[]>([]);
@@ -29,53 +32,77 @@ export default function MapScreen({ route, navigation }: Props) {
   const gemsInitialized = useRef(false);
   const mapRef = useRef<MapView>(null);
 
+  // Load game summary from storage
+  useEffect(() => {
+    loadGames().then(games => {
+      const found = games.find(g => g.id === gameId) ?? null;
+      setGame(found);
+    });
+  }, [gameId]);
+
   const requestPermission = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     setPermissionGranted(status === 'granted');
   };
 
-  // Pedir permisos al montar
   useEffect(() => {
     requestPermission();
   }, []);
 
-  // Tracking GPS
+  // Tracking GPS + gem initialization
   useEffect(() => {
-    if (!permissionGranted) return;
+    if (!permissionGranted || !game) return;
 
     let subscription: Location.LocationSubscription;
 
     (async () => {
+      // Check if there's a saved state (resume)
+      const savedState = await loadGameState(gameId);
+
       subscription = await Location.watchPositionAsync(
         { accuracy: Location.Accuracy.High, distanceInterval: 2 },
         loc => {
           const { latitude, longitude } = loc.coords;
           setUserLocation({ latitude, longitude });
 
-          // Generar gemas una sola vez cuando tenemos la posición inicial
           if (!gemsInitialized.current) {
             gemsInitialized.current = true;
-            setGameCenter({ latitude, longitude });
-            setGemsLoading(true);
 
-            mapRef.current?.animateToRegion({
-              latitude,
-              longitude,
-              latitudeDelta: radius * 0.018,
-              longitudeDelta: radius * 0.018,
-            }, 800);
+            if (savedState) {
+              // Resume: load saved gems and center
+              setGameCenter(savedState.center);
+              setGems(savedState.gems);
+              mapRef.current?.animateToRegion({
+                ...savedState.center,
+                latitudeDelta: game.radius * 0.018,
+                longitudeDelta: game.radius * 0.018,
+              }, 800);
+            } else {
+              // First launch: generate gems from current position
+              const center = { latitude, longitude };
+              setGameCenter(center);
+              setGemsLoading(true);
 
-            generateGemsOSM(latitude, longitude, radius).then(generated => {
-              setGems(generated);
-              setGemsLoading(false);
-            });
+              mapRef.current?.animateToRegion({
+                latitude,
+                longitude,
+                latitudeDelta: game.radius * 0.018,
+                longitudeDelta: game.radius * 0.018,
+              }, 800);
+
+              generateGemsOSM(latitude, longitude, game.radius).then(async generated => {
+                setGems(generated);
+                setGemsLoading(false);
+                await saveGameState(gameId, { center, gems: generated });
+              });
+            }
           }
         },
       );
     })();
 
     return () => { subscription?.remove(); };
-  }, [permissionGranted]);
+  }, [permissionGranted, game]);
 
   const isNear = (gem: GemMarker) => {
     if (!userLocation || gem.collected) return false;
@@ -98,10 +125,23 @@ export default function MapScreen({ route, navigation }: Props) {
     setPendingGem(gem);
   };
 
-  const handleConfirmCollect = () => {
-    if (!pendingGem) return;
-    setGems(prev => prev.map(g => g.id === pendingGem.id ? { ...g, collected: true } : g));
+  const handleConfirmCollect = async () => {
+    if (!pendingGem || !game || !gameCenter) return;
+
+    const updatedGems = gems.map(g => g.id === pendingGem.id ? { ...g, collected: true } : g);
+    const gemsFound = updatedGems.filter(g => g.collected).length;
+    const updatedGame: Game = {
+      ...game,
+      gemsFound,
+      status: gemsFound === game.gemsTotal ? 'finished' : 'active',
+    };
+
+    setGems(updatedGems);
+    setGame(updatedGame);
     setPendingGem(null);
+
+    await saveGameState(gameId, { center: gameCenter, gems: updatedGems });
+    await upsertGame(updatedGame);
   };
 
   const handleDismissToast = () => {
@@ -111,6 +151,9 @@ export default function MapScreen({ route, navigation }: Props) {
   if (permissionGranted === false) {
     return <PermissionGate onRequest={requestPermission} />;
   }
+
+  const radius = game?.radius ?? 0.5;
+  const gameName = game?.name ?? 'Aventura';
 
   return (
     <View style={[s.root, { paddingBottom: insets.bottom }]}>
@@ -155,7 +198,7 @@ export default function MapScreen({ route, navigation }: Props) {
       </TouchableOpacity>
 
       <GameHUD
-        gameName={name ?? 'Aventura'}
+        gameName={gameName}
         gems={gems}
         topInset={insets.top}
         onBack={() => navigation.goBack()}

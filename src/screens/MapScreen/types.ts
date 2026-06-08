@@ -28,7 +28,7 @@ function randomPointInCircle(
   };
 }
 
-const GEM_NAMES: GemName[] = ['Ruby', 'Diamond', 'Emerald', 'Sapphire', 'Amethyst', 'Amber', 'Aquamarine'];
+export const GEM_NAMES: GemName[] = ['Ruby', 'Diamond', 'Emerald', 'Sapphire', 'Amethyst', 'Amber', 'Aquamarine'];
 
 async function fetchWalkableNodes(
   centerLat: number,

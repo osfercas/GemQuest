@@ -8,13 +8,15 @@ import { Game } from './types';
 
 interface Props {
   game: Game;
+  onResume: () => void;
+  onDelete: () => void;
 }
 
 function formatRadius(radius: number) {
   return radius < 1 ? `${radius * 1000} m` : `${radius} km`;
 }
 
-export default function ActiveGameCard({ game }: Props) {
+export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
   const progress = game.gemsFound / game.gemsTotal;
 
   return (
@@ -23,7 +25,12 @@ export default function ActiveGameCard({ game }: Props) {
         colors={['rgba(255,215,0,0.07)', 'rgba(255,215,0,0.02)']}
         style={StyleSheet.absoluteFill}
       />
-      <Text style={s.name} numberOfLines={1}>{game.name}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <Text style={[s.name, { flex: 1, marginRight: 6 }]} numberOfLines={1}>{game.name}</Text>
+        <TouchableOpacity onPress={onDelete} hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }} activeOpacity={0.7}>
+          <Feather name="trash-2" size={14} color="rgba(255,107,107,0.55)" />
+        </TouchableOpacity>
+      </View>
       <Text style={s.radius}>{formatRadius(game.radius)}</Text>
 
       <View style={s.progressBg}>
@@ -41,7 +48,7 @@ export default function ActiveGameCard({ game }: Props) {
         )}
       </View>
 
-      <TouchableOpacity style={s.resumeBtn} activeOpacity={0.8}>
+      <TouchableOpacity style={s.resumeBtn} activeOpacity={0.8} onPress={onResume}>
         <LinearGradient
           colors={['#FFD700', '#C8860A']}
           start={{ x: 0, y: 0 }}

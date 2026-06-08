@@ -241,6 +241,103 @@ export const finishedRowStyles = StyleSheet.create({
   },
 });
 
+export const deleteSheetStyles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.65)',
+    justifyContent: 'flex-end',
+  },
+  sheet: {
+    backgroundColor: '#0E1220',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderTopWidth: 1,
+    borderColor: 'rgba(255,107,107,0.2)',
+    paddingHorizontal: 20,
+  },
+  handle: {
+    alignSelf: 'center',
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(232,221,181,0.2)',
+    marginTop: 12,
+    marginBottom: 20,
+  },
+  iconWrap: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255,107,107,0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,107,107,0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  title: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 18,
+    color: '#E8DDB5',
+    letterSpacing: 1,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  gameName: {
+    fontFamily: 'CinzelDecorative_900Black',
+    fontSize: 14,
+    color: '#FFD700',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  sub: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 13,
+    color: 'rgba(232,221,181,0.45)',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 28,
+  },
+  footer: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  cancelBtn: {
+    flex: 1,
+    height: 52,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(232,221,181,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelText: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 13,
+    color: 'rgba(232,221,181,0.6)',
+    letterSpacing: 1,
+  },
+  deleteBtn: {
+    flex: 1,
+    height: 52,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,107,107,0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,107,107,0.4)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  deleteText: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 13,
+    color: '#FF6B6B',
+    letterSpacing: 1,
+  },
+});
+
 export const wizardStyles = StyleSheet.create({
   overlay: {
     flex: 1,

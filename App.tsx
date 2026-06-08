@@ -15,7 +15,7 @@ import MapScreen from './src/screens/MapScreen';
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
-  Map: { name?: string; radius: number };
+  Map: { gameId: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

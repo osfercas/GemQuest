@@ -13,11 +13,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import { wizardStyles as s } from './styles';
 import { RADIUS_OPTIONS, WIZARD_STEPS } from './types';
+import { generateId, upsertGame } from '../../storage/gameStorage';
+import { GEM_NAMES } from '../MapScreen/types';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  onStart: (name: string, radius: number) => void;
+  onStart: (gameId: string) => void;
   bottomInset?: number;
 }
 
@@ -129,8 +131,21 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
                   if (!canAdvance) return;
                   if (step < WIZARD_STEPS - 1) setStep(p => p + 1);
                   else {
-                    handleClose();
-                    onStart(gameName.trim(), selectedRadius);
+                    const id = generateId();
+                    const game = {
+                      id,
+                      name: gameName.trim(),
+                      radius: selectedRadius,
+                      status: 'active' as const,
+                      gemsFound: 0,
+                      gemsTotal: GEM_NAMES.length,
+                      date: new Date().toISOString().slice(0, 10),
+                      gems: GEM_NAMES,
+                    };
+                    upsertGame(game).then(() => {
+                      handleClose();
+                      onStart(id);
+                    });
                   }
                 }}
               >
