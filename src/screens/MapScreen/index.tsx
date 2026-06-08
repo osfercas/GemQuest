@@ -142,6 +142,10 @@ export default function MapScreen({ route, navigation }: Props) {
 
     await saveGameState(gameId, { center: gameCenter, gems: updatedGems });
     await upsertGame(updatedGame);
+
+    if (updatedGame.status === 'finished') {
+      navigation.replace('Victory', { gameId });
+    }
   };
 
   const handleDismissToast = () => {

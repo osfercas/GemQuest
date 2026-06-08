@@ -108,6 +108,13 @@ export default function DevToolsScreen({ navigation }: Props) {
               {stateGems
                 ? <Row label="state gems" value={`${stateGems.collected} recogidas de ${stateGems.total}`} />
                 : <Row label="state" value="sin GameState guardado" dim />}
+              <TouchableOpacity
+                style={s.victoryBtn}
+                activeOpacity={0.75}
+                onPress={() => navigation.navigate('Victory', { gameId: game.id })}
+              >
+                <Text style={s.victoryBtnText}>→ Ver Victory</Text>
+              </TouchableOpacity>
             </View>
           ))}
 
@@ -262,6 +269,21 @@ const s = StyleSheet.create({
     fontSize: 11,
     color: 'rgba(232,221,181,0.65)',
     lineHeight: 18,
+  },
+  victoryBtn: {
+    marginTop: 8,
+    alignSelf: 'flex-end',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,215,0,0.3)',
+    backgroundColor: 'rgba(255,215,0,0.07)',
+  },
+  victoryBtnText: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 11,
+    color: 'rgba(255,215,0,0.7)',
   },
   clearBtn: {
     flexDirection: 'row',

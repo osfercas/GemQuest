@@ -11,12 +11,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import MapScreen from './src/screens/MapScreen';
+import VictoryScreen from './src/screens/VictoryScreen';
 import DevToolsScreen from './src/screens/DevToolsScreen';
 
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Map: { gameId: string };
+  Victory: { gameId: string };
   DevTools: undefined;
 };
 
@@ -40,6 +42,7 @@ export default function App() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Map" component={MapScreen} />
+            <Stack.Screen name="Victory" component={VictoryScreen} />
             {__DEV__ && <Stack.Screen name="DevTools" component={DevToolsScreen} />}
           </Stack.Navigator>
         </NavigationContainer>
