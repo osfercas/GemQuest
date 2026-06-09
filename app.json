@@ -34,12 +34,7 @@
           "locationWhenInUsePermission": "GemQuest necesita tu ubicación para colocar gemas en el mapa."
         }
       ],
-      [
-        "react-native-maps",
-        {
-          "googleMapsApiKey": "AIzaSyBVz8Fwtegks_qZPtbu8Dyr31cubutcDjY"
-        }
-      ]
+      "react-native-maps"
     ]
   }
 }

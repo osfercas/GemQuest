@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View, Animated, StyleSheet } from 'react-native';
 import { Marker } from 'react-native-maps';
 import { Feather } from '@expo/vector-icons';
@@ -19,11 +19,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  collectedMarker: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(30,30,30,0.75)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default function GemMarkerView({ gem, isNear, onPress }: Props) {
   const glowAnim = useRef(new Animated.Value(0)).current;
+  const [tracksViews, setTracksViews] = useState(true);
   const g = GEM_COLORS[gem.name];
+
+  useEffect(() => {
+    const t = setTimeout(() => setTracksViews(false), 500);
+    return () => clearTimeout(t);
+  }, [gem.collected]);
 
   useEffect(() => {
     if (isNear && !gem.collected) {
@@ -40,7 +54,7 @@ export default function GemMarkerView({ gem, isNear, onPress }: Props) {
   }, [isNear, gem.collected]);
 
   const glowOpacity = glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.85] });
-  const glowScale   = glowAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.5] });
+  const glowScale = glowAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.5] });
 
   const coordinate = { latitude: gem.latitude, longitude: gem.longitude };
 
@@ -53,7 +67,7 @@ export default function GemMarkerView({ gem, isNear, onPress }: Props) {
           anchor={{ x: 0.5, y: 0.5 }}
           tracksViewChanges
           zIndex={0}
-          onPress={() => {}}
+          onPress={() => { }}
         >
           <Animated.View
             style={{
@@ -70,19 +84,22 @@ export default function GemMarkerView({ gem, isNear, onPress }: Props) {
 
       {/* Gem: marker propio, su view ES el inner → anchor centra la gema exactamente */}
       <Marker
+        key={`${gem.id}-${gem.collected}`}
         coordinate={coordinate}
         anchor={{ x: 0.5, y: 0.5 }}
-        tracksViewChanges={!gem.collected}
+        tracksViewChanges={tracksViews}
         zIndex={1}
         onPress={() => !gem.collected && isNear && onPress(gem)}
       >
-        <View style={styles.inner}>
-          {gem.collected ? (
-            <Feather name="check" size={16} color="rgba(232,221,181,0.4)" />
-          ) : (
+        {gem.collected ? (
+          <View style={styles.collectedMarker}>
+            <Feather name="star" size={14} color="#fff" />
+          </View>
+        ) : (
+          <View style={styles.inner}>
             <GemShape color={g.color} light={g.light} dark={g.dark} size={18} />
-          )}
-        </View>
+          </View>
+        )}
       </Marker>
     </>
   );

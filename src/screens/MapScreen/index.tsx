@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Platform, ActivityIndicator, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Feather } from '@expo/vector-icons';
@@ -28,9 +28,16 @@ export default function MapScreen({ route, navigation }: Props) {
   const [gems, setGems] = useState<GemMarker[]>([]);
   const [gemsLoading, setGemsLoading] = useState(false);
   const [gameCenter, setGameCenter] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [initialCenter, setInitialCenter] = useState<{ latitude: number; longitude: number } | null>(null);
   const [pendingGem, setPendingGem] = useState<GemMarker | null>(null);
   const gemsInitialized = useRef(false);
   const mapRef = useRef<MapView>(null);
+
+  useEffect(() => {
+    loadGameState(gameId).then(state => {
+      if (state) setInitialCenter(state.center);
+    });
+  }, [gameId]);
 
   // Load game summary from storage
   useEffect(() => {
@@ -71,6 +78,7 @@ export default function MapScreen({ route, navigation }: Props) {
             if (savedState) {
               // Resume: load saved gems and center
               setGameCenter(savedState.center);
+              setInitialCenter(savedState.center);
               setGems(savedState.gems);
               mapRef.current?.animateToRegion({
                 ...savedState.center,
@@ -81,6 +89,7 @@ export default function MapScreen({ route, navigation }: Props) {
               // First launch: generate gems from current position
               const center = { latitude, longitude };
               setGameCenter(center);
+              setInitialCenter(center);
               setGemsLoading(true);
 
               mapRef.current?.animateToRegion({
@@ -161,7 +170,7 @@ export default function MapScreen({ route, navigation }: Props) {
 
   return (
     <View style={[s.root, { paddingBottom: insets.bottom }]}>
-      <MapView
+      {initialCenter && <MapView
         ref={mapRef}
         style={s.map}
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
@@ -169,8 +178,7 @@ export default function MapScreen({ route, navigation }: Props) {
         showsMyLocationButton={false}
         customMapStyle={DARK_MAP_STYLE}
         initialRegion={{
-          latitude: 40.4168,
-          longitude: -3.7038,
+          ...initialCenter,
           latitudeDelta: radius * 0.018,
           longitudeDelta: radius * 0.018,
         }}
@@ -191,7 +199,7 @@ export default function MapScreen({ route, navigation }: Props) {
             onPress={handleGemTap}
           />
         ))}
-      </MapView>
+      </MapView>}
 
       <TouchableOpacity
         style={[cs.btn, { bottom: 122 + insets.bottom }]}

@@ -22,13 +22,6 @@ export default function HeroCard({ onPress }: Props) {
       >
         <View style={s.glow} />
 
-        <View style={s.gems}>
-          {DECO_GEMS.map((name, i) => {
-            const g = GEM_COLORS[name];
-            return <GemShape key={name} color={g.color} light={g.light} dark={g.dark} size={14 + (i % 3) * 4} />;
-          })}
-        </View>
-
         <View style={s.content}>
           <View style={s.plusCircle}>
             <LinearGradient colors={['#FFD700', '#C8860A']} style={s.plusGradient}>

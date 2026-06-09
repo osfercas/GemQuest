@@ -1,10 +1,12 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import { GemShape, GEM_COLORS } from '../../components/GemShape';
 import { activeCardStyles as s } from './styles';
 import { Game } from './types';
+import { loadGameState } from '../../storage/gameStorage';
+import type { GemMarker } from '../MapScreen/types';
 
 interface Props {
   game: Game;
@@ -18,6 +20,13 @@ function formatRadius(radius: number) {
 
 export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
   const progress = game.gemsFound / game.gemsTotal;
+  const [gemMarkers, setGemMarkers] = useState<GemMarker[]>([]);
+
+  useEffect(() => {
+    loadGameState(game.id).then(state => {
+      if (state) setGemMarkers(state.gems);
+    });
+  }, [game.id]);
 
   return (
     <TouchableOpacity style={s.card} activeOpacity={0.82}>
@@ -39,13 +48,18 @@ export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
       <Text style={s.progressLabel}>{game.gemsFound}/{game.gemsTotal} gemas</Text>
 
       <View style={s.gems}>
-        {game.gems.slice(0, 5).map(name => {
-          const g = GEM_COLORS[name];
-          return <GemShape key={name} color={g.color} light={g.light} dark={g.dark} size={12} />;
+        {gemMarkers.map(gem => {
+          const g = GEM_COLORS[gem.name];
+          return (
+            <GemShape
+              key={gem.id}
+              color={gem.collected ? g.color : '#2A2A2A'}
+              light={gem.collected ? g.light : '#3A3A3A'}
+              dark={gem.collected ? g.dark : '#1A1A1A'}
+              size={12}
+            />
+          );
         })}
-        {game.gems.length > 5 && (
-          <Text style={s.moreGems}>+{game.gems.length - 5}</Text>
-        )}
       </View>
 
       <TouchableOpacity style={s.resumeBtn} activeOpacity={0.8} onPress={onResume}>
