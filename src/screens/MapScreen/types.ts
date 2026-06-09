@@ -30,34 +30,27 @@ function randomPointInCircle(
 
 export const GEM_NAMES: GemName[] = ['Ruby', 'Diamond', 'Emerald', 'Sapphire', 'Amethyst', 'Amber', 'Aquamarine'];
 
-async function fetchWalkableNodes(
-  centerLat: number,
-  centerLng: number,
-  radiusKm: number,
-): Promise<Array<{ latitude: number; longitude: number }>> {
-  const radiusM = Math.round(radiusKm * 1000);
-  const minM    = Math.round(radiusM * MIN_DISTANCE_RATIO);
+type Coord = { latitude: number; longitude: number };
 
-  // Tier 1: explicitly pedestrian infrastructure (always safe on foot)
-  // Tier 2: parks and open leisure spaces (always public and walkable)
-  // Tier 3: slow residential streets — only if foot access isn't denied
-  // secondary/tertiary/unclassified/track excluded: car roads, no guaranteed footway
-  const query =
-    `[out:json][timeout:15];` +
-    `(` +
-    `way["highway"~"^(footway|path|pedestrian|crossing|steps|corridor)$"]` +
-      `["access"!~"^(private|no)$"]` +
-      `(around:${radiusM},${centerLat},${centerLng});` +
-    `way["leisure"~"^(park|garden|playground|recreation_ground)$"]` +
-      `["access"!~"^(private|no)$"]` +
-      `(around:${radiusM},${centerLat},${centerLng});` +
-    `way["highway"~"^(residential|living_street|service)$"]` +
-      `["foot"!="no"]["access"!~"^(private|no)$"]` +
-      `(around:${radiusM},${centerLat},${centerLng});` +
-    `);>>;out skt qt;`;
+// Para cada candidato aleatorio, busca el nodo walkable más cercano dentro de snapRadiusM.
+// Una sola petición HTTP para todos los candidatos.
+async function snapCandidatesToWalkable(
+  candidates: Coord[],
+  snapRadiusM: number,
+): Promise<Array<Coord | null>> {
+  const unions = candidates.map(c =>
+    `node(around:${snapRadiusM},${c.latitude},${c.longitude})` +
+      `["highway"~"^(footway|path|pedestrian|crossing|steps|corridor|residential|living_street|service|tertiary|unclassified)$"]` +
+      `["access"!~"^(private|no)$"];` +
+    `node(around:${snapRadiusM},${c.latitude},${c.longitude})` +
+      `["leisure"~"^(park|garden|playground|recreation_ground|nature_reserve|common)$"]` +
+      `["access"!~"^(private|no)$"];`
+  ).join('');
+
+  const query = `[out:json][timeout:20];(${unions});out qt;`;
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 15000);
+  const timer = setTimeout(() => controller.abort(), 20000);
 
   try {
     const res = await fetch('https://overpass-api.de/api/interpreter', {
@@ -68,13 +61,20 @@ async function fetchWalkableNodes(
     });
     if (!res.ok) throw new Error('overpass_error');
     const json = await res.json();
-    return (json.elements as any[])
+    const nodes: Coord[] = (json.elements as any[])
       .filter(el => el.type === 'node')
-      .map(el => ({ latitude: el.lat as number, longitude: el.lon as number }))
-      .filter(pos => {
-        const d = distanceMeters(centerLat, centerLng, pos.latitude, pos.longitude);
-        return d >= minM && d <= radiusM;
-      });
+      .map(el => ({ latitude: el.lat as number, longitude: el.lon as number }));
+
+    // Para cada candidato, el nodo devuelto más cercano dentro del radio de snap
+    return candidates.map(c => {
+      let best: Coord | null = null;
+      let bestDist = snapRadiusM + 1;
+      for (const n of nodes) {
+        const d = distanceMeters(c.latitude, c.longitude, n.latitude, n.longitude);
+        if (d < bestDist) { bestDist = d; best = n; }
+      }
+      return best;
+    });
   } finally {
     clearTimeout(timer);
   }
@@ -101,21 +101,37 @@ export async function generateGemsOSM(
   centerLng: number,
   radiusKm: number,
 ): Promise<GemMarker[]> {
+  const SNAP_RADIUS_M = 150;
   const minSpacingM = Math.max(50, (radiusKm * 1000) / 8);
+
   try {
-    const nodes = await fetchWalkableNodes(centerLat, centerLng, radiusKm);
-    // Relax spacing progressively: 100% → 60% → 30% of ideal minimum
-    for (const factor of [1, 0.6, 0.3]) {
-      const spread = pickSpread(nodes, GEM_NAMES.length, minSpacingM * factor);
-      if (spread.length === GEM_NAMES.length) {
-        return GEM_NAMES.map((name, i) => ({
-          id: `gem-${i}`, name, ...spread[i], collected: false,
-        }));
+    const candidates: Coord[] = Array.from({ length: GEM_NAMES.length * 3 }, () =>
+      randomPointInCircle(centerLat, centerLng, radiusKm)
+    );
+
+    const snapped = await snapCandidatesToWalkable(candidates, SNAP_RADIUS_M);
+    const valid = snapped.filter((s): s is Coord => s !== null);
+
+    if (valid.length > 0) {
+      for (const factor of [1, 0.8, 0.6, 0.4, 0.2]) {
+        const spread = pickSpread(valid, GEM_NAMES.length, minSpacingM * factor);
+        if (spread.length === GEM_NAMES.length) {
+          return GEM_NAMES.map((name, i) => ({
+            id: `gem-${i}`, name, ...spread[i], collected: false,
+          }));
+        }
       }
+      // Spacing no alcanzable pero tenemos nodos accesibles: samplear con reemplazo
+      const shuffled = [...valid].sort(() => Math.random() - 0.5);
+      return GEM_NAMES.map((name, i) => ({
+        id: `gem-${i}`, name, ...shuffled[i % shuffled.length], collected: false,
+      }));
     }
   } catch {
-    // fallback below
+    // sin red o Overpass caído
   }
+
+  // Último recurso: sin datos OSM en absoluto
   return generateGems(centerLat, centerLng, radiusKm);
 }
 
