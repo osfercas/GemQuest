@@ -7,6 +7,7 @@ const GAMES_KEY = 'gq:games';
 interface GameState {
   center: { latitude: number; longitude: number };
   gems: GemMarker[];
+  repositionCount?: number;
 }
 
 export function generateId(): string {

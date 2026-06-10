@@ -9,11 +9,12 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../../App';
 import type { Game } from '../HomeScreen/types';
 import { loadGames, upsertGame, loadGameState, saveGameState } from '../../storage/gameStorage';
-import { GemMarker, generateGemsOSM, distanceMeters, COLLECT_RADIUS_M, GLOW_RADIUS_M } from './types';
+import { GemMarker } from './types';
+import { generateGemsOSM, repositionGem, distanceMeters, COLLECT_RADIUS_M, GLOW_RADIUS_M } from './utils';
 import { mapStyles as s, centerBtnStyles as cs } from './styles';
 import GameHUD from './GameHUD';
 import GemMarkerView from './GemMarkerView';
-import CollectToast from './CollectToast';
+import GemTooltip from './GemTooltip';
 import PermissionGate from './PermissionGate';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Map'>;
@@ -29,7 +30,12 @@ export default function MapScreen({ route, navigation }: Props) {
   const [gemsLoading, setGemsLoading] = useState(false);
   const [gameCenter, setGameCenter] = useState<{ latitude: number; longitude: number } | null>(null);
   const [initialCenter, setInitialCenter] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [pendingGem, setPendingGem] = useState<GemMarker | null>(null);
+  const [selectedGem, setSelectedGem] = useState<GemMarker | null>(null);
+  const [repositioning, setRepositioning] = useState(false);
+  const [gemsReady, setGemsReady] = useState(false);
+  const [repositionCount, setRepositionCount] = useState(0);
+
+  const MAX_REPOSITIONS = 3;
   const gemsInitialized = useRef(false);
   const mapRef = useRef<MapView>(null);
 
@@ -80,6 +86,8 @@ export default function MapScreen({ route, navigation }: Props) {
               setGameCenter(savedState.center);
               setInitialCenter(savedState.center);
               setGems(savedState.gems);
+              setRepositionCount(savedState.repositionCount ?? 0);
+              setGemsReady(true);
               mapRef.current?.animateToRegion({
                 ...savedState.center,
                 latitudeDelta: game.radius * 0.018,
@@ -102,6 +110,7 @@ export default function MapScreen({ route, navigation }: Props) {
               generateGemsOSM(latitude, longitude, game.radius).then(async generated => {
                 setGems(generated);
                 setGemsLoading(false);
+                setGemsReady(true);
                 await saveGameState(gameId, { center, gems: generated });
               });
             }
@@ -127,17 +136,18 @@ export default function MapScreen({ route, navigation }: Props) {
     }, 600);
   };
 
+  const selectedGemDistance = selectedGem && userLocation
+    ? distanceMeters(userLocation.latitude, userLocation.longitude, selectedGem.latitude, selectedGem.longitude)
+    : null;
+
   const handleGemTap = (gem: GemMarker) => {
-    if (!userLocation) return;
-    const dist = distanceMeters(userLocation.latitude, userLocation.longitude, gem.latitude, gem.longitude);
-    if (dist > COLLECT_RADIUS_M) return;
-    setPendingGem(gem);
+    setSelectedGem(gem);
   };
 
   const handleConfirmCollect = async () => {
-    if (!pendingGem || !game || !gameCenter) return;
+    if (!selectedGem || !game || !gameCenter) return;
 
-    const updatedGems = gems.map(g => g.id === pendingGem.id ? { ...g, collected: true } : g);
+    const updatedGems = gems.map(g => g.id === selectedGem.id ? { ...g, collected: true } : g);
     const gemsFound = updatedGems.filter(g => g.collected).length;
     const updatedGame: Game = {
       ...game,
@@ -147,7 +157,7 @@ export default function MapScreen({ route, navigation }: Props) {
 
     setGems(updatedGems);
     setGame(updatedGame);
-    setPendingGem(null);
+    setSelectedGem(null);
 
     await saveGameState(gameId, { center: gameCenter, gems: updatedGems });
     await upsertGame(updatedGame);
@@ -157,8 +167,25 @@ export default function MapScreen({ route, navigation }: Props) {
     }
   };
 
-  const handleDismissToast = () => {
-    setPendingGem(null);
+  const handleReposition = async () => {
+    if (!selectedGem || !gameCenter || repositionCount >= MAX_REPOSITIONS) return;
+    const gemId = selectedGem.id;
+    const newCount = repositionCount + 1;
+    setSelectedGem(null);
+    setRepositioning(true);
+    setRepositionCount(newCount);
+    try {
+      const newPos = await repositionGem(gameCenter.latitude, gameCenter.longitude, game?.radius ?? 0.5);
+      const updatedGems = gems.map(g => g.id === gemId ? { ...g, ...newPos } : g);
+      setGems(updatedGems);
+      await saveGameState(gameId, { center: gameCenter, gems: updatedGems, repositionCount: newCount });
+    } finally {
+      setRepositioning(false);
+    }
+  };
+
+  const handleDismiss = () => {
+    setSelectedGem(null);
   };
 
   if (permissionGranted === false) {
@@ -176,6 +203,7 @@ export default function MapScreen({ route, navigation }: Props) {
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         showsUserLocation
         showsMyLocationButton={false}
+        toolbarEnabled={false}
         customMapStyle={DARK_MAP_STYLE}
         initialRegion={{
           ...initialCenter,
@@ -216,17 +244,26 @@ export default function MapScreen({ route, navigation }: Props) {
         onBack={() => navigation.goBack()}
       />
 
-      {gemsLoading && (
+      {!gemsReady && (
         <View style={loadingStyles.overlay}>
+          <Text style={loadingStyles.text}>Cargando tu aventura...</Text>
           <ActivityIndicator size="large" color="#FFD700" />
-          <Text style={loadingStyles.text}>Buscando zonas accesibles...</Text>
+          {gemsLoading && (
+            <Text style={loadingStyles.text}>Buscando zonas accesibles...</Text>
+          )}
         </View>
       )}
 
-      <CollectToast
-        gem={pendingGem}
+      <GemTooltip
+        gem={selectedGem}
+        distanceM={selectedGemDistance}
+        canCollect={selectedGemDistance != null && selectedGemDistance <= COLLECT_RADIUS_M}
+        repositioning={repositioning}
+        repositionDisabled={repositionCount >= MAX_REPOSITIONS}
+        repositionsLeft={repositionCount}
         onCollect={handleConfirmCollect}
-        onDismiss={handleDismissToast}
+        onReposition={handleReposition}
+        onDismiss={handleDismiss}
       />
     </View>
   );
