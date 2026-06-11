@@ -14,7 +14,7 @@ import { Feather } from '@expo/vector-icons';
 import { wizardStyles as s } from './styles';
 import { RADIUS_OPTIONS, WIZARD_STEPS } from './types';
 import { generateId, upsertGame } from '../../storage/gameStorage';
-import { GEM_NAMES } from '../MapScreen/types';
+import { GEM_NAMES } from '../MapScreen/utils';
 
 interface Props {
   visible: boolean;

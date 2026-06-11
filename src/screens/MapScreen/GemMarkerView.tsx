@@ -89,7 +89,7 @@ export default function GemMarkerView({ gem, isNear, onPress }: Props) {
         anchor={{ x: 0.5, y: 0.5 }}
         tracksViewChanges={tracksViews}
         zIndex={1}
-        onPress={() => !gem.collected && isNear && onPress(gem)}
+        onPress={() => !gem.collected && onPress(gem)}
       >
         {gem.collected ? (
           <View style={styles.collectedMarker}>
