@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export const GEM_COLORS = {
   Ruby:       { color: '#FF6B6B', light: '#FF9999', dark: '#AA1100' },
-  Diamond:    { color: '#FFD93D', light: '#FFF0A0', dark: '#C8860A' },
+  Diamond:    { color: '#E8E8F0', light: '#FFFFFF', dark: '#9090B0' },
   Emerald:    { color: '#6BCB77', light: '#A8E6B0', dark: '#1E6B2E' },
   Sapphire:   { color: '#4D96FF', light: '#90C0FF', dark: '#1040CC' },
   Amethyst:   { color: '#C77DFF', light: '#E0AAFF', dark: '#6B10CC' },

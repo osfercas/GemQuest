@@ -9,7 +9,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { RootStackParamList } from '../../../App';
 import { GemShape, GEM_COLORS } from '../../components/GemShape';
-import { GEM_NAMES } from '../MapScreen/types';
+import { GEM_NAMES } from '../MapScreen/utils';
 import type { GemMarker } from '../MapScreen/types';
 import { loadGames, loadGameState } from '../../storage/gameStorage';
 import type { Game } from '../HomeScreen/types';
