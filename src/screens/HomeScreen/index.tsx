@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import type { RootStackParamList } from '../../../App';
+import type { MainStackParamList } from '../../navigation/MainStack';
 import type { Game } from './types';
 import { loadGames, deleteGame } from '../../storage/gameStorage';
 import { rootStyles as s, sectionStyles } from './styles';
@@ -16,7 +16,7 @@ import FinishedGameRow from './FinishedGameRow';
 import NewGameWizard from './NewGameWizard';
 import DeleteConfirmSheet from './DeleteConfirmSheet';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'Home'>;
 
 export default function HomeScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();

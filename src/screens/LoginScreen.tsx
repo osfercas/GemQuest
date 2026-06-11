@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Animated,
   Dimensions,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
@@ -15,7 +16,8 @@ import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { GemShape, GEM_COLORS } from '../components/GemShape';
-import type { RootStackParamList } from '../../App';
+import type { AuthStackParamList } from '../navigation/AuthStack';
+import { signInWithEmail, signInWithGoogle } from '../services/auth';
 
 const { width: SW, height: SH } = Dimensions.get('window');
 
@@ -36,11 +38,30 @@ const STARS = Array.from({ length: 60 }, (_, i) => ({
   opacity: 0.12 + ((i * 59) % 55) / 100,
 }));
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+function mapFirebaseError(code: string): string {
+  switch (code) {
+    case 'auth/invalid-email':            return 'Correo electrónico inválido.';
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':       return 'Correo o contraseña incorrectos.';
+    case 'auth/too-many-requests':        return 'Demasiados intentos. Intenta más tarde.';
+    case 'auth/network-request-failed':   return 'Sin conexión a internet.';
+    case 'auth/user-disabled':            return 'Esta cuenta ha sido desactivada.';
+    default:                              return 'Algo salió mal. Inténtalo de nuevo.';
+  }
+}
+
+type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
   const { bottom } = useSafeAreaInsets();
   const gemAnims = useRef(GEMS.map(() => new Animated.Value(0))).current;
+  const errorOpacity = useRef(new Animated.Value(0)).current;
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     GEMS.forEach((gem, i) => {
@@ -56,6 +77,41 @@ export default function LoginScreen({ navigation }: Props) {
       setTimeout(start, gem.delay);
     });
   }, []);
+
+  function showError(msg: string) {
+    setErrorMsg(msg);
+    errorOpacity.setValue(0);
+    Animated.timing(errorOpacity, { toValue: 1, duration: 250, useNativeDriver: true }).start();
+  }
+
+  async function handleEmailLogin() {
+    if (!email.trim() || !password) {
+      showError('Completa el correo y la contraseña.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await signInWithEmail(email.trim(), password);
+      // AuthContext detecta el cambio y muestra MainStack automáticamente
+    } catch (e: any) {
+      showError(mapFirebaseError(e?.code ?? ''));
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setSubmitting(true);
+    try {
+      await signInWithGoogle();
+    } catch (e: any) {
+      if (e?.code !== 'SIGN_IN_CANCELLED') {
+        showError(mapFirebaseError(e?.code ?? ''));
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <View style={styles.root}>
@@ -80,6 +136,7 @@ export default function LoginScreen({ navigation }: Props) {
       <ScrollView
         contentContainerStyle={[styles.scroll, { paddingBottom: 48 + bottom }]}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.gemsContainer}>
           {GEMS.map((gem, i) => {
@@ -116,6 +173,9 @@ export default function LoginScreen({ navigation }: Props) {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              value={email}
+              onChangeText={setEmail}
+              editable={!submitting}
             />
           </View>
 
@@ -126,17 +186,31 @@ export default function LoginScreen({ navigation }: Props) {
               placeholder="Contraseña"
               placeholderTextColor="rgba(232,221,181,0.35)"
               secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              editable={!submitting}
+              onSubmitEditing={handleEmailLogin}
+              returnKeyType="go"
             />
           </View>
 
-          <TouchableOpacity activeOpacity={0.82} onPress={() => navigation.replace('Home')}>
+          {errorMsg ? (
+            <Animated.Text style={[styles.errorText, { opacity: errorOpacity }]}>
+              {errorMsg}
+            </Animated.Text>
+          ) : null}
+
+          <TouchableOpacity activeOpacity={0.82} onPress={handleEmailLogin} disabled={submitting}>
             <LinearGradient
               colors={['#FFD700', '#D4900A']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={styles.primaryBtn}
+              style={[styles.primaryBtn, submitting && styles.btnDisabled]}
             >
-              <Text style={styles.primaryBtnText}>Iniciar la aventura</Text>
+              {submitting
+                ? <ActivityIndicator color="#0A0D1A" />
+                : <Text style={styles.primaryBtnText}>Iniciar la aventura</Text>
+              }
             </LinearGradient>
           </TouchableOpacity>
 
@@ -146,14 +220,14 @@ export default function LoginScreen({ navigation }: Props) {
             <View style={styles.dividerLine} />
           </View>
 
-          <TouchableOpacity style={styles.googleBtn} activeOpacity={0.82}>
+          <TouchableOpacity style={styles.googleBtn} activeOpacity={0.82} onPress={handleGoogleLogin} disabled={submitting}>
             <View style={styles.googleGWrap}>
               <Text style={[styles.googleGLetter, { color: '#4285F4' }]}>G</Text>
             </View>
             <Text style={styles.googleBtnText}>Continuar con Google</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.signupRow} activeOpacity={0.75}>
+          <TouchableOpacity style={styles.signupRow} activeOpacity={0.75} onPress={() => navigation.navigate('Register')}>
             <Text style={styles.signupText}>¿Primera vez? </Text>
             <Text style={styles.signupLink}>Crear cuenta</Text>
           </TouchableOpacity>
@@ -206,6 +280,13 @@ const styles = StyleSheet.create({
   },
   inputIcon: { marginRight: 12 },
   input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: '#E8DDB5' },
+  errorText: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 13,
+    color: '#FF6B6B',
+    textAlign: 'center',
+    marginTop: -4,
+  },
   primaryBtn: {
     borderRadius: 12,
     height: 54,
@@ -217,6 +298,7 @@ const styles = StyleSheet.create({
     shadowRadius: 14,
     elevation: 8,
   },
+  btnDisabled: { opacity: 0.6 },
   primaryBtnText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,

@@ -6,7 +6,7 @@ import * as Location from 'expo-location';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import type { RootStackParamList } from '../../../App';
+import type { MainStackParamList } from '../../navigation/MainStack';
 import type { Game } from '../HomeScreen/types';
 import { loadGames, upsertGame, loadGameState, saveGameState } from '../../storage/gameStorage';
 import { GemMarker } from './types';
@@ -17,7 +17,7 @@ import GemMarkerView from './GemMarkerView';
 import GemTooltip from './GemTooltip';
 import PermissionGate from './PermissionGate';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Map'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'Map'>;
 
 export default function MapScreen({ route, navigation }: Props) {
   const { gameId } = route.params;

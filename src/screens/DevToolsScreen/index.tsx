@@ -9,11 +9,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import type { RootStackParamList } from '../../../App';
+import type { MainStackParamList } from '../../navigation/MainStack';
 import { loadGames, loadGameState } from '../../storage/gameStorage';
 import type { Game } from '../HomeScreen/types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'DevTools'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'DevTools'>;
 
 interface GameEntry {
   game: Game;

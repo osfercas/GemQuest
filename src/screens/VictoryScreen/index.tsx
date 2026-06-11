@@ -7,14 +7,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import type { RootStackParamList } from '../../../App';
+import type { MainStackParamList } from '../../navigation/MainStack';
 import { GemShape, GEM_COLORS } from '../../components/GemShape';
 import { GEM_NAMES } from '../MapScreen/utils';
 import type { GemMarker } from '../MapScreen/types';
 import { loadGames, loadGameState } from '../../storage/gameStorage';
 import type { Game } from '../HomeScreen/types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Victory'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'Victory'>;
 
 export default function VictoryScreen({ route, navigation }: Props) {
   const { gameId } = route.params;
