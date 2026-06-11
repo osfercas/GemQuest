@@ -10,6 +10,7 @@ module.exports = {
       supportsTablet: true,
     },
     android: {
+      googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
       adaptiveIcon: {
         backgroundColor: "#E6F4FE",
         foregroundImage: "./assets/android-icon-foreground.png",
@@ -28,6 +29,7 @@ module.exports = {
     },
     plugins: [
       "expo-font",
+      "@react-native-firebase/app",
       [
         "expo-location",
         {
