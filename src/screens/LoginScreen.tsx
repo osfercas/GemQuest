@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { GemShape, GEM_COLORS } from '../components/GemShape';
 import type { RootStackParamList } from '../../App';
+import { useTheme } from '../theme/ThemeContext';
+import type { Theme } from '../theme';
 
 const { width: SW, height: SH } = Dimensions.get('window');
 
@@ -40,6 +42,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
   const { bottom } = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const gemAnims = useRef(GEMS.map(() => new Animated.Value(0))).current;
 
   useEffect(() => {
@@ -59,7 +63,7 @@ export default function LoginScreen({ navigation }: Props) {
 
   return (
     <View style={styles.root}>
-      <StatusBar style="light" />
+      <StatusBar style={theme.id === 'darkGold' ? 'light' : 'dark'} />
 
       {STARS.map((s, i) => (
         <View
@@ -71,8 +75,8 @@ export default function LoginScreen({ navigation }: Props) {
             width: s.size,
             height: s.size,
             borderRadius: s.size / 2,
-            backgroundColor: '#FFFFFF',
-            opacity: s.opacity,
+            backgroundColor: theme.textPrimary,
+            opacity: s.opacity * 0.5,
           }}
         />
       ))}
@@ -108,11 +112,11 @@ export default function LoginScreen({ navigation }: Props) {
 
         <View style={styles.form}>
           <View style={styles.inputWrap}>
-            <Feather name="mail" size={18} color="rgba(232,221,181,0.45)" style={styles.inputIcon} />
+            <Feather name="mail" size={18} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Correo electrónico"
-              placeholderTextColor="rgba(232,221,181,0.35)"
+              placeholderTextColor={theme.textTertiary}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
@@ -120,18 +124,18 @@ export default function LoginScreen({ navigation }: Props) {
           </View>
 
           <View style={styles.inputWrap}>
-            <Feather name="lock" size={18} color="rgba(232,221,181,0.45)" style={styles.inputIcon} />
+            <Feather name="lock" size={18} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Contraseña"
-              placeholderTextColor="rgba(232,221,181,0.35)"
+              placeholderTextColor={theme.textTertiary}
               secureTextEntry
             />
           </View>
 
           <TouchableOpacity activeOpacity={0.82} onPress={() => navigation.replace('Home')}>
             <LinearGradient
-              colors={['#FFD700', '#D4900A']}
+              colors={theme.gradientButton}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.primaryBtn}
@@ -163,17 +167,17 @@ export default function LoginScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#080B14' },
+const createStyles = (theme: Theme) => StyleSheet.create({
+  root: { flex: 1, backgroundColor: theme.bgRoot },
   scroll: { flexGrow: 1, alignItems: 'center', paddingTop: 56 },
   gemsContainer: { width: SW, height: 160, position: 'relative' },
   logoSection: { alignItems: 'center', marginTop: 16, marginBottom: 44 },
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 34,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     letterSpacing: 3,
-    textShadowColor: 'rgba(255, 215, 0, 0.45)',
+    textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 16,
   },
@@ -181,14 +185,14 @@ const styles = StyleSheet.create({
   tagline: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 12,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 3.5,
     opacity: 0.85,
   },
   taglineSub: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 10,
-    color: '#C8860A',
+    color: theme.accentSecondary,
     letterSpacing: 3.5,
     marginTop: 5,
     textTransform: 'uppercase',
@@ -197,21 +201,21 @@ const styles = StyleSheet.create({
   inputWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: theme.bgInput,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,215,0,0.18)',
+    borderColor: theme.borderPrimary,
     height: 54,
     paddingHorizontal: 16,
   },
   inputIcon: { marginRight: 12 },
-  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: '#E8DDB5' },
+  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textPrimary },
   primaryBtn: {
     borderRadius: 12,
     height: 54,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#FFD700',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 14,
@@ -220,39 +224,39 @@ const styles = StyleSheet.create({
   primaryBtnText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
-    color: '#0A0D1A',
+    color: theme.textOnAccent,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
   divider: { flexDirection: 'row', alignItems: 'center', marginVertical: 2 },
-  dividerLine: { flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: 'rgba(232,221,181,0.18)' },
+  dividerLine: { flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: theme.borderSubtle },
   dividerLabel: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 12,
-    color: 'rgba(232,221,181,0.45)',
+    color: theme.textSecondary,
     marginHorizontal: 12,
   },
   googleBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: theme.bgInput,
     borderRadius: 12,
     height: 54,
     borderWidth: 1,
-    borderColor: 'rgba(232,221,181,0.14)',
+    borderColor: theme.borderSubtle,
     gap: 10,
   },
   googleGWrap: { width: 22, height: 22, alignItems: 'center', justifyContent: 'center' },
   googleGLetter: { fontSize: 17, fontWeight: '700' },
-  googleBtnText: { fontFamily: 'Nunito_600SemiBold', fontSize: 14, color: '#E8DDB5', letterSpacing: 0.4 },
+  googleBtnText: { fontFamily: 'Nunito_600SemiBold', fontSize: 14, color: theme.textPrimary, letterSpacing: 0.4 },
   signupRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 4 },
-  signupText: { fontFamily: 'Nunito_400Regular', fontSize: 13, color: 'rgba(232,221,181,0.55)' },
+  signupText: { fontFamily: 'Nunito_400Regular', fontSize: 13, color: theme.textSecondary },
   signupLink: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 13,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     textDecorationLine: 'underline',
-    textDecorationColor: 'rgba(255,215,0,0.5)',
+    textDecorationColor: `${theme.accentPrimary}80`,
   },
 });

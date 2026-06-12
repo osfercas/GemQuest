@@ -1,12 +1,12 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
+import type { Theme } from '../../theme'
 
-export const mapStyles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#080B14' },
+export const createMapStyles = (theme: Theme) => StyleSheet.create({
+  root: { flex: 1, backgroundColor: theme.bgRoot },
   map:  { flex: 1 },
-});
+})
 
-export const hudStyles = StyleSheet.create({
-  // Barra superior
+export const createHudStyles = (theme: Theme) => StyleSheet.create({
   header: {
     position: 'absolute',
     top: 0,
@@ -16,9 +16,9 @@ export const hudStyles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: 'rgba(8,11,20,0.85)',
+    backgroundColor: `${theme.bgRoot}D9`,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,215,0,0.15)',
+    borderBottomColor: `${theme.accentPrimary}26`,
     gap: 12,
   },
   backBtn: {
@@ -28,13 +28,13 @@ export const hudStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(232,221,181,0.2)',
+    borderColor: `${theme.textPrimary}33`,
   },
   gameName: {
     flex: 1,
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 1,
   },
   counter: {
@@ -43,19 +43,17 @@ export const hudStyles = StyleSheet.create({
   counterNum: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 18,
-    color: '#FFD700',
-    textShadowColor: 'rgba(255,215,0,0.5)',
+    color: theme.accentPrimary,
+    textShadowColor: `${theme.accentPrimary}80`,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
   },
   counterLabel: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 10,
-    color: 'rgba(232,221,181,0.45)',
+    color: theme.textSecondary,
     letterSpacing: 1,
   },
-
-  // Fila de gemas — posición top se calcula dinámicamente en GameHUD
   gemBar: {
     position: 'absolute',
     left: 16,
@@ -63,12 +61,12 @@ export const hudStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 10,
-    backgroundColor: 'rgba(8,11,20,0.88)',
+    backgroundColor: `${theme.bgRoot}E0`,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     borderWidth: 1,
     borderTopWidth: 0,
-    borderColor: 'rgba(255,215,0,0.12)',
+    borderColor: `${theme.accentPrimary}1F`,
     paddingVertical: 10,
     paddingHorizontal: 16,
   },
@@ -79,35 +77,33 @@ export const hudStyles = StyleSheet.create({
   gemSlotLabel: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 9,
-    color: 'rgba(232,221,181,0.4)',
+    color: theme.textTertiary,
     letterSpacing: 0.5,
   },
   gemSlotCollected: {
-    color: '#E8DDB5',
+    color: theme.textPrimary,
   },
-});
+})
 
-
-
-export const centerBtnStyles = StyleSheet.create({
+export const createCenterBtnStyles = (theme: Theme) => StyleSheet.create({
   btn: {
     position: 'absolute',
     right: 16,
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(8,11,20,0.88)',
+    backgroundColor: `${theme.bgRoot}E0`,
     borderWidth: 1,
-    borderColor: 'rgba(255,215,0,0.2)',
+    borderColor: `${theme.accentPrimary}33`,
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+})
 
-export const permissionStyles = StyleSheet.create({
+export const createPermissionStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#080B14',
+    backgroundColor: theme.bgRoot,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 32,
@@ -116,14 +112,14 @@ export const permissionStyles = StyleSheet.create({
   title: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 18,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     textAlign: 'center',
     letterSpacing: 1,
   },
   sub: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 14,
-    color: 'rgba(232,221,181,0.5)',
+    color: theme.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
   },
@@ -140,8 +136,25 @@ export const permissionStyles = StyleSheet.create({
   btnText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: '#0A0D1A',
+    color: theme.textOnAccent,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
-});
+})
+
+export const createLoadingStyles = (theme: Theme) => StyleSheet.create({
+  overlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: `${theme.bgRoot}BF`,
+    gap: 14,
+  },
+  text: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 13,
+    color: theme.textPrimary,
+    letterSpacing: 1.5,
+  },
+})

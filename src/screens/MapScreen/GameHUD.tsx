@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Animated, Text, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { GemShape, GEM_COLORS, GemName } from '../../components/GemShape';
-import { hudStyles as s } from './styles';
+import { createHudStyles } from './styles';
 import { GemMarker } from './types';
+import { useTheme } from '../../theme/ThemeContext';
 
 const GEM_NAMES: GemName[] = ['Ruby', 'Diamond', 'Emerald', 'Sapphire', 'Amethyst', 'Amber', 'Aquamarine'];
 
@@ -15,6 +16,8 @@ interface Props {
 }
 
 export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
+  const { theme } = useTheme();
+  const s = useMemo(() => createHudStyles(theme), [theme]);
   const found = gems.filter(g => g.collected).length;
   const [headerHeight, setHeaderHeight] = useState(0);
   const [barOpen, setBarOpen] = useState(false);
@@ -35,13 +38,12 @@ export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
 
   return (
     <>
-      {/* Header */}
       <View
         style={[s.header, { paddingTop: topInset + 12 }]}
         onLayout={e => setHeaderHeight(e.nativeEvent.layout.height)}
       >
         <TouchableOpacity style={s.backBtn} activeOpacity={0.75} onPress={onBack}>
-          <Feather name="arrow-left" size={18} color="rgba(232,221,181,0.7)" />
+          <Feather name="arrow-left" size={18} color={`${theme.textPrimary}B3`} />
         </TouchableOpacity>
         <Text style={s.gameName} numberOfLines={1}>{gameName}</Text>
         <TouchableOpacity style={s.counter} activeOpacity={0.7} onPress={toggleBar}>
@@ -50,7 +52,6 @@ export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
         </TouchableOpacity>
       </View>
 
-      {/* Gem bar — desliza desde el header */}
       <Animated.View
         style={[
           s.gemBar,
@@ -64,9 +65,9 @@ export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
           return (
             <View key={name} style={s.gemSlot}>
               <GemShape
-                color={collected ? g.color : 'rgba(232,221,181,0.15)'}
-                light={collected ? g.light : 'rgba(232,221,181,0.25)'}
-                dark={collected ? g.dark  : 'rgba(232,221,181,0.08)'}
+                color={collected ? g.color : `${theme.textPrimary}26`}
+                light={collected ? g.light : `${theme.textPrimary}40`}
+                dark={collected ? g.dark  : `${theme.textPrimary}14`}
                 size={20}
               />
               <Text style={[s.gemSlotLabel, collected && s.gemSlotCollected]}>

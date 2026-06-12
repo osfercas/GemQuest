@@ -1,6 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
+import type { Theme } from '../../theme'
 
-export const s = StyleSheet.create({
+export const createStyles = (theme: Theme) => StyleSheet.create({
   glow: {
     position: 'absolute',
     left: 0,
@@ -10,7 +11,7 @@ export const s = StyleSheet.create({
   },
   root: {
     flex: 1,
-    backgroundColor: '#080B14',
+    backgroundColor: theme.bgRoot,
   },
   content: {
     flex: 1,
@@ -26,23 +27,24 @@ export const s = StyleSheet.create({
   titleEyebrow: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 11,
-    color: 'rgba(255,215,0,0.6)',
+    color: theme.accentPrimary,
     letterSpacing: 4,
     textTransform: 'uppercase',
+    opacity: 0.6,
   },
   titleBig: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 36,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     letterSpacing: 2,
-    textShadowColor: 'rgba(255,215,0,0.5)',
+    textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 14,
   },
   gameName: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 1,
     marginTop: 4,
   },
@@ -63,14 +65,15 @@ export const s = StyleSheet.create({
   gemLabel: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 9,
-    color: 'rgba(232,221,181,0.25)',
+    color: theme.textTertiary,
     letterSpacing: 0.3,
     textAlign: 'center',
+    opacity: 0.7,
   },
   statsText: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
-    color: 'rgba(232,221,181,0.4)',
+    color: theme.textSecondary,
     letterSpacing: 0.5,
     textAlign: 'center',
   },
@@ -86,8 +89,8 @@ export const s = StyleSheet.create({
   btnText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 15,
-    color: '#0A0D1A',
+    color: theme.textOnAccent,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
-});
+})

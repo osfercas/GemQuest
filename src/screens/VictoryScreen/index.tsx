@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated, Text, TouchableOpacity, View,
 } from 'react-native';
-import { s } from './styles';
+import { createStyles } from './styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -13,12 +13,15 @@ import { GEM_NAMES } from '../MapScreen/utils';
 import type { GemMarker } from '../MapScreen/types';
 import { loadGames, loadGameState } from '../../storage/gameStorage';
 import type { Game } from '../HomeScreen/types';
+import { useTheme } from '../../theme/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Victory'>;
 
 export default function VictoryScreen({ route, navigation }: Props) {
   const { gameId } = route.params;
   const insets = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const s = useMemo(() => createStyles(theme), [theme]);
   const [game, setGame] = useState<Game | null>(null);
   const [gems, setGems] = useState<GemMarker[]>([]);
 
@@ -78,12 +81,12 @@ export default function VictoryScreen({ route, navigation }: Props) {
         }]}
       >
         <GemShape
-          color={collected ? g.color : 'rgba(232,221,181,0.12)'}
-          light={collected ? g.light : 'rgba(232,221,181,0.2)'}
-          dark={collected ? g.dark  : 'rgba(232,221,181,0.06)'}
+          color={collected ? g.color : `${theme.textPrimary}1F`}
+          light={collected ? g.light : `${theme.textPrimary}33`}
+          dark={collected ? g.dark  : `${theme.textPrimary}0F`}
           size={32}
         />
-        <Text style={[s.gemLabel, collected && { color: g.light }]}>
+        <Text style={[s.gemLabel, collected && { color: g.light, opacity: 1 }]}>
           {name}
         </Text>
       </Animated.View>
@@ -93,7 +96,7 @@ export default function VictoryScreen({ route, navigation }: Props) {
   return (
     <View style={[s.root, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <LinearGradient
-        colors={['rgba(255,215,0,0.1)', 'transparent']}
+        colors={theme.gradientGlow}
         style={s.glow}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 0.65 }}
@@ -134,7 +137,7 @@ export default function VictoryScreen({ route, navigation }: Props) {
         }]}>
           <TouchableOpacity activeOpacity={0.85} onPress={handleGoHome}>
             <LinearGradient
-              colors={['#FFD700', '#C8860A']}
+              colors={theme.gradientButton}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={s.btn}

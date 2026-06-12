@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { GemShape, GEM_COLORS } from '../../components/GemShape';
 import { GemMarker } from './types';
+import { useTheme } from '../../theme/ThemeContext';
+import type { Theme } from '../../theme';
 
 interface Props {
   gem: GemMarker | null;
@@ -19,6 +21,8 @@ interface Props {
 
 export default function GemTooltip({ gem, distanceM, canCollect, repositioning, repositionDisabled, repositionsLeft, onCollect, onReposition, onDismiss }: Props) {
   const { bottom } = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const s = useMemo(() => createStyles(theme), [theme]);
   const opacity    = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(20)).current;
 
@@ -50,7 +54,7 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
             <GemShape color={g.color} light={g.light} dark={g.dark} size={20} />
             <Text style={[s.name, { color: g.light }]}>{gem.name}</Text>
             <View style={s.distanceBadge}>
-              <Feather name="navigation" size={11} color="rgba(232,221,181,0.5)" />
+              <Feather name="navigation" size={11} color={theme.textSecondary} />
               <Text style={s.distanceText}>{distText}</Text>
             </View>
           </View>
@@ -68,10 +72,10 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
                 activeOpacity={0.7}
               >
                 {repositioning ? (
-                  <ActivityIndicator size="small" color="#E8DDB5" />
+                  <ActivityIndicator size="small" color={theme.textPrimary} />
                 ) : (
                   <>
-                    <Feather name="refresh-cw" size={13} color="#E8DDB5" />
+                    <Feather name="refresh-cw" size={13} color={theme.textPrimary} />
                     <Text style={s.btnSecondaryText}>Reposicionar</Text>
                     <Text style={s.repositionsLeft}>{repositionsLeft}/3</Text>
                   </>
@@ -95,7 +99,7 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
   );
 }
 
-const s = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   wrapper: {
     position: 'absolute',
     left: 16,
@@ -104,7 +108,7 @@ const s = StyleSheet.create({
   },
   card: {
     width: '100%',
-    backgroundColor: 'rgba(8,11,20,0.94)',
+    backgroundColor: `${theme.bgRoot}F0`,
     borderRadius: 16,
     borderWidth: 1,
     paddingHorizontal: 18,
@@ -130,12 +134,12 @@ const s = StyleSheet.create({
   distanceText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 12,
-    color: 'rgba(232,221,181,0.5)',
+    color: theme.textSecondary,
     letterSpacing: 0.5,
   },
   coords: {
     fontSize: 11,
-    color: 'rgba(232,221,181,0.35)',
+    color: theme.textTertiary,
     fontFamily: 'Cinzel_700Bold',
     letterSpacing: 0.5,
   },
@@ -152,14 +156,14 @@ const s = StyleSheet.create({
     paddingVertical: 9,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'rgba(232,221,181,0.2)',
+    borderColor: `${theme.textPrimary}33`,
     minWidth: 44,
     justifyContent: 'center',
   },
   btnSecondaryText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 12,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 0.5,
   },
   btnPrimary: {
@@ -172,7 +176,7 @@ const s = StyleSheet.create({
   btnPrimaryText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: '#0e1220',
+    color: theme.bgRoot,
     letterSpacing: 1,
   },
   btnDisabled: {
@@ -181,8 +185,8 @@ const s = StyleSheet.create({
   repositionsLeft: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 11,
-    color: 'rgba(232,221,181,0.45)',
+    color: theme.textSecondary,
     letterSpacing: 0.5,
     marginLeft: 2,
   },
-});
+})

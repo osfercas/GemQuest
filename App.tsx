@@ -13,6 +13,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import MapScreen from './src/screens/MapScreen';
 import VictoryScreen from './src/screens/VictoryScreen';
 import DevToolsScreen from './src/screens/DevToolsScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+import { ThemeProvider } from './src/theme/ThemeContext';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -20,6 +22,7 @@ export type RootStackParamList = {
   Map: { gameId: string };
   Victory: { gameId: string };
   DevTools: undefined;
+  Settings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,15 +40,18 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }}>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Map" component={MapScreen} />
-            <Stack.Screen name="Victory" component={VictoryScreen} />
-            {__DEV__ && <Stack.Screen name="DevTools" component={DevToolsScreen} />}
-          </Stack.Navigator>
-        </NavigationContainer>
+        <ThemeProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }}>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Map" component={MapScreen} />
+              <Stack.Screen name="Victory" component={VictoryScreen} />
+              <Stack.Screen name="Settings" component={SettingsScreen} />
+              {__DEV__ && <Stack.Screen name="DevTools" component={DevToolsScreen} />}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

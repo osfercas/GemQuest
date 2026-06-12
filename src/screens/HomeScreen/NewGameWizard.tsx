@@ -1,20 +1,14 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  Modal,
-  TextInput,
-  TouchableOpacity,
-  Pressable,
-  Animated,
-  StyleSheet,
+  View, Text, Modal, TextInput, TouchableOpacity, Pressable, Animated, StyleSheet,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
-import { wizardStyles as s } from './styles';
+import { createWizardStyles } from './styles';
 import { RADIUS_OPTIONS, WIZARD_STEPS } from './types';
 import { generateId, upsertGame } from '../../storage/gameStorage';
 import { GEM_NAMES } from '../MapScreen/utils';
+import { useTheme } from '../../theme/ThemeContext';
 
 interface Props {
   visible: boolean;
@@ -24,6 +18,8 @@ interface Props {
 }
 
 export default function NewGameWizard({ visible, onClose, onStart, bottomInset = 0 }: Props) {
+  const { theme } = useTheme();
+  const s = useMemo(() => createWizardStyles(theme), [theme]);
   const [step, setStep] = useState(0);
   const [gameName, setGameName] = useState('');
   const [selectedRadius, setSelectedRadius] = useState(0.5);
@@ -43,11 +39,7 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
   };
 
   const canAdvance = step === 0 ? gameName.trim().length > 0 : true;
-
-  const sheetTranslateY = slideAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [600, 0],
-  });
+  const sheetTranslateY = slideAnim.interpolate({ inputRange: [0, 1], outputRange: [600, 0] });
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={handleClose}>
@@ -62,17 +54,16 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
               ))}
             </View>
 
-            {/* Paso 1 — Nombre */}
             {step === 0 && (
               <View style={s.stepContent}>
                 <Text style={s.stepTitle}>Nombre de la partida</Text>
                 <Text style={s.stepSub}>Dale un nombre épico a tu aventura</Text>
                 <View style={s.inputWrap}>
-                  <Feather name="edit-3" size={18} color="rgba(232,221,181,0.45)" style={{ marginRight: 12 }} />
+                  <Feather name="edit-3" size={18} color={theme.textSecondary} style={{ marginRight: 12 }} />
                   <TextInput
                     style={s.input}
                     placeholder="Ej: Bosque encantado..."
-                    placeholderTextColor="rgba(232,221,181,0.3)"
+                    placeholderTextColor={theme.textTertiary}
                     value={gameName}
                     onChangeText={setGameName}
                     autoFocus
@@ -82,7 +73,6 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
               </View>
             )}
 
-            {/* Paso 2 — Radio */}
             {step === 1 && (
               <View style={s.stepContent}>
                 <Text style={s.stepTitle}>Radio de búsqueda</Text>
@@ -97,7 +87,7 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
                     >
                       {selectedRadius === opt.value && (
                         <LinearGradient
-                          colors={['#FFD700', '#C8860A']}
+                          colors={theme.gradientButton}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
                           style={StyleSheet.absoluteFill}
@@ -106,7 +96,7 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
                       <Feather
                         name="map-pin"
                         size={18}
-                        color={selectedRadius === opt.value ? '#0A0D1A' : 'rgba(232,221,181,0.5)'}
+                        color={selectedRadius === opt.value ? theme.textOnAccent : theme.textSecondary}
                       />
                       <Text style={[s.radiusLabel, selectedRadius === opt.value && s.radiusLabelActive]}>
                         {opt.label}
@@ -120,7 +110,7 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
             <View style={s.footer}>
               {step > 0 && (
                 <TouchableOpacity style={s.backBtn} activeOpacity={0.75} onPress={() => setStep(p => p - 1)}>
-                  <Feather name="arrow-left" size={18} color="rgba(232,221,181,0.6)" />
+                  <Feather name="arrow-left" size={18} color={theme.textSecondary} />
                   <Text style={s.backBtnText}>Atrás</Text>
                 </TouchableOpacity>
               )}
@@ -129,8 +119,9 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
                 activeOpacity={canAdvance ? 0.82 : 1}
                 onPress={() => {
                   if (!canAdvance) return;
-                  if (step < WIZARD_STEPS - 1) setStep(p => p + 1);
-                  else {
+                  if (step < WIZARD_STEPS - 1) {
+                    setStep(p => p + 1);
+                  } else {
                     const id = generateId();
                     const game = {
                       id,
@@ -150,7 +141,7 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
                 }}
               >
                 <LinearGradient
-                  colors={['#FFD700', '#D4900A']}
+                  colors={theme.gradientButton}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={[s.nextBtn, !canAdvance && { opacity: 0.4, elevation: 0, shadowOpacity: 0 }]}
@@ -158,7 +149,11 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
                   <Text style={s.nextBtnText}>
                     {step < WIZARD_STEPS - 1 ? 'Siguiente' : '¡Empezar!'}
                   </Text>
-                  <Feather name={step < WIZARD_STEPS - 1 ? 'arrow-right' : 'map'} size={16} color="#0A0D1A" />
+                  <Feather
+                    name={step < WIZARD_STEPS - 1 ? 'arrow-right' : 'map'}
+                    size={16}
+                    color={theme.textOnAccent}
+                  />
                 </LinearGradient>
               </TouchableOpacity>
             </View>

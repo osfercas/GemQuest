@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GemShape, GEM_COLORS } from '../../components/GemShape';
 import { GemMarker } from './types';
+import { useTheme } from '../../theme/ThemeContext';
+import type { Theme } from '../../theme';
 
 interface Props {
   gem: GemMarker | null;
@@ -12,6 +14,8 @@ interface Props {
 
 export default function CollectToast({ gem, onCollect, onDismiss }: Props) {
   const { bottom } = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const s = useMemo(() => createStyles(theme), [theme]);
   const opacity    = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(20)).current;
 
@@ -31,10 +35,8 @@ export default function CollectToast({ gem, onCollect, onDismiss }: Props) {
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      {/* Backdrop — captura los taps fuera del toast */}
       <TouchableOpacity style={StyleSheet.absoluteFill} onPress={onDismiss} activeOpacity={1} />
 
-      {/* Toast — encima del backdrop */}
       <Animated.View
         style={[s.wrapper, { opacity, transform: [{ translateY }], bottom: 130 + bottom }]}
         pointerEvents="box-none"
@@ -52,7 +54,7 @@ export default function CollectToast({ gem, onCollect, onDismiss }: Props) {
   );
 }
 
-const s = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   wrapper: {
     position: 'absolute',
     left: 0,
@@ -63,7 +65,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: 'rgba(8,11,20,0.92)',
+    backgroundColor: `${theme.bgRoot}EB`,
     borderRadius: 16,
     borderWidth: 1,
     paddingHorizontal: 20,
@@ -74,4 +76,4 @@ const s = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 1,
   },
-});
+})

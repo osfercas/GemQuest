@@ -1,14 +1,15 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native'
+import type { Theme } from '../../theme'
 
-const { width: SW } = Dimensions.get('window');
+const { width: SW } = Dimensions.get('window')
 
-export const rootStyles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#080B14' },
+export const createRootStyles = (theme: Theme) => StyleSheet.create({
+  root: { flex: 1, backgroundColor: theme.bgRoot },
   scroll: { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
-});
+})
 
-export const headerStyles = StyleSheet.create({
+export const createHeaderStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -19,15 +20,16 @@ export const headerStyles = StyleSheet.create({
   greeting: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 12,
-    color: 'rgba(232,221,181,0.5)',
+    color: theme.textSecondary,
     letterSpacing: 0.5,
+    opacity: 0.7,
   },
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 22,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     letterSpacing: 2,
-    textShadowColor: 'rgba(255,215,0,0.4)',
+    textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
@@ -41,15 +43,15 @@ export const headerStyles = StyleSheet.create({
   avatarLetter: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 18,
-    color: '#0A0D1A',
+    color: theme.textOnAccent,
   },
-});
+})
 
-export const heroStyles = StyleSheet.create({
+export const createHeroStyles = (theme: Theme) => StyleSheet.create({
   card: {
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: 'rgba(255,215,0,0.25)',
+    borderColor: `${theme.accentPrimary}40`,
     overflow: 'hidden',
     marginBottom: 28,
     height: 150,
@@ -59,15 +61,7 @@ export const heroStyles = StyleSheet.create({
     inset: 0,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: 'rgba(255,215,0,0.15)',
-  },
-  gems: {
-    position: 'absolute',
-    flexDirection: 'row',
-    right: 12,
-    top: 12,
-    gap: -4,
-    opacity: 0.7,
+    borderColor: `${theme.accentPrimary}26`,
   },
   content: {
     flex: 1,
@@ -82,7 +76,7 @@ export const heroStyles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#FFD700',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 12,
@@ -91,18 +85,18 @@ export const heroStyles = StyleSheet.create({
   label: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 16,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
   sub: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 12,
-    color: 'rgba(232,221,181,0.55)',
+    color: theme.textSecondary,
   },
-});
+})
 
-export const sectionStyles = StyleSheet.create({
+export const createSectionStyles = (theme: Theme) => StyleSheet.create({
   container: { marginBottom: 24 },
   header: {
     flexDirection: 'row',
@@ -114,72 +108,68 @@ export const sectionStyles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: '#FFD700',
+    backgroundColor: theme.accentPrimary,
   },
   title: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 11,
-    color: 'rgba(232,221,181,0.7)',
+    color: theme.textSecondary,
     letterSpacing: 2.5,
     textTransform: 'uppercase',
     flex: 1,
+    opacity: 0.85,
   },
   count: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 12,
-    color: 'rgba(232,221,181,0.35)',
+    color: theme.textTertiary,
   },
   cardRow: { gap: 12, paddingRight: 4 },
-});
+})
 
-export const activeCardStyles = StyleSheet.create({
+export const createActiveCardStyles = (theme: Theme) => StyleSheet.create({
   card: {
     width: 180,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: 'rgba(255,215,0,0.15)',
+    borderColor: `${theme.accentPrimary}26`,
     padding: 14,
     gap: 6,
     overflow: 'hidden',
+    backgroundColor: theme.bgCard,
   },
   name: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 0.5,
   },
   radius: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 11,
-    color: 'rgba(232,221,181,0.45)',
+    color: theme.textTertiary,
   },
   progressBg: {
     height: 4,
-    backgroundColor: 'rgba(255,215,0,0.12)',
+    backgroundColor: `${theme.accentPrimary}1F`,
     borderRadius: 2,
     marginTop: 4,
   },
   progressFill: {
     height: 4,
-    backgroundColor: '#FFD700',
+    backgroundColor: theme.accentPrimary,
     borderRadius: 2,
   },
   progressLabel: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 10,
-    color: 'rgba(232,221,181,0.4)',
+    color: theme.textTertiary,
   },
   gems: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: -6,
     marginTop: 2,
-  },
-  moreGems: {
-    fontFamily: 'Nunito_400Regular',
-    fontSize: 10,
-    color: 'rgba(232,221,181,0.4)',
-    marginLeft: 8,
   },
   resumeBtn: { marginTop: 6 },
   resumeGradient: {
@@ -193,19 +183,19 @@ export const activeCardStyles = StyleSheet.create({
   resumeText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 10,
-    color: '#0A0D1A',
+    color: theme.textOnAccent,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
   },
-});
+})
 
-export const finishedRowStyles = StyleSheet.create({
+export const createFinishedRowStyles = (theme: Theme) => StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(232,221,181,0.08)',
+    borderBottomColor: theme.borderSubtle,
     gap: 12,
   },
   icon: {
@@ -213,25 +203,25 @@ export const finishedRowStyles = StyleSheet.create({
     height: 34,
     borderRadius: 17,
     borderWidth: 1,
-    borderColor: 'rgba(232,221,181,0.15)',
+    borderColor: `${theme.textPrimary}26`,
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconPerfect: {
-    borderColor: 'rgba(255,215,0,0.4)',
-    backgroundColor: 'rgba(255,215,0,0.08)',
+    borderColor: `${theme.accentPrimary}66`,
+    backgroundColor: `${theme.accentPrimary}14`,
   },
   info: { flex: 1 },
   name: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 0.3,
   },
   meta: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 11,
-    color: 'rgba(232,221,181,0.4)',
+    color: theme.textTertiary,
     marginTop: 2,
   },
   gems: {
@@ -239,20 +229,20 @@ export const finishedRowStyles = StyleSheet.create({
     gap: -8,
     alignItems: 'center',
   },
-});
+})
 
-export const deleteSheetStyles = StyleSheet.create({
+export const createDeleteSheetStyles = (theme: Theme) => StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.65)',
+    backgroundColor: theme.bgOverlay,
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: '#0E1220',
+    backgroundColor: theme.bgCard,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderTopWidth: 1,
-    borderColor: 'rgba(255,107,107,0.2)',
+    borderColor: `${theme.colorError}33`,
     paddingHorizontal: 20,
   },
   handle: {
@@ -260,7 +250,7 @@ export const deleteSheetStyles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: 'rgba(232,221,181,0.2)',
+    backgroundColor: `${theme.textPrimary}33`,
     marginTop: 12,
     marginBottom: 20,
   },
@@ -268,9 +258,9 @@ export const deleteSheetStyles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: 'rgba(255,107,107,0.12)',
+    backgroundColor: `${theme.colorError}1F`,
     borderWidth: 1,
-    borderColor: 'rgba(255,107,107,0.3)',
+    borderColor: `${theme.colorError}4D`,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
@@ -279,7 +269,7 @@ export const deleteSheetStyles = StyleSheet.create({
   title: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 18,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 1,
     textAlign: 'center',
     marginBottom: 8,
@@ -287,14 +277,14 @@ export const deleteSheetStyles = StyleSheet.create({
   gameName: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 14,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     textAlign: 'center',
     marginBottom: 8,
   },
   sub: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
-    color: 'rgba(232,221,181,0.45)',
+    color: theme.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 28,
@@ -308,23 +298,23 @@ export const deleteSheetStyles = StyleSheet.create({
     height: 52,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(232,221,181,0.2)',
+    borderColor: `${theme.textPrimary}33`,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cancelText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: 'rgba(232,221,181,0.6)',
+    color: theme.textSecondary,
     letterSpacing: 1,
   },
   deleteBtn: {
     flex: 1,
     height: 52,
     borderRadius: 12,
-    backgroundColor: 'rgba(255,107,107,0.15)',
+    backgroundColor: `${theme.colorError}26`,
     borderWidth: 1,
-    borderColor: 'rgba(255,107,107,0.4)',
+    borderColor: `${theme.colorError}66`,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -333,23 +323,23 @@ export const deleteSheetStyles = StyleSheet.create({
   deleteText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: '#FF6B6B',
+    color: theme.colorError,
     letterSpacing: 1,
   },
-});
+})
 
-export const wizardStyles = StyleSheet.create({
+export const createWizardStyles = (theme: Theme) => StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.65)',
+    backgroundColor: theme.bgOverlay,
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: '#0E1220',
+    backgroundColor: theme.bgCard,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderTopWidth: 1,
-    borderColor: 'rgba(255,215,0,0.15)',
+    borderColor: `${theme.accentPrimary}26`,
     paddingHorizontal: 20,
   },
   handle: {
@@ -357,7 +347,7 @@ export const wizardStyles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: 'rgba(232,221,181,0.2)',
+    backgroundColor: `${theme.textPrimary}33`,
     marginTop: 12,
     marginBottom: 20,
   },
@@ -371,32 +361,32 @@ export const wizardStyles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: 'rgba(232,221,181,0.15)',
+    backgroundColor: `${theme.textPrimary}26`,
   },
   stepDotActive: {
-    backgroundColor: '#FFD700',
+    backgroundColor: theme.accentPrimary,
     width: 20,
   },
   stepContent: { gap: 10, minHeight: 220 },
   stepTitle: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 18,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 1,
   },
   stepSub: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
-    color: 'rgba(232,221,181,0.5)',
+    color: theme.textSecondary,
     marginBottom: 8,
   },
   inputWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: theme.bgInput,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,215,0,0.18)',
+    borderColor: theme.borderPrimary,
     height: 54,
     paddingHorizontal: 16,
   },
@@ -404,7 +394,7 @@ export const wizardStyles = StyleSheet.create({
     flex: 1,
     fontFamily: 'Nunito_400Regular',
     fontSize: 15,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
   },
   radiusGrid: {
     flexDirection: 'row',
@@ -416,21 +406,21 @@ export const wizardStyles = StyleSheet.create({
     minWidth: (SW - 72) / 2,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(232,221,181,0.15)',
+    borderColor: `${theme.textPrimary}26`,
     height: 72,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
     overflow: 'hidden',
   },
-  radiusBtnActive: { borderColor: '#FFD700' },
+  radiusBtnActive: { borderColor: theme.accentPrimary },
   radiusLabel: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: 'rgba(232,221,181,0.6)',
+    color: theme.textSecondary,
     letterSpacing: 1,
   },
-  radiusLabelActive: { color: '#0A0D1A' },
+  radiusLabelActive: { color: theme.textOnAccent },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -448,7 +438,7 @@ export const wizardStyles = StyleSheet.create({
   backBtnText: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 14,
-    color: 'rgba(232,221,181,0.5)',
+    color: theme.textSecondary,
   },
   nextBtnWrap: { flex: 1 },
   nextBtn: {
@@ -458,7 +448,7 @@ export const wizardStyles = StyleSheet.create({
     gap: 8,
     borderRadius: 12,
     height: 52,
-    shadowColor: '#FFD700',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -467,8 +457,8 @@ export const wizardStyles = StyleSheet.create({
   nextBtnText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
-    color: '#0A0D1A',
+    color: theme.textOnAccent,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
   },
-});
+})

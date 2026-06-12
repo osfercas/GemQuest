@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Platform, ActivityIndicator, Text } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { View, TouchableOpacity, Platform, ActivityIndicator, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Feather } from '@expo/vector-icons';
 import * as Location from 'expo-location';
@@ -11,17 +11,22 @@ import type { Game } from '../HomeScreen/types';
 import { loadGames, upsertGame, loadGameState, saveGameState } from '../../storage/gameStorage';
 import { GemMarker } from './types';
 import { generateGemsOSM, repositionGem, distanceMeters, COLLECT_RADIUS_M, GLOW_RADIUS_M } from './utils';
-import { mapStyles as s, centerBtnStyles as cs } from './styles';
+import { createMapStyles, createCenterBtnStyles, createLoadingStyles } from './styles';
 import GameHUD from './GameHUD';
 import GemMarkerView from './GemMarkerView';
 import GemTooltip from './GemTooltip';
 import PermissionGate from './PermissionGate';
+import { useTheme } from '../../theme/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Map'>;
 
 export default function MapScreen({ route, navigation }: Props) {
   const { gameId } = route.params;
   const insets = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const s  = useMemo(() => createMapStyles(theme), [theme]);
+  const cs = useMemo(() => createCenterBtnStyles(theme), [theme]);
+  const ls = useMemo(() => createLoadingStyles(theme), [theme]);
 
   const [game, setGame] = useState<Game | null>(null);
   const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
@@ -45,7 +50,6 @@ export default function MapScreen({ route, navigation }: Props) {
     });
   }, [gameId]);
 
-  // Load game summary from storage
   useEffect(() => {
     loadGames().then(games => {
       const found = games.find(g => g.id === gameId) ?? null;
@@ -62,14 +66,12 @@ export default function MapScreen({ route, navigation }: Props) {
     requestPermission();
   }, []);
 
-  // Tracking GPS + gem initialization
   useEffect(() => {
     if (!permissionGranted || !game) return;
 
     let subscription: Location.LocationSubscription;
 
     (async () => {
-      // Check if there's a saved state (resume)
       const savedState = await loadGameState(gameId);
 
       subscription = await Location.watchPositionAsync(
@@ -82,7 +84,6 @@ export default function MapScreen({ route, navigation }: Props) {
             gemsInitialized.current = true;
 
             if (savedState) {
-              // Resume: load saved gems and center
               setGameCenter(savedState.center);
               setInitialCenter(savedState.center);
               setGems(savedState.gems);
@@ -94,7 +95,6 @@ export default function MapScreen({ route, navigation }: Props) {
                 longitudeDelta: game.radius * 0.018,
               }, 800);
             } else {
-              // First launch: generate gems from current position
               const center = { latitude, longitude };
               setGameCenter(center);
               setInitialCenter(center);
@@ -140,9 +140,8 @@ export default function MapScreen({ route, navigation }: Props) {
     ? distanceMeters(userLocation.latitude, userLocation.longitude, selectedGem.latitude, selectedGem.longitude)
     : null;
 
-  const handleGemTap = (gem: GemMarker) => {
-    setSelectedGem(gem);
-  };
+  const handleGemTap = (gem: GemMarker) => setSelectedGem(gem);
+  const handleDismiss = () => setSelectedGem(null);
 
   const handleConfirmCollect = async () => {
     if (!selectedGem || !game || !gameCenter) return;
@@ -184,57 +183,60 @@ export default function MapScreen({ route, navigation }: Props) {
     }
   };
 
-  const handleDismiss = () => {
-    setSelectedGem(null);
-  };
-
   if (permissionGranted === false) {
     return <PermissionGate onRequest={requestPermission} />;
   }
 
   const radius = game?.radius ?? 0.5;
   const gameName = game?.name ?? 'Aventura';
+  const mapStyle = theme.id === 'darkGold' ? DARK_MAP_STYLE : LIGHT_MAP_STYLE;
 
   return (
     <View style={[s.root, { paddingBottom: insets.bottom }]}>
-      {initialCenter && <MapView
-        ref={mapRef}
-        style={s.map}
-        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
-        showsUserLocation
-        showsMyLocationButton={false}
-        toolbarEnabled={false}
-        customMapStyle={DARK_MAP_STYLE}
-        initialRegion={{
-          ...initialCenter,
-          latitudeDelta: radius * 0.018,
-          longitudeDelta: radius * 0.018,
-        }}
-      >
-        {gameCenter && (
-          <Circle
-            center={gameCenter}
-            radius={radius * 1000}
-            strokeWidth={1.5}
-            strokeColor="rgba(255,215,0,0.5)"
-          />
-        )}
-        {gems.map(gem => (
-          <GemMarkerView
-            key={gem.id}
-            gem={gem}
-            isNear={isNear(gem)}
-            onPress={handleGemTap}
-          />
-        ))}
-      </MapView>}
+      {initialCenter && (
+        <MapView
+          ref={mapRef}
+          style={s.map}
+          provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+          showsUserLocation
+          showsMyLocationButton={false}
+          toolbarEnabled={false}
+          customMapStyle={mapStyle}
+          initialRegion={{
+            ...initialCenter,
+            latitudeDelta: radius * 0.018,
+            longitudeDelta: radius * 0.018,
+          }}
+        >
+          {gameCenter && (
+            <Circle
+              center={gameCenter}
+              radius={radius * 1000}
+              strokeWidth={1.5}
+              strokeColor={`${theme.accentPrimary}80`}
+            />
+          )}
+          {gems.map(gem => (
+            <GemMarkerView
+              key={gem.id}
+              gem={gem}
+              isNear={isNear(gem)}
+              onPress={handleGemTap}
+            />
+          ))}
+        </MapView>
+      )}
 
       <TouchableOpacity
         style={[cs.btn, { bottom: 122 + insets.bottom }]}
         activeOpacity={0.75}
         onPress={handleCenter}
       >
-        <Feather name="navigation" size={20} color={userLocation ? '#FFD700' : 'rgba(232,221,181,0.3)'} />
+        <Feather
+          name="navigation"
+          size={20}
+          color={userLocation ? theme.accentPrimary : `${theme.textPrimary}4D`}
+        />
       </TouchableOpacity>
 
       <GameHUD
@@ -245,12 +247,10 @@ export default function MapScreen({ route, navigation }: Props) {
       />
 
       {!gemsReady && (
-        <View style={loadingStyles.overlay}>
-          <Text style={loadingStyles.text}>Cargando tu aventura...</Text>
-          <ActivityIndicator size="large" color="#FFD700" />
-          {gemsLoading && (
-            <Text style={loadingStyles.text}>Buscando zonas accesibles...</Text>
-          )}
+        <View style={ls.overlay}>
+          <Text style={ls.text}>Cargando tu aventura...</Text>
+          <ActivityIndicator size="large" color={theme.accentPrimary} />
+          {gemsLoading && <Text style={ls.text}>Buscando zonas accesibles...</Text>}
         </View>
       )}
 
@@ -269,23 +269,6 @@ export default function MapScreen({ route, navigation }: Props) {
   );
 }
 
-const loadingStyles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(8,11,20,0.75)',
-    gap: 14,
-  },
-  text: {
-    fontFamily: 'Cinzel_700Bold',
-    fontSize: 13,
-    color: '#E8DDB5',
-    letterSpacing: 1.5,
-  },
-});
-
 const DARK_MAP_STYLE = [
   { elementType: 'geometry',           stylers: [{ color: '#0e1220' }] },
   { elementType: 'labels.text.fill',   stylers: [{ color: '#746855' }] },
@@ -300,4 +283,12 @@ const DARK_MAP_STYLE = [
   { featureType: 'transit',            stylers: [{ visibility: 'off' }]  },
   { featureType: 'administrative',     elementType: 'geometry',           stylers: [{ color: '#1a2035' }] },
   { featureType: 'landscape',          elementType: 'geometry',           stylers: [{ color: '#0e1220' }] },
+];
+
+const LIGHT_MAP_STYLE = [
+  { featureType: 'poi',     stylers: [{ visibility: 'off' }] },
+  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+  { featureType: 'water',   elementType: 'geometry', stylers: [{ color: '#d8c6f0' }] },
+  { featureType: 'road',    elementType: 'geometry', stylers: [{ color: '#f5e6ff' }] },
+  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#fef3ff' }] },
 ];
