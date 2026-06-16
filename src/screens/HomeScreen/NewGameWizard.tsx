@@ -76,7 +76,7 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
             {step === 1 && (
               <View style={s.stepContent}>
                 <Text style={s.stepTitle}>Radio de búsqueda</Text>
-                <Text style={s.stepSub}>Las gemas se distribuirán en este área</Text>
+                <Text style={s.stepSub}>Las {theme.termGems.toLowerCase()} se distribuirán en este área</Text>
                 <View style={s.radiusGrid}>
                   {RADIUS_OPTIONS.map(opt => (
                     <TouchableOpacity

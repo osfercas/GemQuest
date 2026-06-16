@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
@@ -18,7 +18,7 @@ export default function PermissionGate({ onRequest }: Props) {
       <Feather name="map-pin" size={48} color={`${theme.accentPrimary}66`} />
       <Text style={s.title}>Ubicación necesaria</Text>
       <Text style={s.sub}>
-        GemQuest necesita acceder a tu ubicación para colocar las gemas en el mapa y detectar cuándo estás cerca.
+        {theme.termGems}Quest necesita acceder a tu ubicación para colocar las {theme.termGems.toLowerCase()} en el mapa y detectar cuándo estás cerca.
       </Text>
       <TouchableOpacity style={s.btn} activeOpacity={0.82} onPress={onRequest}>
         <LinearGradient colors={theme.gradientButton} style={s.btnGradient}>

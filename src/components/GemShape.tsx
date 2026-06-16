@@ -1,6 +1,59 @@
 import { View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
+export function DragonBallShape({ size }: Readonly<{ size: number }>) {
+  const ballSize = size;
+  const radius = ballSize / 2;
+  return (
+    <View
+      style={{
+        width: ballSize,
+        height: ballSize,
+        borderRadius: radius,
+        shadowColor: '#FF6600',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.95,
+        shadowRadius: size * 0.65,
+        elevation: 10,
+      }}
+    >
+      <LinearGradient
+        colors={['#FFDD00', '#FF8800', '#CC3300']}
+        start={{ x: 0.15, y: 0.05 }}
+        end={{ x: 0.85, y: 0.95 }}
+        style={{ width: ballSize, height: ballSize, borderRadius: radius }}
+      >
+        {/* Reflejo principal de cristal */}
+        <View
+          style={{
+            position: 'absolute',
+            top: ballSize * 0.1,
+            left: ballSize * 0.16,
+            width: ballSize * 0.38,
+            height: ballSize * 0.2,
+            borderRadius: ballSize * 0.12,
+            backgroundColor: 'rgba(255,255,255,0.6)',
+            transform: [{ rotate: '-25deg' }],
+          }}
+        />
+        {/* Brillo secundario pequeño */}
+        <View
+          style={{
+            position: 'absolute',
+            top: ballSize * 0.3,
+            left: ballSize * 0.14,
+            width: ballSize * 0.14,
+            height: ballSize * 0.08,
+            borderRadius: ballSize * 0.06,
+            backgroundColor: 'rgba(255,255,255,0.3)',
+            transform: [{ rotate: '-25deg' }],
+          }}
+        />
+      </LinearGradient>
+    </View>
+  );
+}
+
 export const GEM_COLORS = {
   Ruby:       { color: '#FF6B6B', light: '#FF9999', dark: '#AA1100' },
   Diamond:    { color: '#E8E8F0', light: '#FFFFFF', dark: '#9090B0' },

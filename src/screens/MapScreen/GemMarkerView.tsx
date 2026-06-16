@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { View, Animated, StyleSheet } from 'react-native';
 import { Marker } from 'react-native-maps';
 import { Feather } from '@expo/vector-icons';
-import { GemShape, GEM_COLORS } from '../../components/GemShape';
+import { GEM_COLORS } from '../../components/GemShape';
+import { GemVisual } from '../../components/GemVisual';
 import { GemMarker } from './types';
+import { useTheme } from '../../theme/ThemeContext';
 
 interface Props {
   gem: GemMarker;
@@ -32,7 +34,10 @@ const styles = StyleSheet.create({
 export default function GemMarkerView({ gem, isNear, onPress }: Props) {
   const glowAnim = useRef(new Animated.Value(0)).current;
   const [tracksViews, setTracksViews] = useState(true);
+  const { theme } = useTheme();
+  const isAnime = theme.id === 'animeMagico';
   const g = GEM_COLORS[gem.name];
+  const glowColor = isAnime ? '#FF6600' : g.color;
 
   useEffect(() => {
     const t = setTimeout(() => setTracksViews(false), 500);
@@ -74,7 +79,7 @@ export default function GemMarkerView({ gem, isNear, onPress }: Props) {
               width: 60,
               height: 60,
               borderRadius: 30,
-              backgroundColor: g.color,
+              backgroundColor: glowColor,
               opacity: glowOpacity,
               transform: [{ scale: glowScale }],
             }}
@@ -97,7 +102,7 @@ export default function GemMarkerView({ gem, isNear, onPress }: Props) {
           </View>
         ) : (
           <View style={styles.inner}>
-            <GemShape color={g.color} light={g.light} dark={g.dark} size={18} />
+            <GemVisual name={gem.name} size={28} />
           </View>
         )}
       </Marker>

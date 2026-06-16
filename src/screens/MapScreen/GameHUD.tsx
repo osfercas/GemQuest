@@ -1,7 +1,8 @@
 import { useMemo, useRef, useState } from 'react';
 import { Animated, Text, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { GemShape, GEM_COLORS, GemName } from '../../components/GemShape';
+import { GemName } from '../../components/GemShape';
+import { GemVisual } from '../../components/GemVisual';
 import { createHudStyles } from './styles';
 import { GemMarker } from './types';
 import { useTheme } from '../../theme/ThemeContext';
@@ -34,7 +35,8 @@ export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
   };
 
   const maxHeight = barAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 72] });
-  const opacity   = barAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
+  const opacity = barAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
+  const isAnime = theme.id === 'animeMagico';
 
   return (
     <>
@@ -48,7 +50,7 @@ export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
         <Text style={s.gameName} numberOfLines={1}>{gameName}</Text>
         <TouchableOpacity style={s.counter} activeOpacity={0.7} onPress={toggleBar}>
           <Text style={s.counterNum}>{found}/7</Text>
-          <Text style={s.counterLabel}>GEMAS</Text>
+          <Text style={s.counterLabel}>{theme.termGems.toUpperCase()}</Text>
         </TouchableOpacity>
       </View>
 
@@ -58,20 +60,14 @@ export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
           { top: headerHeight, maxHeight, opacity, overflow: 'hidden' },
         ]}
       >
-        {GEM_NAMES.map(name => {
+        {GEM_NAMES.map((name, i) => {
           const gem = gems.find(g => g.name === name);
           const collected = gem?.collected ?? false;
-          const g = GEM_COLORS[name];
           return (
             <View key={name} style={s.gemSlot}>
-              <GemShape
-                color={collected ? g.color : `${theme.textPrimary}26`}
-                light={collected ? g.light : `${theme.textPrimary}40`}
-                dark={collected ? g.dark  : `${theme.textPrimary}14`}
-                size={20}
-              />
+              <GemVisual name={name} size={20} collected={collected} />
               <Text style={[s.gemSlotLabel, collected && s.gemSlotCollected]}>
-                {name.slice(0, 3).toUpperCase()}
+                {isAnime ? String(i + 1) : name.slice(0, 3).toUpperCase()}
               </Text>
             </View>
           );

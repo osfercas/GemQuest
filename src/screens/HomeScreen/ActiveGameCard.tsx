@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
-import { GemShape, GEM_COLORS } from '../../components/GemShape';
+import { GemVisual } from '../../components/GemVisual';
 import { createActiveCardStyles } from './styles';
 import { Game } from './types';
 import { loadGameState } from '../../storage/gameStorage';
@@ -48,21 +48,12 @@ export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
       <View style={s.progressBg}>
         <View style={[s.progressFill, { width: `${progress * 100}%` }]} />
       </View>
-      <Text style={s.progressLabel}>{game.gemsFound}/{game.gemsTotal} gemas</Text>
+      <Text style={s.progressLabel}>{game.gemsFound}/{game.gemsTotal} {theme.termGems.toLowerCase()}</Text>
 
       <View style={s.gems}>
-        {gemMarkers.map(gem => {
-          const g = GEM_COLORS[gem.name];
-          return (
-            <GemShape
-              key={gem.id}
-              color={gem.collected ? g.color : `${theme.textPrimary}26`}
-              light={gem.collected ? g.light : `${theme.textPrimary}40`}
-              dark={gem.collected ? g.dark  : `${theme.textPrimary}14`}
-              size={12}
-            />
-          );
-        })}
+        {gemMarkers.map(gem => (
+          <GemVisual key={gem.id} name={gem.name} size={12} collected={gem.collected} />
+        ))}
       </View>
 
       <TouchableOpacity style={s.resumeBtn} activeOpacity={0.8} onPress={onResume}>

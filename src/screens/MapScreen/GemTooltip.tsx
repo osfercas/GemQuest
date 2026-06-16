@@ -2,7 +2,9 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { GemShape, GEM_COLORS } from '../../components/GemShape';
+import { GemShape, DragonBallShape, GEM_COLORS } from '../../components/GemShape';
+
+const GEM_ORDER = ['Ruby', 'Diamond', 'Emerald', 'Sapphire', 'Amethyst', 'Amber', 'Aquamarine'];
 import { GemMarker } from './types';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
@@ -40,6 +42,9 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
 
   const g        = GEM_COLORS[gem.name];
   const distText = distanceM != null ? `${Math.round(distanceM)} m` : '—';
+  const isAnime  = theme.id === 'animeMagico';
+  const ballNum  = GEM_ORDER.indexOf(gem.name) + 1;
+  const accentColor = isAnime ? theme.accentPrimary : g.color;
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
@@ -49,10 +54,16 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
         style={[s.wrapper, { opacity, transform: [{ translateY }], bottom: 130 + bottom }]}
         pointerEvents="box-none"
       >
-        <View style={[s.card, { borderColor: g.color }]}>
+        <View style={[s.card, { borderColor: accentColor }]}>
           <View style={s.header}>
-            <GemShape color={g.color} light={g.light} dark={g.dark} size={20} />
-            <Text style={[s.name, { color: g.light }]}>{gem.name}</Text>
+            {isAnime ? (
+              <DragonBallShape size={28} />
+            ) : (
+              <GemShape color={g.color} light={g.light} dark={g.dark} size={20} />
+            )}
+            <Text style={[s.name, { color: isAnime ? theme.accentPrimary : g.light }]}>
+              {isAnime ? `Bola ${ballNum}` : gem.name}
+            </Text>
             <View style={s.distanceBadge}>
               <Feather name="navigation" size={11} color={theme.textSecondary} />
               <Text style={s.distanceText}>{distText}</Text>
@@ -85,7 +96,7 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
 
             {canCollect && (
               <TouchableOpacity
-                style={[s.btnPrimary, { backgroundColor: g.color }]}
+                style={[s.btnPrimary, { backgroundColor: accentColor }]}
                 onPress={onCollect}
                 activeOpacity={0.75}
               >
