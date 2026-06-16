@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated, Text, TouchableOpacity, View,
 } from 'react-native';
@@ -126,7 +126,7 @@ export default function VictoryScreen({ route, navigation }: Props) {
         {game && (
           <Animated.View style={{ opacity: statsAnim }}>
             <Text style={s.statsText}>
-              {game.gemsFound} de {game.gemsTotal} gemas · {game.radius} km · {game.date}
+              {game.gemsFound} de {game.gemsTotal} {theme.termGems.toLowerCase()} · {game.radius} km · {game.date}
             </Text>
           </Animated.View>
         )}

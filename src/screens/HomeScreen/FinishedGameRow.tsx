@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { GemShape, GEM_COLORS } from '../../components/GemShape';
@@ -32,7 +32,7 @@ export default function FinishedGameRow({ game }: Props) {
       <View style={s.info}>
         <Text style={s.name}>{game.name}</Text>
         <Text style={s.meta}>
-          {game.gemsFound}/{game.gemsTotal} gemas · {formatRadius(game.radius)} · {game.date}
+          {game.gemsFound}/{game.gemsTotal} {theme.termGems.toLowerCase()} · {formatRadius(game.radius)} · {game.date}
         </Text>
       </View>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -14,21 +14,22 @@ import { StatusBar } from 'expo-status-bar';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { GemShape, GEM_COLORS } from '../components/GemShape';
+import type { GemName } from '../components/GemShape';
+import { GemVisual } from '../components/GemVisual';
 import type { RootStackParamList } from '../../App';
 import { useTheme } from '../theme/ThemeContext';
 import type { Theme } from '../theme';
 
 const { width: SW, height: SH } = Dimensions.get('window');
 
-const GEMS = [
-  { ...GEM_COLORS.Ruby,       size: 34, left: 60,  top: 22,  delay: 0    },
-  { ...GEM_COLORS.Diamond,    size: 30, left: 158, top: 10,  delay: 400  },
-  { ...GEM_COLORS.Emerald,    size: 28, left: 255, top: 25,  delay: 800  },
-  { ...GEM_COLORS.Sapphire,   size: 32, left: 100, top: 62,  delay: 200  },
-  { ...GEM_COLORS.Amethyst,   size: 35, left: 208, top: 52,  delay: 600  },
-  { ...GEM_COLORS.Amber,      size: 26, left: 276, top: 70,  delay: 1000 },
-  { ...GEM_COLORS.Aquamarine, size: 29, left: 140, top: 93,  delay: 300  },
+const GEMS: Array<{ name: GemName; size: number; left: number; top: number; delay: number }> = [
+  { name: 'Ruby', size: 34, left: 60, top: 22, delay: 0 },
+  { name: 'Diamond', size: 30, left: 158, top: 10, delay: 400 },
+  { name: 'Emerald', size: 28, left: 255, top: 25, delay: 800 },
+  { name: 'Sapphire', size: 32, left: 100, top: 62, delay: 200 },
+  { name: 'Amethyst', size: 35, left: 208, top: 52, delay: 600 },
+  { name: 'Amber', size: 26, left: 276, top: 70, delay: 1000 },
+  { name: 'Aquamarine', size: 29, left: 140, top: 93, delay: 300 },
 ];
 
 const STARS = Array.from({ length: 60 }, (_, i) => ({
@@ -96,16 +97,16 @@ export default function LoginScreen({ navigation }: Props) {
                 key={i}
                 style={{ position: 'absolute', left: gem.left, top: gem.top, transform: [{ translateY }] }}
               >
-                <GemShape color={gem.color} light={gem.light} dark={gem.dark} size={gem.size} />
+                <GemVisual name={gem.name} size={gem.size} />
               </Animated.View>
             );
           })}
         </View>
 
         <View style={styles.logoSection}>
-          <Text style={styles.title}>GemQuest</Text>
+          <Text style={styles.title}>{theme.termGems}Quest</Text>
           <View style={styles.taglineRow}>
-            <Text style={styles.tagline}>7 Gemas · 1 Mapa</Text>
+            <Text style={styles.tagline}>7 {theme.termGems} · 1 Mapa</Text>
           </View>
           <Text style={styles.taglineSub}>Tu leyenda empieza aquí</Text>
         </View>

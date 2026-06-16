@@ -18,8 +18,8 @@ export default function Header({ username = 'A', onDevTools, onSettings }: Props
   return (
     <View style={s.container}>
       <View>
-        <Text style={s.greeting}>Bienvenido de vuelta</Text>
-        <Text style={s.title}>GemQuest</Text>
+        <Text style={s.greeting}>Bienvenido a tu aventura</Text>
+        <Text style={s.title}>{theme.termGems}Quest</Text>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         {__DEV__ && onDevTools && (
