@@ -1,9 +1,24 @@
 import { View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
-export function DragonBallShape({ size }: Readonly<{ size: number }>) {
+const STAR_POSITIONS: Array<Array<{ x: number; y: number }>> = [
+  [],
+  [{ x: 0.5,  y: 0.55 }],
+  [{ x: 0.38, y: 0.55 }, { x: 0.62, y: 0.55 }],
+  [{ x: 0.5,  y: 0.4  }, { x: 0.35, y: 0.64 }, { x: 0.65, y: 0.64 }],
+  [{ x: 0.36, y: 0.4  }, { x: 0.64, y: 0.4  }, { x: 0.36, y: 0.63 }, { x: 0.64, y: 0.63 }],
+  [{ x: 0.35, y: 0.35 }, { x: 0.65, y: 0.35 }, { x: 0.5,  y: 0.52 }, { x: 0.35, y: 0.68 }, { x: 0.65, y: 0.68 }],
+  [{ x: 0.3,  y: 0.38 }, { x: 0.5,  y: 0.38 }, { x: 0.7,  y: 0.38 }, { x: 0.3,  y: 0.63 }, { x: 0.5,  y: 0.63 }, { x: 0.7,  y: 0.63 }],
+  [{ x: 0.3,  y: 0.33 }, { x: 0.5,  y: 0.33 }, { x: 0.7,  y: 0.33 }, { x: 0.5,  y: 0.52 }, { x: 0.3,  y: 0.68 }, { x: 0.5,  y: 0.68 }, { x: 0.7,  y: 0.68 }],
+];
+
+export function DragonBallShape({ size, stars }: Readonly<{ size: number; stars?: number }>) {
   const ballSize = size;
   const radius = ballSize / 2;
+  const starSize = Math.max(4, Math.round(ballSize * 0.14));
+  const positions = (stars != null && stars >= 1 && stars <= 7) ? STAR_POSITIONS[stars] : [];
+
   return (
     <View
       style={{
@@ -49,6 +64,19 @@ export function DragonBallShape({ size }: Readonly<{ size: number }>) {
             transform: [{ rotate: '-25deg' }],
           }}
         />
+        {/* Estrellas */}
+        {positions.map((pos) => (
+          <View
+            key={`${pos.x}-${pos.y}`}
+            style={{
+              position: 'absolute',
+              left: ballSize * pos.x - starSize / 2,
+              top: ballSize * pos.y - starSize / 2,
+            }}
+          >
+            <Ionicons name="star" size={starSize} color="#CC0000" />
+          </View>
+        ))}
       </LinearGradient>
     </View>
   );
@@ -73,7 +101,7 @@ interface Props {
   size: number;
 }
 
-export function GemShape({ color, light, dark, size }: Props) {
+export function GemShape({ color, light, dark, size }: Readonly<Props>) {
   const w    = Math.round(size * 0.62);
   const half = Math.round(w / 2);
   const topH = Math.round(size * 0.34);

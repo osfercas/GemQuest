@@ -16,7 +16,7 @@ interface Props {
   onBack: () => void;
 }
 
-export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
+export default function GameHUD({ gameName, gems, topInset, onBack }: Readonly<Props>) {
   const { theme } = useTheme();
   const s = useMemo(() => createHudStyles(theme), [theme]);
   const found = gems.filter(g => g.collected).length;
@@ -36,7 +36,6 @@ export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
 
   const maxHeight = barAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 72] });
   const opacity = barAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
-  const isAnime = theme.id === 'animeMagico';
 
   return (
     <>
@@ -65,10 +64,12 @@ export default function GameHUD({ gameName, gems, topInset, onBack }: Props) {
           const collected = gem?.collected ?? false;
           return (
             <View key={name} style={s.gemSlot}>
-              <GemVisual name={name} size={20} collected={collected} />
-              <Text style={[s.gemSlotLabel, collected && s.gemSlotCollected]}>
-                {isAnime ? String(i + 1) : name.slice(0, 3).toUpperCase()}
-              </Text>
+              <GemVisual name={name} size={28} collected={collected} stars={theme.numberedGems ? i + 1 : undefined} />
+              {theme.numberedGems ? null : (
+                <Text style={[s.gemSlotLabel, collected && s.gemSlotCollected]}>
+                  {name.slice(0, 3).toUpperCase()}
+                </Text>
+              )}
             </View>
           );
         })}

@@ -2,12 +2,13 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { GemShape, DragonBallShape, GEM_COLORS } from '../../components/GemShape';
-
-const GEM_ORDER = ['Ruby', 'Diamond', 'Emerald', 'Sapphire', 'Amethyst', 'Amber', 'Aquamarine'];
+import { GEM_COLORS } from '../../components/GemShape';
+import { GemVisual } from '../../components/GemVisual';
 import { GemMarker } from './types';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
+
+const GEM_ORDER = ['Ruby', 'Diamond', 'Emerald', 'Sapphire', 'Amethyst', 'Amber', 'Aquamarine'];
 
 interface Props {
   gem: GemMarker | null;
@@ -21,7 +22,7 @@ interface Props {
   onDismiss: () => void;
 }
 
-export default function GemTooltip({ gem, distanceM, canCollect, repositioning, repositionDisabled, repositionsLeft, onCollect, onReposition, onDismiss }: Props) {
+export default function GemTooltip({ gem, distanceM, canCollect, repositioning, repositionDisabled, repositionsLeft, onCollect, onReposition, onDismiss }: Readonly<Props>) {
   const { bottom } = useSafeAreaInsets();
   const { theme } = useTheme();
   const s = useMemo(() => createStyles(theme), [theme]);
@@ -41,10 +42,9 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
   if (!gem) return null;
 
   const g        = GEM_COLORS[gem.name];
-  const distText = distanceM != null ? `${Math.round(distanceM)} m` : '—';
-  const isAnime  = theme.id === 'animeMagico';
-  const ballNum  = GEM_ORDER.indexOf(gem.name) + 1;
-  const accentColor = isAnime ? theme.accentPrimary : g.color;
+  const distText = distanceM == null ? '—' : `${Math.round(distanceM)} m`;
+  const gemIndex = GEM_ORDER.indexOf(gem.name) + 1;
+  const accentColor = theme.numberedGems ? theme.accentPrimary : g.color;
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
@@ -56,13 +56,9 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
       >
         <View style={[s.card, { borderColor: accentColor }]}>
           <View style={s.header}>
-            {isAnime ? (
-              <DragonBallShape size={28} />
-            ) : (
-              <GemShape color={g.color} light={g.light} dark={g.dark} size={20} />
-            )}
-            <Text style={[s.name, { color: isAnime ? theme.accentPrimary : g.light }]}>
-              {isAnime ? `Bola ${ballNum}` : gem.name}
+            <GemVisual name={gem.name} size={theme.numberedGems ? 70 : 20} stars={theme.numberedGems ? gemIndex : undefined} />
+            <Text style={[s.name, { color: accentColor }]}>
+              {theme.numberedGems ? `${theme.termGem} ${gemIndex}` : gem.name}
             </Text>
             <View style={s.distanceBadge}>
               <Feather name="navigation" size={11} color={theme.textSecondary} />
@@ -75,7 +71,15 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
           </Text>
 
           <View style={s.buttons}>
-            {!canCollect && (
+            {canCollect ? (
+              <TouchableOpacity
+                style={[s.btnPrimary, { backgroundColor: accentColor }]}
+                onPress={onCollect}
+                activeOpacity={0.75}
+              >
+                <Text style={s.btnPrimaryText}>Capturar</Text>
+              </TouchableOpacity>
+            ) : (
               <TouchableOpacity
                 style={[s.btnSecondary, repositionDisabled && s.btnDisabled]}
                 onPress={onReposition}
@@ -91,16 +95,6 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
                     <Text style={s.repositionsLeft}>{repositionsLeft}/3</Text>
                   </>
                 )}
-              </TouchableOpacity>
-            )}
-
-            {canCollect && (
-              <TouchableOpacity
-                style={[s.btnPrimary, { backgroundColor: accentColor }]}
-                onPress={onCollect}
-                activeOpacity={0.75}
-              >
-                <Text style={s.btnPrimaryText}>Capturar</Text>
               </TouchableOpacity>
             )}
           </View>
