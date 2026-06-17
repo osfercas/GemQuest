@@ -6,16 +6,17 @@ interface Props {
   name: GemName;
   size: number;
   collected?: boolean;
+  stars?: number;
 }
 
-export function GemVisual({ name, size, collected = true }: Readonly<Props>) {
+export function GemVisual({ name, size, collected = true, stars }: Readonly<Props>) {
   const { theme } = useTheme();
   const g = GEM_COLORS[name];
 
   if (theme.id === 'animeMagico') {
     return (
       <View style={{ opacity: collected ? 1 : 0.25 }}>
-        <DragonBallShape size={size} />
+        <DragonBallShape size={size} stars={stars} />
       </View>
     );
   }

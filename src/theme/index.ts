@@ -30,6 +30,7 @@ export interface Theme {
   // Terminology
   termGem: string
   termGems: string
+  numberedGems: boolean
   // Shadows
   shadowColor: string
   shadowTextColor: string
@@ -64,6 +65,7 @@ export const darkGoldTheme: Theme = {
   gradientGlow: ['rgba(255,215,0,0.12)', 'transparent'],
   termGem: 'Gema',
   termGems: 'Gemas',
+  numberedGems: false,
   shadowColor: '#FFD700',
   shadowTextColor: 'rgba(255,215,0,0.45)',
   circleStroke: 'rgba(255,215,0,0.5)',
@@ -96,6 +98,7 @@ export const animeMagicoTheme: Theme = {
   gradientGlow: ['rgba(255, 204, 0, 0.2)', 'transparent'],
   termGem: 'Bola',
   termGems: 'Bolas',
+  numberedGems: true,
   shadowColor: '#FF6600',
   shadowTextColor: 'rgba(255, 102, 0, 0.4)',
   circleStroke: '#FF6600',
