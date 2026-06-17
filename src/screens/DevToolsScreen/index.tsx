@@ -9,13 +9,13 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import type { RootStackParamList } from '../../../App';
-import { loadGames, loadGameState } from '../../storage/gameStorage';
+import type { MainStackParamList } from '../../navigation/MainStack';
+import { useGameStorage } from '../../storage/useGameStorage';
 import type { Game } from '../HomeScreen/types';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'DevTools'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'DevTools'>;
 
 interface GameEntry {
   game: Game;
@@ -34,6 +34,8 @@ export default function DevToolsScreen({ navigation }: Props) {
   const [entries, setEntries] = useState<GameEntry[]>([]);
   const [storageEntries, setStorageEntries] = useState<StorageEntry[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { loadGames, loadGameState } = useGameStorage();
 
   const reload = useCallback(async () => {
     setLoading(true);

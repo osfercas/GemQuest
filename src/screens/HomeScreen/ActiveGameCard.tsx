@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { GemVisual } from '../../components/GemVisual';
 import { createActiveCardStyles } from './styles';
 import { Game } from './types';
-import { loadGameState } from '../../storage/gameStorage';
+import { useGameStorage } from '../../storage/useGameStorage';
 import type { GemMarker } from '../MapScreen/types';
 import { useTheme } from '../../theme/ThemeContext';
 
@@ -21,6 +21,7 @@ function formatRadius(radius: number) {
 
 export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
   const { theme } = useTheme();
+  const { loadGameState } = useGameStorage();
   const s = useMemo(() => createActiveCardStyles(theme), [theme]);
   const progress = game.gemsFound / game.gemsTotal;
   const [gemMarkers, setGemMarkers] = useState<GemMarker[]>([]);

@@ -5,9 +5,10 @@ import { Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import type { RootStackParamList } from '../../../App';
+import type { MainStackParamList } from '../../navigation/MainStack';
+import { useAuth } from '../../context/AuthContext';
 import type { Game } from './types';
-import { loadGames, deleteGame } from '../../storage/gameStorage';
+import { useGameStorage } from '../../storage/useGameStorage';
 import { createRootStyles, createSectionStyles } from './styles';
 import { useTheme } from '../../theme/ThemeContext';
 import Header from './Header';
@@ -17,11 +18,13 @@ import FinishedGameRow from './FinishedGameRow';
 import NewGameWizard from './NewGameWizard';
 import DeleteConfirmSheet from './DeleteConfirmSheet';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'Home'>;
 
 export default function HomeScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
+  const { user } = useAuth();
+  const { loadGames, deleteGame } = useGameStorage();
   const s = useMemo(() => createRootStyles(theme), [theme]);
   const ss = useMemo(() => createSectionStyles(theme), [theme]);
   const [wizardOpen, setWizardOpen] = useState(false);
@@ -40,8 +43,10 @@ export default function HomeScreen({ navigation }: Props) {
   return (
     <View style={[s.root, { paddingTop: insets.top }]}>
       <Header
+        username={user?.displayName ?? 'A'}
         onDevTools={() => navigation.navigate('DevTools')}
         onSettings={() => navigation.navigate('Settings')}
+        onProfile={() => navigation.navigate('Profile')}
       />
 
       <ScrollView

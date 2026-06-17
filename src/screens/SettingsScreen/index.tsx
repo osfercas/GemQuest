@@ -7,12 +7,12 @@ import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import type { RootStackParamList } from '../../../App';
+import type { MainStackParamList } from '../../navigation/MainStack';
 import { useTheme } from '../../theme/ThemeContext';
 import { THEMES } from '../../theme';
 import type { Theme } from '../../theme';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'Settings'>;
 
 export default function SettingsScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();

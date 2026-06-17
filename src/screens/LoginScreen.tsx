@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Animated,
   Dimensions,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
@@ -16,7 +17,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { GemName } from '../components/GemShape';
 import { GemVisual } from '../components/GemVisual';
-import type { RootStackParamList } from '../../App';
+import type { AuthStackParamList } from '../navigation/AuthStack';
+import { signInWithEmail, signInWithGoogle } from '../services/auth';
 import { useTheme } from '../theme/ThemeContext';
 import type { Theme } from '../theme';
 
@@ -39,13 +41,33 @@ const STARS = Array.from({ length: 60 }, (_, i) => ({
   opacity: 0.12 + ((i * 59) % 55) / 100,
 }));
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+function mapFirebaseError(code: string): string {
+  switch (code) {
+    case 'auth/invalid-email':            return 'Correo electrónico inválido.';
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':       return 'Correo o contraseña incorrectos.';
+    case 'auth/too-many-requests':        return 'Demasiados intentos. Intenta más tarde.';
+    case 'auth/network-request-failed':   return 'Sin conexión a internet.';
+    case 'auth/user-disabled':            return 'Esta cuenta ha sido desactivada.';
+    default:                              return 'Algo salió mal. Inténtalo de nuevo.';
+  }
+}
+
+type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
   const { bottom } = useSafeAreaInsets();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const gemAnims = useRef(GEMS.map(() => new Animated.Value(0))).current;
+  const errorOpacity = useRef(new Animated.Value(0)).current;
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     GEMS.forEach((gem, i) => {
@@ -61,6 +83,39 @@ export default function LoginScreen({ navigation }: Props) {
       setTimeout(start, gem.delay);
     });
   }, []);
+
+  function showError(msg: string) {
+    setErrorMsg(msg);
+    errorOpacity.setValue(0);
+    Animated.timing(errorOpacity, { toValue: 1, duration: 250, useNativeDriver: true }).start();
+  }
+
+  async function handleEmailLogin() {
+    if (!email.trim() || !password) {
+      showError('Completa el correo y la contraseña.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await signInWithEmail(email.trim(), password);
+      // AuthContext detecta el cambio y muestra MainStack automáticamente
+    } catch (e: any) {
+      showError(mapFirebaseError(e?.code ?? ''));
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setSubmitting(true);
+    try {
+      await signInWithGoogle(); // returns null if cancelled — no error to show
+    } catch (e: any) {
+      showError(mapFirebaseError(e?.code ?? ''));
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <View style={styles.root}>
@@ -85,6 +140,7 @@ export default function LoginScreen({ navigation }: Props) {
       <ScrollView
         contentContainerStyle={[styles.scroll, { paddingBottom: 48 + bottom }]}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.gemsContainer}>
           {GEMS.map((gem, i) => {
@@ -121,6 +177,9 @@ export default function LoginScreen({ navigation }: Props) {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              value={email}
+              onChangeText={setEmail}
+              editable={!submitting}
             />
           </View>
 
@@ -130,19 +189,40 @@ export default function LoginScreen({ navigation }: Props) {
               style={styles.input}
               placeholder="Contraseña"
               placeholderTextColor={theme.textTertiary}
-              secureTextEntry
+              secureTextEntry={!showPw}
+              value={password}
+              onChangeText={setPassword}
+              editable={!submitting}
+              onSubmitEditing={handleEmailLogin}
+              returnKeyType="go"
             />
+            <TouchableOpacity onPress={() => setShowPw(v => !v)} hitSlop={8}>
+              <Feather name={showPw ? 'eye-off' : 'eye'} size={18} color={theme.textTertiary} />
+            </TouchableOpacity>
           </View>
 
-          <TouchableOpacity activeOpacity={0.82} onPress={() => navigation.replace('Home')}>
+          {errorMsg ? (
+            <Animated.Text style={[styles.errorText, { opacity: errorOpacity }]}>
+              {errorMsg}
+            </Animated.Text>
+          ) : null}
+
+          <TouchableOpacity activeOpacity={0.82} onPress={handleEmailLogin} disabled={submitting}>
             <LinearGradient
               colors={theme.gradientButton}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={styles.primaryBtn}
+              style={[styles.primaryBtn, submitting && styles.btnDisabled]}
             >
-              <Text style={styles.primaryBtnText}>Iniciar la aventura</Text>
+              {submitting
+                ? <ActivityIndicator color="#0A0D1A" />
+                : <Text style={styles.primaryBtnText}>Iniciar la aventura</Text>
+              }
             </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.forgotRow} activeOpacity={0.75} onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={styles.forgotLink}>¿Olvidaste tu contraseña?</Text>
           </TouchableOpacity>
 
           <View style={styles.divider}>
@@ -151,14 +231,14 @@ export default function LoginScreen({ navigation }: Props) {
             <View style={styles.dividerLine} />
           </View>
 
-          <TouchableOpacity style={styles.googleBtn} activeOpacity={0.82}>
+          <TouchableOpacity style={styles.googleBtn} activeOpacity={0.82} onPress={handleGoogleLogin} disabled={submitting}>
             <View style={styles.googleGWrap}>
               <Text style={[styles.googleGLetter, { color: '#4285F4' }]}>G</Text>
             </View>
             <Text style={styles.googleBtnText}>Continuar con Google</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.signupRow} activeOpacity={0.75}>
+          <TouchableOpacity style={styles.signupRow} activeOpacity={0.75} onPress={() => navigation.navigate('Register')}>
             <Text style={styles.signupText}>¿Primera vez? </Text>
             <Text style={styles.signupLink}>Crear cuenta</Text>
           </TouchableOpacity>
@@ -211,6 +291,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   inputIcon: { marginRight: 12 },
   input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textPrimary },
+  errorText: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 13,
+    color: '#FF6B6B',
+    textAlign: 'center',
+    marginTop: -4,
+  },
   primaryBtn: {
     borderRadius: 12,
     height: 54,
@@ -222,6 +309,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     shadowRadius: 14,
     elevation: 8,
   },
+  btnDisabled: { opacity: 0.6 },
   primaryBtnText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
@@ -251,6 +339,12 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   googleGWrap: { width: 22, height: 22, alignItems: 'center', justifyContent: 'center' },
   googleGLetter: { fontSize: 17, fontWeight: '700' },
   googleBtnText: { fontFamily: 'Nunito_600SemiBold', fontSize: 14, color: theme.textPrimary, letterSpacing: 0.4 },
+  forgotRow: { alignItems: 'flex-end', marginTop: -4 },
+  forgotLink: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 12,
+    color: theme.textSecondary,
+  },
   signupRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 4 },
   signupText: { fontFamily: 'Nunito_400Regular', fontSize: 13, color: theme.textSecondary },
   signupLink: {

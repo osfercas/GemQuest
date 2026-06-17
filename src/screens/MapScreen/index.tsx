@@ -6,9 +6,9 @@ import * as Location from 'expo-location';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import type { RootStackParamList } from '../../../App';
+import type { MainStackParamList } from '../../navigation/MainStack';
 import type { Game } from '../HomeScreen/types';
-import { loadGames, upsertGame, loadGameState, saveGameState } from '../../storage/gameStorage';
+import { useGameStorage } from '../../storage/useGameStorage';
 import { GemMarker } from './types';
 import { generateGemsOSM, repositionGem, distanceMeters, COLLECT_RADIUS_M, GLOW_RADIUS_M } from './utils';
 import { createMapStyles, createCenterBtnStyles, createLoadingStyles } from './styles';
@@ -18,12 +18,13 @@ import GemTooltip from './GemTooltip';
 import PermissionGate from './PermissionGate';
 import { useTheme } from '../../theme/ThemeContext';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Map'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'Map'>;
 
 export default function MapScreen({ route, navigation }: Props) {
   const { gameId } = route.params;
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
+  const { loadGames, upsertGame, loadGameState, saveGameState } = useGameStorage();
   const s = useMemo(() => createMapStyles(theme), [theme]);
   const cs = useMemo(() => createCenterBtnStyles(theme), [theme]);
   const ls = useMemo(() => createLoadingStyles(theme), [theme]);
