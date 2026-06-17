@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import { createWizardStyles } from './styles';
 import { RADIUS_OPTIONS, WIZARD_STEPS } from './types';
-import { generateId, upsertGame } from '../../storage/gameStorage';
+import { useGameStorage } from '../../storage/useGameStorage';
 import { GEM_NAMES } from '../MapScreen/utils';
 import { useTheme } from '../../theme/ThemeContext';
 
@@ -19,6 +19,7 @@ interface Props {
 
 export default function NewGameWizard({ visible, onClose, onStart, bottomInset = 0 }: Props) {
   const { theme } = useTheme();
+  const { generateId, upsertGame } = useGameStorage();
   const s = useMemo(() => createWizardStyles(theme), [theme]);
   const [step, setStep] = useState(0);
   const [gameName, setGameName] = useState('');

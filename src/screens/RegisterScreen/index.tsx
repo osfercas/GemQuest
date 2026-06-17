@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { signUpWithEmail } from '../../services/auth';
+import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../theme/ThemeContext';
+import type { Theme } from '../../theme';
 
 const { width: SW } = Dimensions.get('window');
 
@@ -34,12 +37,17 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
 export default function RegisterScreen({ navigation }: Props) {
   const { bottom } = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const { refreshUser } = useAuth();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const errorOpacity = useRef(new Animated.Value(0)).current;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -65,7 +73,7 @@ export default function RegisterScreen({ navigation }: Props) {
     setSubmitting(true);
     try {
       await signUpWithEmail(email.trim(), password, name.trim());
-      // AuthContext detecta el nuevo usuario y muestra MainStack
+      refreshUser();
     } catch (e: any) {
       showError(mapFirebaseError(e?.code ?? ''));
     } finally {
@@ -75,7 +83,7 @@ export default function RegisterScreen({ navigation }: Props) {
 
   return (
     <View style={styles.root}>
-      <StatusBar style="light" />
+      <StatusBar style={theme.id === 'darkGold' ? 'light' : 'dark'} />
 
       <ScrollView
         contentContainerStyle={[styles.scroll, { paddingBottom: 48 + bottom }]}
@@ -84,7 +92,7 @@ export default function RegisterScreen({ navigation }: Props) {
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} hitSlop={12}>
-            <Feather name="arrow-left" size={22} color="#E8DDB5" />
+            <Feather name="arrow-left" size={22} color={theme.textPrimary} />
           </TouchableOpacity>
           <Text style={styles.title}>Crear cuenta</Text>
           <Text style={styles.subtitle}>Únete a la aventura</Text>
@@ -92,11 +100,11 @@ export default function RegisterScreen({ navigation }: Props) {
 
         <View style={styles.form}>
           <View style={styles.inputWrap}>
-            <Feather name="user" size={18} color="rgba(232,221,181,0.45)" style={styles.inputIcon} />
+            <Feather name="user" size={18} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Nombre de aventurero"
-              placeholderTextColor="rgba(232,221,181,0.35)"
+              placeholderTextColor={theme.textTertiary}
               autoCapitalize="words"
               value={name}
               onChangeText={setName}
@@ -105,11 +113,11 @@ export default function RegisterScreen({ navigation }: Props) {
           </View>
 
           <View style={styles.inputWrap}>
-            <Feather name="mail" size={18} color="rgba(232,221,181,0.45)" style={styles.inputIcon} />
+            <Feather name="mail" size={18} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Correo electrónico"
-              placeholderTextColor="rgba(232,221,181,0.35)"
+              placeholderTextColor={theme.textTertiary}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
@@ -120,31 +128,37 @@ export default function RegisterScreen({ navigation }: Props) {
           </View>
 
           <View style={styles.inputWrap}>
-            <Feather name="lock" size={18} color="rgba(232,221,181,0.45)" style={styles.inputIcon} />
+            <Feather name="lock" size={18} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Contraseña (mín. 8 caracteres)"
-              placeholderTextColor="rgba(232,221,181,0.35)"
-              secureTextEntry
+              placeholderTextColor={theme.textTertiary}
+              secureTextEntry={!showPw}
               value={password}
               onChangeText={setPassword}
               editable={!submitting}
             />
+            <TouchableOpacity onPress={() => setShowPw(v => !v)} hitSlop={8}>
+              <Feather name={showPw ? 'eye-off' : 'eye'} size={18} color={theme.textTertiary} />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.inputWrap}>
-            <Feather name="lock" size={18} color="rgba(232,221,181,0.45)" style={styles.inputIcon} />
+            <Feather name="lock" size={18} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Confirmar contraseña"
-              placeholderTextColor="rgba(232,221,181,0.35)"
-              secureTextEntry
+              placeholderTextColor={theme.textTertiary}
+              secureTextEntry={!showConfirm}
               value={confirm}
               onChangeText={setConfirm}
               editable={!submitting}
               onSubmitEditing={handleRegister}
               returnKeyType="go"
             />
+            <TouchableOpacity onPress={() => setShowConfirm(v => !v)} hitSlop={8}>
+              <Feather name={showConfirm ? 'eye-off' : 'eye'} size={18} color={theme.textTertiary} />
+            </TouchableOpacity>
           </View>
 
           {errorMsg ? (
@@ -155,13 +169,13 @@ export default function RegisterScreen({ navigation }: Props) {
 
           <TouchableOpacity activeOpacity={0.82} onPress={handleRegister} disabled={submitting}>
             <LinearGradient
-              colors={['#FFD700', '#D4900A']}
+              colors={theme.gradientButton}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.primaryBtn, submitting && styles.btnDisabled]}
             >
               {submitting
-                ? <ActivityIndicator color="#0A0D1A" />
+                ? <ActivityIndicator color={theme.textOnAccent} />
                 : <Text style={styles.primaryBtnText}>Comenzar aventura</Text>
               }
             </LinearGradient>
@@ -177,24 +191,24 @@ export default function RegisterScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#080B14' },
+const createStyles = (theme: Theme) => StyleSheet.create({
+  root: { flex: 1, backgroundColor: theme.bgRoot },
   scroll: { flexGrow: 1, alignItems: 'center', paddingTop: 64 },
   header: { width: SW - 48, marginBottom: 40 },
   backBtn: { marginBottom: 24 },
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 28,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     letterSpacing: 2,
-    textShadowColor: 'rgba(255, 215, 0, 0.45)',
+    textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
   },
   subtitle: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 11,
-    color: '#C8860A',
+    color: theme.accentSecondary,
     letterSpacing: 3,
     marginTop: 6,
     textTransform: 'uppercase',
@@ -203,19 +217,19 @@ const styles = StyleSheet.create({
   inputWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: theme.bgInput,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,215,0,0.18)',
+    borderColor: theme.borderPrimary,
     height: 54,
     paddingHorizontal: 16,
   },
   inputIcon: { marginRight: 12 },
-  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: '#E8DDB5' },
+  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textPrimary },
   errorText: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
-    color: '#FF6B6B',
+    color: theme.colorError,
     textAlign: 'center',
     marginTop: -4,
   },
@@ -224,7 +238,7 @@ const styles = StyleSheet.create({
     height: 54,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#FFD700',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 14,
@@ -234,17 +248,17 @@ const styles = StyleSheet.create({
   primaryBtnText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
-    color: '#0A0D1A',
+    color: theme.textOnAccent,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
   loginRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 4 },
-  loginText: { fontFamily: 'Nunito_400Regular', fontSize: 13, color: 'rgba(232,221,181,0.55)' },
+  loginText: { fontFamily: 'Nunito_400Regular', fontSize: 13, color: theme.textSecondary },
   loginLink: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 13,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     textDecorationLine: 'underline',
-    textDecorationColor: 'rgba(255,215,0,0.5)',
+    textDecorationColor: `${theme.accentPrimary}80`,
   },
 });

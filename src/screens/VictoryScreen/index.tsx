@@ -8,10 +8,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { MainStackParamList } from '../../navigation/MainStack';
-import { GemShape, GEM_COLORS } from '../../components/GemShape';
+import { GemVisual } from '../../components/GemVisual';
 import { GEM_NAMES } from '../MapScreen/utils';
 import type { GemMarker } from '../MapScreen/types';
-import { loadGames, loadGameState } from '../../storage/gameStorage';
+import { useGameStorage } from '../../storage/useGameStorage';
 import type { Game } from '../HomeScreen/types';
 import { useTheme } from '../../theme/ThemeContext';
 
@@ -21,6 +21,7 @@ export default function VictoryScreen({ route, navigation }: Props) {
   const { gameId } = route.params;
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
+  const { loadGames, loadGameState } = useGameStorage();
   const s = useMemo(() => createStyles(theme), [theme]);
   const [game, setGame] = useState<Game | null>(null);
   const [gems, setGems] = useState<GemMarker[]>([]);
@@ -61,7 +62,7 @@ export default function VictoryScreen({ route, navigation }: Props) {
   }, [game]);
 
   const handleGoHome = () => {
-    navigation.reset({ index: 1, routes: [{ name: 'Login' }, { name: 'Home' }] });
+    navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
   };
 
   const row1 = GEM_NAMES.slice(0, 4);
@@ -70,8 +71,8 @@ export default function VictoryScreen({ route, navigation }: Props) {
   const renderGem = (name: typeof GEM_NAMES[number], animIndex: number) => {
     const gem = gems.find(g => g.name === name);
     const collected = gem?.collected ?? false;
-    const g = GEM_COLORS[name];
     const anim = gemAnims[animIndex];
+    const label = theme.numberedGems ? String(GEM_NAMES.indexOf(name) + 1) : name;
     return (
       <Animated.View
         key={name}
@@ -80,14 +81,9 @@ export default function VictoryScreen({ route, navigation }: Props) {
           transform: [{ scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) }],
         }]}
       >
-        <GemShape
-          color={collected ? g.color : `${theme.textPrimary}1F`}
-          light={collected ? g.light : `${theme.textPrimary}33`}
-          dark={collected ? g.dark  : `${theme.textPrimary}0F`}
-          size={32}
-        />
-        <Text style={[s.gemLabel, collected && { color: g.light, opacity: 1 }]}>
-          {name}
+        <GemVisual name={name} size={32} collected={collected} stars={GEM_NAMES.indexOf(name) + 1} />
+        <Text style={[s.gemLabel, !collected && { opacity: 0.3 }]}>
+          {label}
         </Text>
       </Animated.View>
     );

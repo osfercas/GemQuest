@@ -9,9 +9,10 @@ interface Props {
   username?: string;
   onDevTools?: () => void;
   onSettings?: () => void;
+  onProfile?: () => void;
 }
 
-export default function Header({ username = 'A', onDevTools, onSettings }: Props) {
+export default function Header({ username = 'A', onDevTools, onSettings, onProfile }: Props) {
   const { theme } = useTheme();
   const s = useMemo(() => createHeaderStyles(theme), [theme]);
 
@@ -22,7 +23,7 @@ export default function Header({ username = 'A', onDevTools, onSettings }: Props
         <Text style={s.title}>{theme.termGems}Quest</Text>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        {__DEV__ && onDevTools && (
+        {onDevTools && (
           <TouchableOpacity onPress={onDevTools} activeOpacity={0.7} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <Feather name="terminal" size={16} color={`${theme.textPrimary}59`} />
           </TouchableOpacity>
@@ -30,7 +31,7 @@ export default function Header({ username = 'A', onDevTools, onSettings }: Props
         <Pressable onPress={onSettings} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
           <Feather name="settings" size={18} color={`${theme.textPrimary}80`} />
         </Pressable>
-        <TouchableOpacity activeOpacity={0.75}>
+        <TouchableOpacity activeOpacity={0.75} onPress={onProfile}>
           <LinearGradient colors={theme.gradientButton} style={s.avatar}>
             <Text style={s.avatarLetter}>{username[0].toUpperCase()}</Text>
           </LinearGradient>

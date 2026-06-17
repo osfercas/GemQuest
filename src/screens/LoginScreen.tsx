@@ -65,6 +65,7 @@ export default function LoginScreen({ navigation }: Props) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPw, setShowPw] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -108,11 +109,9 @@ export default function LoginScreen({ navigation }: Props) {
   async function handleGoogleLogin() {
     setSubmitting(true);
     try {
-      await signInWithGoogle();
+      await signInWithGoogle(); // returns null if cancelled — no error to show
     } catch (e: any) {
-      if (e?.code !== 'SIGN_IN_CANCELLED') {
-        showError(mapFirebaseError(e?.code ?? ''));
-      }
+      showError(mapFirebaseError(e?.code ?? ''));
     } finally {
       setSubmitting(false);
     }
@@ -190,13 +189,16 @@ export default function LoginScreen({ navigation }: Props) {
               style={styles.input}
               placeholder="Contraseña"
               placeholderTextColor={theme.textTertiary}
-              secureTextEntry
+              secureTextEntry={!showPw}
               value={password}
               onChangeText={setPassword}
               editable={!submitting}
               onSubmitEditing={handleEmailLogin}
               returnKeyType="go"
             />
+            <TouchableOpacity onPress={() => setShowPw(v => !v)} hitSlop={8}>
+              <Feather name={showPw ? 'eye-off' : 'eye'} size={18} color={theme.textTertiary} />
+            </TouchableOpacity>
           </View>
 
           {errorMsg ? (
@@ -217,6 +219,10 @@ export default function LoginScreen({ navigation }: Props) {
                 : <Text style={styles.primaryBtnText}>Iniciar la aventura</Text>
               }
             </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.forgotRow} activeOpacity={0.75} onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={styles.forgotLink}>¿Olvidaste tu contraseña?</Text>
           </TouchableOpacity>
 
           <View style={styles.divider}>
@@ -333,6 +339,12 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   googleGWrap: { width: 22, height: 22, alignItems: 'center', justifyContent: 'center' },
   googleGLetter: { fontSize: 17, fontWeight: '700' },
   googleBtnText: { fontFamily: 'Nunito_600SemiBold', fontSize: 14, color: theme.textPrimary, letterSpacing: 0.4 },
+  forgotRow: { alignItems: 'flex-end', marginTop: -4 },
+  forgotLink: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 12,
+    color: theme.textSecondary,
+  },
   signupRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 4 },
   signupText: { fontFamily: 'Nunito_400Regular', fontSize: 13, color: theme.textSecondary },
   signupLink: {

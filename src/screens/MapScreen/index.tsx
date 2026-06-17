@@ -8,7 +8,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { MainStackParamList } from '../../navigation/MainStack';
 import type { Game } from '../HomeScreen/types';
-import { loadGames, upsertGame, loadGameState, saveGameState } from '../../storage/gameStorage';
+import { useGameStorage } from '../../storage/useGameStorage';
 import { GemMarker } from './types';
 import { generateGemsOSM, repositionGem, distanceMeters, COLLECT_RADIUS_M, GLOW_RADIUS_M } from './utils';
 import { createMapStyles, createCenterBtnStyles, createLoadingStyles } from './styles';
@@ -24,6 +24,7 @@ export default function MapScreen({ route, navigation }: Props) {
   const { gameId } = route.params;
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
+  const { loadGames, upsertGame, loadGameState, saveGameState } = useGameStorage();
   const s = useMemo(() => createMapStyles(theme), [theme]);
   const cs = useMemo(() => createCenterBtnStyles(theme), [theme]);
   const ls = useMemo(() => createLoadingStyles(theme), [theme]);

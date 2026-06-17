@@ -30,7 +30,9 @@ export async function signUpWithEmail(
 export async function signInWithGoogle() {
   await GoogleSignin.hasPlayServices();
   const response = await GoogleSignin.signIn();
-  const idToken = (response as any).data?.idToken ?? (response as any).idToken;
+  if (response.type === 'cancelled') return null;
+  const idToken = response.data.idToken;
+  if (!idToken) throw new Error('auth/no-id-token');
   const credential = GoogleAuthProvider.credential(idToken);
   return signInWithCredential(getAuth(), credential);
 }
