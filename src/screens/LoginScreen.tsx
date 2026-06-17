@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -15,20 +15,23 @@ import { StatusBar } from 'expo-status-bar';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { GemShape, GEM_COLORS } from '../components/GemShape';
+import type { GemName } from '../components/GemShape';
+import { GemVisual } from '../components/GemVisual';
 import type { AuthStackParamList } from '../navigation/AuthStack';
 import { signInWithEmail, signInWithGoogle } from '../services/auth';
+import { useTheme } from '../theme/ThemeContext';
+import type { Theme } from '../theme';
 
 const { width: SW, height: SH } = Dimensions.get('window');
 
-const GEMS = [
-  { ...GEM_COLORS.Ruby,       size: 34, left: 60,  top: 22,  delay: 0    },
-  { ...GEM_COLORS.Diamond,    size: 30, left: 158, top: 10,  delay: 400  },
-  { ...GEM_COLORS.Emerald,    size: 28, left: 255, top: 25,  delay: 800  },
-  { ...GEM_COLORS.Sapphire,   size: 32, left: 100, top: 62,  delay: 200  },
-  { ...GEM_COLORS.Amethyst,   size: 35, left: 208, top: 52,  delay: 600  },
-  { ...GEM_COLORS.Amber,      size: 26, left: 276, top: 70,  delay: 1000 },
-  { ...GEM_COLORS.Aquamarine, size: 29, left: 140, top: 93,  delay: 300  },
+const GEMS: Array<{ name: GemName; size: number; left: number; top: number; delay: number }> = [
+  { name: 'Ruby', size: 34, left: 60, top: 22, delay: 0 },
+  { name: 'Diamond', size: 30, left: 158, top: 10, delay: 400 },
+  { name: 'Emerald', size: 28, left: 255, top: 25, delay: 800 },
+  { name: 'Sapphire', size: 32, left: 100, top: 62, delay: 200 },
+  { name: 'Amethyst', size: 35, left: 208, top: 52, delay: 600 },
+  { name: 'Amber', size: 26, left: 276, top: 70, delay: 1000 },
+  { name: 'Aquamarine', size: 29, left: 140, top: 93, delay: 300 },
 ];
 
 const STARS = Array.from({ length: 60 }, (_, i) => ({
@@ -55,6 +58,8 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
   const { bottom } = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const gemAnims = useRef(GEMS.map(() => new Animated.Value(0))).current;
   const errorOpacity = useRef(new Animated.Value(0)).current;
 
@@ -115,7 +120,7 @@ export default function LoginScreen({ navigation }: Props) {
 
   return (
     <View style={styles.root}>
-      <StatusBar style="light" />
+      <StatusBar style={theme.id === 'darkGold' ? 'light' : 'dark'} />
 
       {STARS.map((s, i) => (
         <View
@@ -127,8 +132,8 @@ export default function LoginScreen({ navigation }: Props) {
             width: s.size,
             height: s.size,
             borderRadius: s.size / 2,
-            backgroundColor: '#FFFFFF',
-            opacity: s.opacity,
+            backgroundColor: theme.textPrimary,
+            opacity: s.opacity * 0.5,
           }}
         />
       ))}
@@ -149,27 +154,27 @@ export default function LoginScreen({ navigation }: Props) {
                 key={i}
                 style={{ position: 'absolute', left: gem.left, top: gem.top, transform: [{ translateY }] }}
               >
-                <GemShape color={gem.color} light={gem.light} dark={gem.dark} size={gem.size} />
+                <GemVisual name={gem.name} size={gem.size} />
               </Animated.View>
             );
           })}
         </View>
 
         <View style={styles.logoSection}>
-          <Text style={styles.title}>GemQuest</Text>
+          <Text style={styles.title}>{theme.termGems}Quest</Text>
           <View style={styles.taglineRow}>
-            <Text style={styles.tagline}>7 Gemas · 1 Mapa</Text>
+            <Text style={styles.tagline}>7 {theme.termGems} · 1 Mapa</Text>
           </View>
           <Text style={styles.taglineSub}>Tu leyenda empieza aquí</Text>
         </View>
 
         <View style={styles.form}>
           <View style={styles.inputWrap}>
-            <Feather name="mail" size={18} color="rgba(232,221,181,0.45)" style={styles.inputIcon} />
+            <Feather name="mail" size={18} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Correo electrónico"
-              placeholderTextColor="rgba(232,221,181,0.35)"
+              placeholderTextColor={theme.textTertiary}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
@@ -180,11 +185,11 @@ export default function LoginScreen({ navigation }: Props) {
           </View>
 
           <View style={styles.inputWrap}>
-            <Feather name="lock" size={18} color="rgba(232,221,181,0.45)" style={styles.inputIcon} />
+            <Feather name="lock" size={18} color={theme.textSecondary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Contraseña"
-              placeholderTextColor="rgba(232,221,181,0.35)"
+              placeholderTextColor={theme.textTertiary}
               secureTextEntry
               value={password}
               onChangeText={setPassword}
@@ -202,7 +207,7 @@ export default function LoginScreen({ navigation }: Props) {
 
           <TouchableOpacity activeOpacity={0.82} onPress={handleEmailLogin} disabled={submitting}>
             <LinearGradient
-              colors={['#FFD700', '#D4900A']}
+              colors={theme.gradientButton}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.primaryBtn, submitting && styles.btnDisabled]}
@@ -237,17 +242,17 @@ export default function LoginScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#080B14' },
+const createStyles = (theme: Theme) => StyleSheet.create({
+  root: { flex: 1, backgroundColor: theme.bgRoot },
   scroll: { flexGrow: 1, alignItems: 'center', paddingTop: 56 },
   gemsContainer: { width: SW, height: 160, position: 'relative' },
   logoSection: { alignItems: 'center', marginTop: 16, marginBottom: 44 },
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 34,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     letterSpacing: 3,
-    textShadowColor: 'rgba(255, 215, 0, 0.45)',
+    textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 16,
   },
@@ -255,14 +260,14 @@ const styles = StyleSheet.create({
   tagline: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 12,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 3.5,
     opacity: 0.85,
   },
   taglineSub: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 10,
-    color: '#C8860A',
+    color: theme.accentSecondary,
     letterSpacing: 3.5,
     marginTop: 5,
     textTransform: 'uppercase',
@@ -271,15 +276,15 @@ const styles = StyleSheet.create({
   inputWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: theme.bgInput,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,215,0,0.18)',
+    borderColor: theme.borderPrimary,
     height: 54,
     paddingHorizontal: 16,
   },
   inputIcon: { marginRight: 12 },
-  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: '#E8DDB5' },
+  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textPrimary },
   errorText: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
@@ -292,7 +297,7 @@ const styles = StyleSheet.create({
     height: 54,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#FFD700',
+    shadowColor: theme.shadowColor,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 14,
@@ -302,39 +307,39 @@ const styles = StyleSheet.create({
   primaryBtnText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
-    color: '#0A0D1A',
+    color: theme.textOnAccent,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
   divider: { flexDirection: 'row', alignItems: 'center', marginVertical: 2 },
-  dividerLine: { flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: 'rgba(232,221,181,0.18)' },
+  dividerLine: { flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: theme.borderSubtle },
   dividerLabel: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 12,
-    color: 'rgba(232,221,181,0.45)',
+    color: theme.textSecondary,
     marginHorizontal: 12,
   },
   googleBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: theme.bgInput,
     borderRadius: 12,
     height: 54,
     borderWidth: 1,
-    borderColor: 'rgba(232,221,181,0.14)',
+    borderColor: theme.borderSubtle,
     gap: 10,
   },
   googleGWrap: { width: 22, height: 22, alignItems: 'center', justifyContent: 'center' },
   googleGLetter: { fontSize: 17, fontWeight: '700' },
-  googleBtnText: { fontFamily: 'Nunito_600SemiBold', fontSize: 14, color: '#E8DDB5', letterSpacing: 0.4 },
+  googleBtnText: { fontFamily: 'Nunito_600SemiBold', fontSize: 14, color: theme.textPrimary, letterSpacing: 0.4 },
   signupRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 4 },
-  signupText: { fontFamily: 'Nunito_400Regular', fontSize: 13, color: 'rgba(232,221,181,0.55)' },
+  signupText: { fontFamily: 'Nunito_400Regular', fontSize: 13, color: theme.textSecondary },
   signupLink: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 13,
-    color: '#FFD700',
+    color: theme.accentPrimary,
     textDecorationLine: 'underline',
-    textDecorationColor: 'rgba(255,215,0,0.5)',
+    textDecorationColor: `${theme.accentPrimary}80`,
   },
 });

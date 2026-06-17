@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
   StyleSheet, ActivityIndicator, Alert, Animated,
@@ -12,6 +12,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { MainStackParamList } from '../../navigation/MainStack';
 import { loadGames, loadGameState } from '../../storage/gameStorage';
 import type { Game } from '../HomeScreen/types';
+import { useTheme } from '../../theme/ThemeContext';
+import type { Theme } from '../../theme';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'DevTools'>;
 
@@ -27,6 +29,8 @@ interface StorageEntry {
 
 export default function DevToolsScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const s = useMemo(() => createStyles(theme), [theme]);
   const [entries, setEntries] = useState<GameEntry[]>([]);
   const [storageEntries, setStorageEntries] = useState<StorageEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,22 +79,21 @@ export default function DevToolsScreen({ navigation }: Props) {
     <View style={[s.root, { paddingTop: insets.top }]}>
       <View style={s.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Feather name="arrow-left" size={20} color="rgba(232,221,181,0.7)" />
+          <Feather name="arrow-left" size={20} color={`${theme.textPrimary}B3`} />
         </TouchableOpacity>
         <Text style={s.title}>DevTools</Text>
         <TouchableOpacity onPress={reload} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Feather name="refresh-cw" size={16} color="rgba(232,221,181,0.5)" />
+          <Feather name="refresh-cw" size={16} color={`${theme.textPrimary}80`} />
         </TouchableOpacity>
       </View>
 
       {loading ? (
         <View style={s.center}>
-          <ActivityIndicator color="#FFD700" />
+          <ActivityIndicator color={theme.accentPrimary} />
         </View>
       ) : (
         <ScrollView contentContainerStyle={[s.scroll, { paddingBottom: insets.bottom + 24 }]}>
 
-          {/* Games */}
           <Text style={s.sectionLabel}>PARTIDAS · {entries.length}</Text>
           {entries.length === 0 && <Text style={s.empty}>Sin partidas guardadas</Text>}
           {entries.map(({ game, stateGems }) => (
@@ -101,13 +104,13 @@ export default function DevToolsScreen({ navigation }: Props) {
                 </View>
                 <Text style={s.gameName} numberOfLines={1}>{game.name}</Text>
               </View>
-              <Row label="id"       value={game.id} mono />
-              <Row label="radio"    value={`${game.radius} km`} />
-              <Row label="fecha"    value={game.date} />
-              <Row label="progreso" value={`${game.gemsFound} / ${game.gemsTotal} gemas`} />
+              <Row label="id"       value={game.id} mono s={s} />
+              <Row label="radio"    value={`${game.radius} km`} s={s} />
+              <Row label="fecha"    value={game.date} s={s} />
+              <Row label="progreso" value={`${game.gemsFound} / ${game.gemsTotal} gemas`} s={s} />
               {stateGems
-                ? <Row label="state gems" value={`${stateGems.collected} recogidas de ${stateGems.total}`} />
-                : <Row label="state" value="sin GameState guardado" dim />}
+                ? <Row label="state gems" value={`${stateGems.collected} recogidas de ${stateGems.total}`} s={s} />
+                : <Row label="state" value="sin GameState guardado" dim s={s} />}
               <TouchableOpacity
                 style={s.victoryBtn}
                 activeOpacity={0.75}
@@ -118,16 +121,14 @@ export default function DevToolsScreen({ navigation }: Props) {
             </View>
           ))}
 
-          {/* AsyncStorage keys acordeón */}
           <Text style={[s.sectionLabel, { marginTop: 24 }]}>ASYNCSTORAGE · {storageEntries.length} keys</Text>
           {storageEntries.length === 0 && <Text style={s.empty}>Vacío</Text>}
           {storageEntries.map(entry => (
-            <AccordionEntry key={entry.key} entry={entry} />
+            <AccordionEntry key={entry.key} entry={entry} s={s} theme={theme} />
           ))}
 
-          {/* Clear button */}
           <TouchableOpacity style={s.clearBtn} activeOpacity={0.75} onPress={handleClearAll}>
-            <Feather name="trash-2" size={15} color="#FF6B6B" />
+            <Feather name="trash-2" size={15} color={theme.colorError} />
             <Text style={s.clearText}>Limpiar todo el storage</Text>
           </TouchableOpacity>
 
@@ -137,7 +138,7 @@ export default function DevToolsScreen({ navigation }: Props) {
   );
 }
 
-function AccordionEntry({ entry }: { entry: StorageEntry }) {
+function AccordionEntry({ entry, s, theme }: { entry: StorageEntry; s: ReturnType<typeof createStyles>; theme: Theme }) {
   const [open, setOpen] = useState(false);
   const anim = useRef(new Animated.Value(0)).current;
 
@@ -160,7 +161,7 @@ function AccordionEntry({ entry }: { entry: StorageEntry }) {
     <View style={s.accordion}>
       <TouchableOpacity style={s.accordionHeader} activeOpacity={0.75} onPress={toggle}>
         <Animated.View style={{ transform: [{ rotate }] }}>
-          <Feather name="chevron-right" size={14} color="rgba(255,215,0,0.5)" />
+          <Feather name="chevron-right" size={14} color={`${theme.accentPrimary}80`} />
         </Animated.View>
         <Text style={s.accordionKey} numberOfLines={1}>{entry.key}</Text>
       </TouchableOpacity>
@@ -175,7 +176,7 @@ function AccordionEntry({ entry }: { entry: StorageEntry }) {
   );
 }
 
-function Row({ label, value, mono = false, dim = false }: { label: string; value: string; mono?: boolean; dim?: boolean }) {
+function Row({ label, value, mono = false, dim = false, s }: { label: string; value: string; mono?: boolean; dim?: boolean; s: ReturnType<typeof createStyles> }) {
   return (
     <View style={s.row}>
       <Text style={s.rowLabel}>{label}</Text>
@@ -184,8 +185,8 @@ function Row({ label, value, mono = false, dim = false }: { label: string; value
   );
 }
 
-const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#080B14' },
+const createStyles = (theme: Theme) => StyleSheet.create({
+  root: { flex: 1, backgroundColor: theme.bgRoot },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -193,12 +194,12 @@ const s = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(232,221,181,0.08)',
+    borderBottomColor: theme.borderSubtle,
   },
   title: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
-    color: '#E8DDB5',
+    color: theme.textPrimary,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
@@ -207,20 +208,20 @@ const s = StyleSheet.create({
   sectionLabel: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 10,
-    color: 'rgba(232,221,181,0.35)',
+    color: theme.textTertiary,
     letterSpacing: 2,
     marginBottom: 8,
   },
   empty: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
-    color: 'rgba(232,221,181,0.3)',
+    color: theme.textTertiary,
     marginBottom: 8,
   },
   card: {
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: theme.bgInput,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(232,221,181,0.1)',
+    borderColor: theme.borderSubtle,
     borderRadius: 12,
     padding: 12,
     gap: 6,
@@ -228,18 +229,18 @@ const s = StyleSheet.create({
   },
   cardRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
   badge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6 },
-  badgeActive: { backgroundColor: 'rgba(255,215,0,0.15)' },
-  badgeFinished: { backgroundColor: 'rgba(107,203,119,0.15)' },
-  badgeText: { fontFamily: 'Nunito_600SemiBold', fontSize: 10, color: 'rgba(232,221,181,0.6)' },
-  gameName: { fontFamily: 'Cinzel_700Bold', fontSize: 13, color: '#E8DDB5', flex: 1 },
+  badgeActive: { backgroundColor: `${theme.accentPrimary}26` },
+  badgeFinished: { backgroundColor: `${theme.colorSuccess}26` },
+  badgeText: { fontFamily: 'Nunito_600SemiBold', fontSize: 10, color: theme.textSecondary },
+  gameName: { fontFamily: 'Cinzel_700Bold', fontSize: 13, color: theme.textPrimary, flex: 1 },
   row: { flexDirection: 'row', gap: 8 },
-  rowLabel: { fontFamily: 'Nunito_600SemiBold', fontSize: 11, color: 'rgba(232,221,181,0.35)', width: 72 },
-  rowValue: { fontFamily: 'Nunito_400Regular', fontSize: 11, color: 'rgba(232,221,181,0.7)', flex: 1 },
-  mono: { fontFamily: 'Nunito_600SemiBold', fontSize: 10, color: 'rgba(255,215,0,0.5)' },
-  dim: { color: 'rgba(232,221,181,0.3)' },
+  rowLabel: { fontFamily: 'Nunito_600SemiBold', fontSize: 11, color: theme.textTertiary, width: 72 },
+  rowValue: { fontFamily: 'Nunito_400Regular', fontSize: 11, color: theme.textSecondary, flex: 1 },
+  mono: { fontFamily: 'Nunito_600SemiBold', fontSize: 10, color: `${theme.accentPrimary}80` },
+  dim: { color: theme.textTertiary },
   accordion: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(232,221,181,0.1)',
+    borderColor: theme.borderSubtle,
     borderRadius: 10,
     marginBottom: 4,
     overflow: 'hidden',
@@ -250,24 +251,24 @@ const s = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: theme.bgInput,
   },
   accordionKey: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 12,
-    color: 'rgba(255,215,0,0.7)',
+    color: `${theme.accentPrimary}B3`,
     flex: 1,
   },
   accordionBody: {
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(232,221,181,0.08)',
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderTopColor: theme.borderSubtle,
+    backgroundColor: theme.bgOverlay,
     padding: 12,
   },
   accordionJson: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 11,
-    color: 'rgba(232,221,181,0.65)',
+    color: theme.textSecondary,
     lineHeight: 18,
   },
   victoryBtn: {
@@ -277,13 +278,13 @@ const s = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 8,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,215,0,0.3)',
-    backgroundColor: 'rgba(255,215,0,0.07)',
+    borderColor: `${theme.accentPrimary}4D`,
+    backgroundColor: `${theme.accentPrimary}12`,
   },
   victoryBtnText: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 11,
-    color: 'rgba(255,215,0,0.7)',
+    color: `${theme.accentPrimary}B3`,
   },
   clearBtn: {
     flexDirection: 'row',
@@ -294,13 +295,13 @@ const s = StyleSheet.create({
     height: 48,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255,107,107,0.3)',
-    backgroundColor: 'rgba(255,107,107,0.08)',
+    borderColor: `${theme.colorError}4D`,
+    backgroundColor: `${theme.colorError}14`,
   },
   clearText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 12,
-    color: '#FF6B6B',
+    color: theme.colorError,
     letterSpacing: 1,
   },
 });

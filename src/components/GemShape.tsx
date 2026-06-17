@@ -1,5 +1,86 @@
 import { View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+
+const STAR_POSITIONS: Array<Array<{ x: number; y: number }>> = [
+  [],
+  [{ x: 0.5,  y: 0.55 }],
+  [{ x: 0.38, y: 0.55 }, { x: 0.62, y: 0.55 }],
+  [{ x: 0.5,  y: 0.4  }, { x: 0.35, y: 0.64 }, { x: 0.65, y: 0.64 }],
+  [{ x: 0.36, y: 0.4  }, { x: 0.64, y: 0.4  }, { x: 0.36, y: 0.63 }, { x: 0.64, y: 0.63 }],
+  [{ x: 0.35, y: 0.35 }, { x: 0.65, y: 0.35 }, { x: 0.5,  y: 0.52 }, { x: 0.35, y: 0.68 }, { x: 0.65, y: 0.68 }],
+  [{ x: 0.3,  y: 0.38 }, { x: 0.5,  y: 0.38 }, { x: 0.7,  y: 0.38 }, { x: 0.3,  y: 0.63 }, { x: 0.5,  y: 0.63 }, { x: 0.7,  y: 0.63 }],
+  [{ x: 0.3,  y: 0.33 }, { x: 0.5,  y: 0.33 }, { x: 0.7,  y: 0.33 }, { x: 0.5,  y: 0.52 }, { x: 0.3,  y: 0.68 }, { x: 0.5,  y: 0.68 }, { x: 0.7,  y: 0.68 }],
+];
+
+export function DragonBallShape({ size, stars }: Readonly<{ size: number; stars?: number }>) {
+  const ballSize = size;
+  const radius = ballSize / 2;
+  const starSize = Math.max(4, Math.round(ballSize * 0.14));
+  const positions = (stars != null && stars >= 1 && stars <= 7) ? STAR_POSITIONS[stars] : [];
+
+  return (
+    <View
+      style={{
+        width: ballSize,
+        height: ballSize,
+        borderRadius: radius,
+        shadowColor: '#FF6600',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.95,
+        shadowRadius: size * 0.65,
+        elevation: 10,
+      }}
+    >
+      <LinearGradient
+        colors={['#FFDD00', '#FF8800', '#CC3300']}
+        start={{ x: 0.15, y: 0.05 }}
+        end={{ x: 0.85, y: 0.95 }}
+        style={{ width: ballSize, height: ballSize, borderRadius: radius }}
+      >
+        {/* Reflejo principal de cristal */}
+        <View
+          style={{
+            position: 'absolute',
+            top: ballSize * 0.1,
+            left: ballSize * 0.16,
+            width: ballSize * 0.38,
+            height: ballSize * 0.2,
+            borderRadius: ballSize * 0.12,
+            backgroundColor: 'rgba(255,255,255,0.6)',
+            transform: [{ rotate: '-25deg' }],
+          }}
+        />
+        {/* Brillo secundario pequeño */}
+        <View
+          style={{
+            position: 'absolute',
+            top: ballSize * 0.3,
+            left: ballSize * 0.14,
+            width: ballSize * 0.14,
+            height: ballSize * 0.08,
+            borderRadius: ballSize * 0.06,
+            backgroundColor: 'rgba(255,255,255,0.3)',
+            transform: [{ rotate: '-25deg' }],
+          }}
+        />
+        {/* Estrellas */}
+        {positions.map((pos) => (
+          <View
+            key={`${pos.x}-${pos.y}`}
+            style={{
+              position: 'absolute',
+              left: ballSize * pos.x - starSize / 2,
+              top: ballSize * pos.y - starSize / 2,
+            }}
+          >
+            <Ionicons name="star" size={starSize} color="#CC0000" />
+          </View>
+        ))}
+      </LinearGradient>
+    </View>
+  );
+}
 
 export const GEM_COLORS = {
   Ruby:       { color: '#FF6B6B', light: '#FF9999', dark: '#AA1100' },
@@ -20,7 +101,7 @@ interface Props {
   size: number;
 }
 
-export function GemShape({ color, light, dark, size }: Props) {
+export function GemShape({ color, light, dark, size }: Readonly<Props>) {
   const w    = Math.round(size * 0.62);
   const half = Math.round(w / 2);
   const topH = Math.round(size * 0.34);

@@ -1,9 +1,10 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { GemShape, GEM_COLORS } from '../../components/GemShape';
-import { finishedRowStyles as s } from './styles';
+import { createFinishedRowStyles } from './styles';
 import { Game } from './types';
+import { useTheme } from '../../theme/ThemeContext';
 
 interface Props {
   game: Game;
@@ -14,6 +15,8 @@ function formatRadius(radius: number) {
 }
 
 export default function FinishedGameRow({ game }: Props) {
+  const { theme } = useTheme();
+  const s = useMemo(() => createFinishedRowStyles(theme), [theme]);
   const perfect = game.gemsFound === game.gemsTotal;
 
   return (
@@ -22,14 +25,14 @@ export default function FinishedGameRow({ game }: Props) {
         <Feather
           name={perfect ? 'award' : 'check'}
           size={16}
-          color={perfect ? '#FFD700' : 'rgba(232,221,181,0.5)'}
+          color={perfect ? theme.accentPrimary : theme.textSecondary}
         />
       </View>
 
       <View style={s.info}>
         <Text style={s.name}>{game.name}</Text>
         <Text style={s.meta}>
-          {game.gemsFound}/{game.gemsTotal} gemas · {formatRadius(game.radius)} · {game.date}
+          {game.gemsFound}/{game.gemsTotal} {theme.termGems.toLowerCase()} · {formatRadius(game.radius)} · {game.date}
         </Text>
       </View>
 
