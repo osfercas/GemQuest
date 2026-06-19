@@ -4,22 +4,24 @@ import { loadSettings, saveSettings } from '../storage/settingsStorage'
 
 interface ThemeContextValue {
   theme: Theme
+  themeReady: boolean
   setTheme: (id: string) => Promise<void>
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
   theme: THEMES[DEFAULT_THEME_ID],
+  themeReady: false,
   setTheme: async () => {},
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(THEMES[DEFAULT_THEME_ID])
-  const [ready, setReady] = useState(false)
+  const [themeReady, setThemeReady] = useState(false)
 
   useEffect(() => {
     loadSettings().then(settings => {
       setThemeState(THEMES[settings.themeId] ?? THEMES[DEFAULT_THEME_ID])
-      setReady(true)
+      setThemeReady(true)
     })
   }, [])
 
@@ -29,10 +31,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     await saveSettings({ themeId: next.id })
   }
 
-  if (!ready) return null
-
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, themeReady, setTheme }}>
       {children}
     </ThemeContext.Provider>
   )

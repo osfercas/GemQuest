@@ -1,6 +1,10 @@
+import type { ImageSourcePropType } from 'react-native'
+
 export interface Theme {
   id: string
   name: string
+  // Splash
+  splashImage: ImageSourcePropType
   // Backgrounds
   bgRoot: string
   bgCard: string
@@ -43,6 +47,7 @@ export interface Theme {
 export const darkGoldTheme: Theme = {
   id: 'darkGold',
   name: 'Oro Oscuro',
+  splashImage: require('../../assets/sheron-gems.png'),
   bgRoot: '#080B14',
   bgCard: '#0E1220',
   bgCardAlt: '#0A0D1A',
@@ -76,6 +81,7 @@ export const darkGoldTheme: Theme = {
 export const animeMagicoTheme: Theme = {
   id: 'animeMagico',
   name: 'Anime Mágico',
+  splashImage: require('../../assets/sheron-balls.png'),
   bgRoot: '#F4F6F7',
   bgCard: '#FFFFFF',
   bgCardAlt: '#E8EDF1',

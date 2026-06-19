@@ -29,6 +29,15 @@ module.exports = {
     },
     plugins: [
       "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          image: "./assets/splash-icon.png",
+          imageWidth: 200,
+          resizeMode: "contain",
+          backgroundColor: "#000000",
+        },
+      ],
       "@react-native-firebase/app",
       [
         "expo-location",
