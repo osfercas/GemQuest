@@ -29,6 +29,9 @@ export async function signUpWithEmail(
 
 export async function signInWithGoogle() {
   await GoogleSignin.hasPlayServices();
+  // Play Services remembers the last account picked for this app and skips
+  // the chooser on subsequent sign-ins; sign out first to force it every time.
+  await GoogleSignin.signOut();
   const response = await GoogleSignin.signIn();
   if (response.type === 'cancelled') return null;
   const idToken = response.data.idToken;
