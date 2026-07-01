@@ -46,6 +46,17 @@ export default function SettingsScreen({ navigation }: Props) {
             parentTheme={theme}
           />
         ))}
+
+        <Text style={[s.sectionLabel, { marginTop: 10 }]}>{theme.termGems.toUpperCase()}</Text>
+
+        <Pressable
+          style={s.linkRow}
+          onPress={() => navigation.navigate('Gems')}
+          android_ripple={{ color: `${theme.accentPrimary}20` }}
+        >
+          <Text style={s.linkRowText}>Ver {theme.termGems.toLowerCase()}</Text>
+          <Feather name="chevron-right" size={18} color={theme.textSecondary} />
+        </Pressable>
       </ScrollView>
     </View>
   );
@@ -212,5 +223,22 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  linkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: theme.bgCard,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: theme.borderSubtle,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  linkRowText: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 13,
+    color: theme.textPrimary,
+    letterSpacing: 0.5,
   },
 });
