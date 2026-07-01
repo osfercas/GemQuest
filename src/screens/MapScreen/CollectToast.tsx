@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { GemShape, GEM_COLORS } from '../../components/GemShape';
+import { GEM_COLORS } from '../../components/GemShape';
+import { GemVisual } from '../../components/GemVisual';
 import { GemMarker } from './types';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
@@ -46,7 +47,7 @@ export default function CollectToast({ gem, onCollect, onDismiss }: Props) {
           onPress={onCollect}
           activeOpacity={0.75}
         >
-          <GemShape color={g.color} light={g.light} dark={g.dark} size={22} />
+          <GemVisual name={gem.name} size={22} />
           <Text style={[s.text, { color: g.light }]}>Capturar '{gem.name}'</Text>
         </TouchableOpacity>
       </Animated.View>
