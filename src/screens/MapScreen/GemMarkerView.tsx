@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { View, Animated, StyleSheet } from 'react-native';
 import { Marker } from 'react-native-maps';
 import { Feather } from '@expo/vector-icons';
-import { GEM_COLORS } from '../../components/GemShape';
+import { GEM_COLORS, DRAGON_BALL_COLORS } from '../../components/GemShape';
 import { GemVisual } from '../../components/GemVisual';
 import { GemMarker } from './types';
 import { useTheme } from '../../theme/ThemeContext';
@@ -37,7 +37,7 @@ export default function GemMarkerView({ gem, isNear, onPress }: Props) {
   const { theme } = useTheme();
   const isAnime = theme.id === 'animeMagico';
   const g = GEM_COLORS[gem.name];
-  const glowColor = isAnime ? '#FF6600' : g.color;
+  const glowColor = isAnime ? DRAGON_BALL_COLORS.glow : g.color;
 
   useEffect(() => {
     const t = setTimeout(() => setTracksViews(false), 500);

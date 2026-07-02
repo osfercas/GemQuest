@@ -32,9 +32,9 @@ export default function GemsScreen({ navigation }: Props) {
       </View>
 
       <ScrollView contentContainerStyle={[s.scroll, { paddingBottom: insets.bottom + 24 }]}>
-        {GEM_NAMES.map((name, i) => (
+        {GEM_NAMES.map((name) => (
           <View key={name} style={s.card}>
-            <GemVisual name={name} size={140} stars={theme.numberedGems ? i + 1 : undefined} />
+            <GemVisual name={name} size={140} />
             <Text style={s.cardName}>{name}</Text>
           </View>
         ))}

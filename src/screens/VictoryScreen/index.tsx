@@ -81,7 +81,7 @@ export default function VictoryScreen({ route, navigation }: Props) {
           transform: [{ scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) }],
         }]}
       >
-        <GemVisual name={name} size={32} collected={collected} stars={GEM_NAMES.indexOf(name) + 1} />
+        <GemVisual name={name} size={32} collected={collected} />
         <Text style={[s.gemLabel, !collected && { opacity: 0.3 }]}>
           {label}
         </Text>

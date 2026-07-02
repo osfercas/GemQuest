@@ -1,6 +1,6 @@
 import { ComponentType } from 'react';
 import { View } from 'react-native';
-import { GemShape, DragonBallShape, GEM_COLORS, GemName } from './GemShape';
+import { GemShape, DragonBallShape, GEM_COLORS, GemName, getDragonBallStars } from './GemShape';
 import { RubyGem } from './gems/RubyGem';
 import { AmberGem } from './gems/AmberGem';
 import { AquamarineGem } from './gems/AquamarineGem';
@@ -37,17 +37,16 @@ interface Props {
   name: GemName;
   size: number;
   collected?: boolean;
-  stars?: number;
 }
 
-export function GemVisual({ name, size, collected = true, stars }: Readonly<Props>) {
+export function GemVisual({ name, size, collected = true }: Readonly<Props>) {
   const { theme } = useTheme();
   const g = GEM_COLORS[name];
 
   if (theme.id === 'animeMagico') {
     return (
       <View style={{ opacity: collected ? 1 : 0.25 }}>
-        <DragonBallShape size={size} stars={stars} />
+        <DragonBallShape size={size} stars={getDragonBallStars(name)} />
       </View>
     );
   }
