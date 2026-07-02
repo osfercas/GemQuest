@@ -4,55 +4,50 @@ import { useTheme } from '../../theme/ThemeContext';
 import { GemSparkle } from './GemSparkle';
 import { angleGradientLine } from './gemGradientMath';
 
-// Todas las facetas son divs `inset: 0` recortados por clip-path, así que en CSS
-// comparten un único fondo (mismo lienzo 100x100) en vez de tener cada una su propio
-// gradiente — por eso usamos userSpaceOnUse con las mismas coordenadas para todas.
-const FACETS = [
-  {
-    id: 'amberCeiling',
-    points: '27,4 73,4 64,21.5 36,21.5',
-    angle: 100,
-    stops: [{ o: 0, c: '#fde8ca' }, { o: 0.45, c: '#fccd8f' }, { o: 1, c: '#f7941d' }],
-  },
-  {
-    id: 'amberWallL',
-    points: '27,4 36,21.5 20,50 1,50',
-    angle: 105,
-    stops: [{ o: 0, c: '#fdd49a' }, { o: 0.55, c: '#fbc077' }, { o: 1, c: '#f3a64d' }],
-  },
-  {
-    id: 'amberLowerL',
-    points: '1,50 20,50 36,78.5 27,96',
-    angle: 115,
-    stops: [{ o: 0, c: '#fcc079' }, { o: 0.55, c: '#fbac50' }, { o: 1, c: '#ef9a35' }],
-  },
-  {
-    id: 'amberWallR',
-    points: '73,4 99,50 80,50 64,21.5',
-    angle: 245,
-    stops: [{ o: 0, c: '#fdbf6c' }, { o: 0.55, c: '#fba540' }, { o: 1, c: '#e98a23' }],
-  },
-  {
-    id: 'amberLowerR',
-    points: '99,50 73,96 64,78.5 80,50',
-    angle: 255,
-    stops: [{ o: 0, c: '#ef9a35' }, { o: 0.55, c: '#da831c' }, { o: 1, c: '#bd6f12' }],
-  },
-  {
-    id: 'amberFloor',
-    points: '27,96 36,78.5 64,78.5 73,96',
-    angle: 0,
-    stops: [{ o: 0, c: '#a86311' }, { o: 1, c: '#b96f18' }],
-  },
-  {
-    id: 'amberCenter',
-    points: '36,21.5 64,21.5 80,50 64,78.5 36,78.5 20,50',
-    angle: 125,
-    stops: [{ o: 0, c: '#ffd89b' }, { o: 0.32, c: '#fbb45f' }, { o: 0.66, c: '#f39a34' }, { o: 1, c: '#d97e18' }],
-  },
+// El diseño original (basado en % a mano) no era un hexágono perfectamente regular.
+// Aquí se construye uno de verdad: 6 vértices a 60° exactos, orientación "punta arriba"
+// (vértice en 0°, no borde plano), con un anillo exterior (facetas) y uno interior (tabla)
+// concéntricos y proporcionales.
+const CENTER = 50;
+const OUTER_R = 48;
+const INNER_R = OUTER_R * 0.62;
+const ANGLES = [0, 60, 120, 180, 240, 300];
+
+function hexPoint(angleDeg: number, radius: number) {
+  const rad = (angleDeg * Math.PI) / 180;
+  return `${CENTER + radius * Math.sin(rad)},${CENTER - radius * Math.cos(rad)}`;
+}
+
+const OUTER = ANGLES.map((a) => hexPoint(a, OUTER_R));
+const INNER = ANGLES.map((a) => hexPoint(a, INNER_R));
+
+// Cada arista del hexágono es una faceta trapezoidal (borde exterior -> interior).
+// Se reutilizan las 6 paletas de color del diseño original, reposicionadas a la nueva
+// geometría regular (misma iluminación relativa: más clara arriba, más oscura abajo).
+const SIDES = [
+  { id: 'amberCeiling', angle: 100, stops: [{ o: 0, c: '#fde8ca' }, { o: 0.45, c: '#fccd8f' }, { o: 1, c: '#f7941d' }] },
+  { id: 'amberWallR',   angle: 245, stops: [{ o: 0, c: '#fdbf6c' }, { o: 0.55, c: '#fba540' }, { o: 1, c: '#e98a23' }] },
+  { id: 'amberLowerR',  angle: 255, stops: [{ o: 0, c: '#ef9a35' }, { o: 0.55, c: '#da831c' }, { o: 1, c: '#bd6f12' }] },
+  { id: 'amberFloor',   angle: 0,   stops: [{ o: 0, c: '#a86311' }, { o: 1, c: '#b96f18' }] },
+  { id: 'amberLowerL',  angle: 115, stops: [{ o: 0, c: '#fcc079' }, { o: 0.55, c: '#fbac50' }, { o: 1, c: '#ef9a35' }] },
+  { id: 'amberWallL',   angle: 105, stops: [{ o: 0, c: '#fdd49a' }, { o: 0.55, c: '#fbc077' }, { o: 1, c: '#f3a64d' }] },
 ];
 
-const SHEEN_POINTS = '27,4 73,4 99,50 73,96 27,96 1,50';
+const FACETS = SIDES.map((side, i) => ({
+  ...side,
+  points: `${OUTER[i]} ${OUTER[(i + 1) % 6]} ${INNER[(i + 1) % 6]} ${INNER[i]}`,
+}));
+
+const CENTER_FACET = {
+  id: 'amberCenter',
+  angle: 125,
+  stops: [{ o: 0, c: '#ffd89b' }, { o: 0.32, c: '#fbb45f' }, { o: 0.66, c: '#f39a34' }, { o: 1, c: '#d97e18' }],
+  points: INNER.join(' '),
+};
+
+const ALL_FACETS = [...FACETS, CENTER_FACET];
+
+const SHEEN_POINTS = OUTER.join(' ');
 
 interface Props {
   size: number;
@@ -76,7 +71,7 @@ export function AmberGem({ size, collected = true }: Readonly<Props>) {
     >
       <Svg width={size} height={size} viewBox="0 0 100 100">
         <Defs>
-          {FACETS.map((facet) => {
+          {ALL_FACETS.map((facet) => {
             const line = angleGradientLine(facet.angle);
             return (
               <LinearGradient
@@ -102,7 +97,7 @@ export function AmberGem({ size, collected = true }: Readonly<Props>) {
           </LinearGradient>
         </Defs>
 
-        {FACETS.map((facet) => (
+        {ALL_FACETS.map((facet) => (
           <Polygon
             key={facet.id}
             points={facet.points}
