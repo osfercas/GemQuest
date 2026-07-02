@@ -56,7 +56,7 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
       >
         <View style={[s.card, { borderColor: accentColor }]}>
           <View style={s.header}>
-            <GemVisual name={gem.name} size={theme.numberedGems ? 70 : 20} stars={theme.numberedGems ? gemIndex : undefined} />
+            <GemVisual name={gem.name} size={theme.numberedGems ? 105 : 30} stars={theme.numberedGems ? gemIndex : undefined} />
             <Text style={[s.name, { color: accentColor }]}>
               {theme.numberedGems ? `${theme.termGem} ${gemIndex}` : gem.name}
             </Text>

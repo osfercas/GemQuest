@@ -4,21 +4,44 @@ import { useTheme } from '../../theme/ThemeContext';
 import { GemSparkle } from './GemSparkle';
 import { angleGradientLine } from './gemGradientMath';
 
-// 8 facetas trapezoidales (anillo exterior -> interior), colores planos como en el CSS.
-const FACETS = [
-  { points: '19,0 81,0 68.6,20 31.4,20',       color: '#a9d47a' }, // top
-  { points: '81,0 100,19 80,31.4 68.6,20',     color: '#8ec25c' }, // top-right
-  { points: '100,19 100,81 80,68.6 80,31.4',   color: '#6ba33f' }, // right
-  { points: '100,81 81,100 68.6,80 80,68.6',   color: '#5c9235' }, // bottom-right
-  { points: '81,100 19,100 31.4,80 68.6,80',   color: '#4e7f2c' }, // bottom
-  { points: '19,100 0,81 20,68.6 31.4,80',     color: '#5f9438' }, // bottom-left
-  { points: '0,81 0,19 20,31.4 20,68.6',       color: '#79b048' }, // left
-  { points: '0,19 19,0 31.4,20 20,31.4',       color: '#94c463' }, // top-left
-];
+// Octógono con 4 lados cortos (arriba/abajo/izq/dcha) y 4 largos (diagonales), donde
+// el corto mide exactamente la mitad del largo. Los 8 vértices están sobre un mismo
+// círculo de radio OUTER_R; alternando el hueco angular entre vértices consecutivos
+// (2·ALPHA para los lados cortos, 90°-2·ALPHA para los largos) se controla la relación
+// de longitudes: cuerda = 2·R·sin(hueco/2), así que 2·sin(ALPHA) = sin(45°-ALPHA)
+// (mitad de longitud) da ALPHA = atan((2√2-1)/7).
+const CENTER = 50;
+const ALPHA_RAD = Math.atan((2 * Math.sqrt(2) - 1) / 7);
+const ALPHA_DEG = (ALPHA_RAD * 180) / Math.PI;
+const OUTER_APOTHEM = 48; // distancia centro -> lado corto de arriba
+const INNER_APOTHEM = OUTER_APOTHEM * 0.62;
+const OUTER_R = OUTER_APOTHEM / Math.cos(ALPHA_RAD);
+const INNER_R = INNER_APOTHEM / Math.cos(ALPHA_RAD);
+// Vértices en pares ±ALPHA alrededor de cada dirección cardinal (0/90/180/270): el
+// hueco corto queda centrado en la cardinal (arriba, etc.) y el largo en la diagonal.
+// Orden horario desde arriba: top, tr, r, br, bot, bl, l, tl (igual que el CSS original).
+const VERTEX_ANGLES = [-ALPHA_DEG, ALPHA_DEG, 90 - ALPHA_DEG, 90 + ALPHA_DEG, 180 - ALPHA_DEG, 180 + ALPHA_DEG, 270 - ALPHA_DEG, 270 + ALPHA_DEG];
+
+function octPoint(angleDeg: number, radius: number) {
+  const rad = (angleDeg * Math.PI) / 180;
+  return `${CENTER + radius * Math.sin(rad)},${CENTER - radius * Math.cos(rad)}`;
+}
+
+const OUTER = VERTEX_ANGLES.map((a) => octPoint(a, OUTER_R));
+const INNER = VERTEX_ANGLES.map((a) => octPoint(a, INNER_R));
+
+// 8 facetas trapezoidales (anillo exterior -> interior), mismos colores planos del CSS
+// original, reposicionados sobre la geometría regular.
+const COLORS = ['#a9d47a', '#8ec25c', '#6ba33f', '#5c9235', '#4e7f2c', '#5f9438', '#79b048', '#94c463'];
+
+const FACETS = COLORS.map((color, i) => ({
+  color,
+  points: `${OUTER[i]} ${OUTER[(i + 1) % 8]} ${INNER[(i + 1) % 8]} ${INNER[i]}`,
+}));
 
 // La "table" comparte lienzo (inset:0) con las facetas, así que su gradiente se
 // calcula relativo a la caja completa 100x100, no a su propio bounding box.
-const TABLE_POINTS = '31.4,20 68.6,20 80,31.4 80,68.6 68.6,80 31.4,80 20,68.6 20,31.4';
+const TABLE_POINTS = INNER.join(' ');
 
 interface Props {
   size: number;

@@ -37,10 +37,10 @@ export function RubyGem({ size, collected = true }: Readonly<Props>) {
       <Svg width={size} height={size} viewBox="0 0 100 100">
         <Defs>
           <LinearGradient id="rubyTable" x1="15%" y1="0%" x2="85%" y2="100%">
-            <Stop offset="0"    stopColor={collected ? '#ffc2c9' : `${theme.textPrimary}40`} />
-            <Stop offset="0.38" stopColor={collected ? '#f47888' : `${theme.textPrimary}33`} />
-            <Stop offset="0.7"  stopColor={collected ? '#e23f50' : `${theme.textPrimary}26`} />
-            <Stop offset="1"    stopColor={collected ? '#c81e30' : `${theme.textPrimary}14`} />
+            <Stop offset="0"    stopColor="#ffc2c9" />
+            <Stop offset="0.38" stopColor="#f47888" />
+            <Stop offset="0.7"  stopColor="#e23f50" />
+            <Stop offset="1"    stopColor="#c81e30" />
           </LinearGradient>
         </Defs>
 
@@ -52,7 +52,7 @@ export function RubyGem({ size, collected = true }: Readonly<Props>) {
           />
         ))}
 
-        <Polygon points={TABLE_POINTS} fill="url(#rubyTable)" />
+        <Polygon points={TABLE_POINTS} fill={collected ? 'url(#rubyTable)' : `${theme.textPrimary}26`} />
       </Svg>
 
       <GemSparkle width={size} left={0.24} top={0.26} box={0.16875} delay={0}   gradientId="rubySparkle1" dim={!collected} />
