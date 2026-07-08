@@ -46,16 +46,17 @@ const WEDGES = [
 interface Props {
   size: number;
   collected?: boolean;
+  dimColor?: string;
 }
 
-export function AmethystGem({ size, collected = true }: Readonly<Props>) {
+export function AmethystGem({ size, collected = true, dimColor }: Readonly<Props>) {
   const { theme } = useTheme();
   // Contrato compartido con GemVisual: `size` es siempre el ALTO renderizado de la
   // gema; el ancho se deriva de la relación de aspecto propia del diseño (H > W aquí).
   const renderHeight = size;
   const renderWidth = size * (W / H);
   const scaleFactor = size / H;
-  const dimColor = `${theme.textPrimary}26`;
+  const dim = dimColor ?? `${theme.textPrimary}4D`;
 
   return (
     <View
@@ -95,12 +96,12 @@ export function AmethystGem({ size, collected = true }: Readonly<Props>) {
               />
             ))
           ) : (
-            <Rect x={0} y={0} width={W} height={H} fill={dimColor} />
+            <Rect x={0} y={0} width={W} height={H} fill={dim} />
           )}
         </G>
 
         <G clipPath="url(#amethystTableClip)">
-          <Rect x={0} y={0} width={W} height={H} fill={collected ? 'url(#amethystTable)' : dimColor} />
+          <Rect x={0} y={0} width={W} height={H} fill={collected ? 'url(#amethystTable)' : dim} />
         </G>
       </Svg>
 

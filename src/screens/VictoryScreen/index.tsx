@@ -14,6 +14,7 @@ import type { GemMarker } from '../MapScreen/types';
 import { useGameStorage } from '../../storage/useGameStorage';
 import type { Game } from '../HomeScreen/types';
 import { useTheme } from '../../theme/ThemeContext';
+import { ScreenBackground } from '../../components/ScreenBackground';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Victory'>;
 
@@ -90,7 +91,7 @@ export default function VictoryScreen({ route, navigation }: Props) {
   };
 
   return (
-    <View style={[s.root, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+    <ScreenBackground style={[s.root, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <LinearGradient
         colors={theme.gradientGlow}
         style={s.glow}
@@ -144,6 +145,6 @@ export default function VictoryScreen({ route, navigation }: Props) {
         </Animated.View>
 
       </View>
-    </View>
+    </ScreenBackground>
   );
 }

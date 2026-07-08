@@ -46,10 +46,12 @@ const TABLE_POINTS = INNER.join(' ');
 interface Props {
   size: number;
   collected?: boolean;
+  dimColor?: string;
 }
 
-export function EmeraldGem({ size, collected = true }: Readonly<Props>) {
+export function EmeraldGem({ size, collected = true, dimColor }: Readonly<Props>) {
   const { theme } = useTheme();
+  const dim = dimColor ?? `${theme.textPrimary}4D`;
 
   return (
     <View
@@ -77,11 +79,11 @@ export function EmeraldGem({ size, collected = true }: Readonly<Props>) {
           <Polygon
             key={facet.points}
             points={facet.points}
-            fill={collected ? facet.color : `${theme.textPrimary}26`}
+            fill={collected ? facet.color : dim}
           />
         ))}
 
-        <Polygon points={TABLE_POINTS} fill={collected ? 'url(#emeraldTable)' : `${theme.textPrimary}26`} />
+        <Polygon points={TABLE_POINTS} fill={collected ? 'url(#emeraldTable)' : dim} />
       </Svg>
 
       <GemSparkle width={size} left={0.12} top={0.08} box={60 / 330} delay={0}   gradientId="emeraldSparkle1" dim={!collected} />

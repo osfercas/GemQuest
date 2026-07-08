@@ -6,6 +6,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { MainStackParamList } from '../../navigation/MainStack';
 import { GemVisual } from '../../components/GemVisual';
+import { ScreenBackground } from '../../components/ScreenBackground';
 import { GEM_NAMES } from '../MapScreen/utils';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
@@ -18,7 +19,7 @@ export default function GemsScreen({ navigation }: Props) {
   const s = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <View style={[s.root, { paddingTop: insets.top }]}>
+    <ScreenBackground style={[s.root, { paddingTop: insets.top }]}>
       <View style={s.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -35,18 +36,17 @@ export default function GemsScreen({ navigation }: Props) {
         {GEM_NAMES.map((name) => (
           <View key={name} style={s.card}>
             <GemVisual name={name} size={140} />
-            <Text style={s.cardName}>{name}</Text>
+            {theme.id === 'mainQuest' && <Text style={s.cardName}>{name}</Text>}
           </View>
         ))}
       </ScrollView>
-    </View>
+    </ScreenBackground>
   );
 }
 
 const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: theme.bgRoot,
   },
   header: {
     flexDirection: 'row',

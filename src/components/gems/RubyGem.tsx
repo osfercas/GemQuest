@@ -17,10 +17,12 @@ const TABLE_POINTS = '50,24 76,50 50,76 24,50';
 interface Props {
   size: number;
   collected?: boolean;
+  dimColor?: string;
 }
 
-export function RubyGem({ size, collected = true }: Readonly<Props>) {
+export function RubyGem({ size, collected = true, dimColor }: Readonly<Props>) {
   const { theme } = useTheme();
+  const dim = dimColor ?? `${theme.textPrimary}4D`;
 
   return (
     <View
@@ -48,11 +50,11 @@ export function RubyGem({ size, collected = true }: Readonly<Props>) {
           <Polygon
             key={facet.points}
             points={facet.points}
-            fill={collected ? facet.color : `${theme.textPrimary}26`}
+            fill={collected ? facet.color : dim}
           />
         ))}
 
-        <Polygon points={TABLE_POINTS} fill={collected ? 'url(#rubyTable)' : `${theme.textPrimary}26`} />
+        <Polygon points={TABLE_POINTS} fill={collected ? 'url(#rubyTable)' : dim} />
       </Svg>
 
       <GemSparkle width={size} left={0.24} top={0.26} box={0.16875} delay={0}   gradientId="rubySparkle1" dim={!collected} />

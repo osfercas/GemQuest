@@ -11,7 +11,6 @@ export const createStyles = (theme: Theme) => StyleSheet.create({
   },
   root: {
     flex: 1,
-    backgroundColor: theme.bgRoot,
   },
   content: {
     flex: 1,

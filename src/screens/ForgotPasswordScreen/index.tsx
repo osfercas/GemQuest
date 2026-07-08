@@ -18,6 +18,7 @@ import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { sendPasswordReset } from '../../services/auth';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
+import { ScreenBackground } from '../../components/ScreenBackground';
 
 const { width: SW } = Dimensions.get('window');
 
@@ -67,8 +68,8 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={[styles.root, { paddingBottom: 48 + bottom }]}>
-      <StatusBar style={theme.id === 'darkGold' ? 'light' : 'dark'} />
+    <ScreenBackground style={[styles.root, { paddingBottom: 48 + bottom }]}>
+      <StatusBar style={theme.id === 'mainQuest' ? 'light' : 'dark'} />
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} hitSlop={12}>
@@ -116,12 +117,12 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
           </LinearGradient>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScreenBackground>
   );
 }
 
 const createStyles = (theme: Theme) => StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.bgRoot, paddingHorizontal: 24, paddingTop: 64 },
+  root: { flex: 1, paddingHorizontal: 24, paddingTop: 64 },
   header: { marginBottom: 40 },
   backBtn: { marginBottom: 24 },
   title: {

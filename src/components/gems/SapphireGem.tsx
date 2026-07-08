@@ -34,10 +34,12 @@ const OCTAGON_TRANSFORM =
 interface Props {
   size: number;
   collected?: boolean;
+  dimColor?: string;
 }
 
-export function SapphireGem({ size, collected = true }: Readonly<Props>) {
+export function SapphireGem({ size, collected = true, dimColor }: Readonly<Props>) {
   const { theme } = useTheme();
+  const dim = dimColor ?? `${theme.textPrimary}4D`;
 
   return (
     <View
@@ -66,11 +68,11 @@ export function SapphireGem({ size, collected = true }: Readonly<Props>) {
             <Polygon
               key={facet.points}
               points={facet.points}
-              fill={collected ? facet.color : `${theme.textPrimary}26`}
+              fill={collected ? facet.color : dim}
             />
           ))}
 
-          <Polygon points={TABLE_POINTS} fill={collected ? 'url(#sapphireTable)' : `${theme.textPrimary}26`} />
+          <Polygon points={TABLE_POINTS} fill={collected ? 'url(#sapphireTable)' : dim} />
         </G>
       </Svg>
 

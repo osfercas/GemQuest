@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { GemName } from '../components/GemShape';
 import { GemVisual } from '../components/GemVisual';
+import { ScreenBackground } from '../components/ScreenBackground';
 import type { AuthStackParamList } from '../navigation/AuthStack';
 import { signInWithEmail, signInWithGoogle } from '../services/auth';
 import { useTheme } from '../theme/ThemeContext';
@@ -118,8 +119,8 @@ export default function LoginScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.root}>
-      <StatusBar style={theme.id === 'darkGold' ? 'light' : 'dark'} />
+    <ScreenBackground style={styles.root}>
+      <StatusBar style={theme.id === 'mainQuest' ? 'light' : 'dark'} />
 
       {STARS.map((s, i) => (
         <View
@@ -244,12 +245,12 @@ export default function LoginScreen({ navigation }: Props) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </ScreenBackground>
   );
 }
 
 const createStyles = (theme: Theme) => StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.bgRoot },
+  root: { flex: 1 },
   scroll: { flexGrow: 1, alignItems: 'center', paddingTop: 56 },
   gemsContainer: { width: SW, height: 160, position: 'relative' },
   logoSection: { alignItems: 'center', marginTop: 16, marginBottom: 44 },

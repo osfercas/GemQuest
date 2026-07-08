@@ -20,6 +20,7 @@ import { signUpWithEmail } from '../../services/auth';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
+import { ScreenBackground } from '../../components/ScreenBackground';
 
 const { width: SW } = Dimensions.get('window');
 
@@ -82,8 +83,8 @@ export default function RegisterScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.root}>
-      <StatusBar style={theme.id === 'darkGold' ? 'light' : 'dark'} />
+    <ScreenBackground style={styles.root}>
+      <StatusBar style={theme.id === 'mainQuest' ? 'light' : 'dark'} />
 
       <ScrollView
         contentContainerStyle={[styles.scroll, { paddingBottom: 48 + bottom }]}
@@ -187,12 +188,12 @@ export default function RegisterScreen({ navigation }: Props) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </ScreenBackground>
   );
 }
 
 const createStyles = (theme: Theme) => StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.bgRoot },
+  root: { flex: 1 },
   scroll: { flexGrow: 1, alignItems: 'center', paddingTop: 64 },
   header: { width: SW - 48, marginBottom: 40 },
   backBtn: { marginBottom: 24 },

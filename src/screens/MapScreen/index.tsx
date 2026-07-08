@@ -190,7 +190,7 @@ export default function MapScreen({ route, navigation }: Props) {
 
   const radius = game?.radius ?? 0.5;
   const gameName = game?.name ?? 'Aventura';
-  const mapStyle = theme.id === 'darkGold' ? DARK_MAP_STYLE : LIGHT_MAP_STYLE;
+  const mapStyle = theme.id === 'mainQuest' ? DARK_MAP_STYLE : LIGHT_MAP_STYLE;
 
   return (
     <View style={[s.root, { paddingBottom: insets.bottom }]}>

@@ -21,6 +21,7 @@ function formatRadius(radius: number) {
 
 export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
   const { theme } = useTheme();
+  const isJungle = theme.id === 'mainQuest';
   const { loadGameState } = useGameStorage();
   const s = useMemo(() => createActiveCardStyles(theme), [theme]);
   const progress = game.gemsFound / game.gemsTotal;
@@ -35,13 +36,13 @@ export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
   return (
     <TouchableOpacity style={s.card} activeOpacity={0.82}>
       <LinearGradient
-        colors={[`${theme.accentPrimary}12`, `${theme.accentPrimary}04`]}
+        colors={isJungle ? ['rgba(41,146,89,0.10)', 'rgba(41,146,89,0.02)'] : [`${theme.accentPrimary}12`, `${theme.accentPrimary}04`]}
         style={StyleSheet.absoluteFill}
       />
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <Text style={[s.name, { flex: 1, marginRight: 6 }]} numberOfLines={1}>{game.name}</Text>
         <TouchableOpacity onPress={onDelete} hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }} activeOpacity={0.7}>
-          <Feather name="trash-2" size={14} color={`${theme.colorError}8C`} />
+          <Feather name="trash-2" size={14} color={`${theme.colorError}ac`} />
         </TouchableOpacity>
       </View>
       <Text style={s.radius}>{formatRadius(game.radius)}</Text>
@@ -53,19 +54,25 @@ export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
 
       <View style={s.gems}>
         {gemMarkers.map(gem => (
-          <GemVisual key={gem.id} name={gem.name} size={12} collected={gem.collected} />
+          <GemVisual
+            key={gem.id}
+            name={gem.name}
+            size={12}
+            collected={gem.collected}
+            dimColor={isJungle ? 'rgba(30,58,36,0.45)' : undefined}
+          />
         ))}
       </View>
 
       <TouchableOpacity style={s.resumeBtn} activeOpacity={0.8} onPress={onResume}>
         <LinearGradient
-          colors={theme.gradientButton}
+          colors={isJungle ? ['#299259', '#1e6b3f'] : theme.gradientButton}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={s.resumeGradient}
         >
           <Text style={s.resumeText}>Continuar</Text>
-          <Feather name="arrow-right" size={12} color={theme.textOnAccent} />
+          <Feather name="arrow-right" size={12} color={isJungle ? '#FFFFFF' : theme.textOnAccent} />
         </LinearGradient>
       </TouchableOpacity>
     </TouchableOpacity>

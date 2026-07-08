@@ -52,10 +52,12 @@ const SHEEN_POINTS = OUTER.join(' ');
 interface Props {
   size: number;
   collected?: boolean;
+  dimColor?: string;
 }
 
-export function AmberGem({ size, collected = true }: Readonly<Props>) {
+export function AmberGem({ size, collected = true, dimColor }: Readonly<Props>) {
   const { theme } = useTheme();
+  const dim = dimColor ?? `${theme.textPrimary}4D`;
 
   return (
     <View
@@ -101,7 +103,7 @@ export function AmberGem({ size, collected = true }: Readonly<Props>) {
           <Polygon
             key={facet.id}
             points={facet.points}
-            fill={collected ? `url(#${facet.id})` : `${theme.textPrimary}26`}
+            fill={collected ? `url(#${facet.id})` : dim}
           />
         ))}
 

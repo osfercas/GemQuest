@@ -3,8 +3,8 @@ import type { Theme } from '../../theme'
 
 const { width: SW } = Dimensions.get('window')
 
-export const createRootStyles = (theme: Theme) => StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.bgRoot },
+export const createRootStyles = () => StyleSheet.create({
+  root: { flex: 1 },
   scroll: { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
 })
@@ -19,15 +19,15 @@ export const createHeaderStyles = (theme: Theme) => StyleSheet.create({
   },
   greeting: {
     fontFamily: 'Nunito_400Regular',
-    fontSize: 12,
-    color: theme.textSecondary,
+    fontSize: 14,
+    color: theme.textPrimary,
     letterSpacing: 0.5,
-    opacity: 0.7,
+    opacity: 1,
   },
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 22,
-    color: theme.accentPrimary,
+    color: theme.textPrimary,
     letterSpacing: 2,
     textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
@@ -108,16 +108,16 @@ export const createSectionStyles = (theme: Theme) => StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: theme.accentPrimary,
+    backgroundColor: theme.accentDark,
   },
   title: {
     fontFamily: 'Cinzel_700Bold',
-    fontSize: 11,
-    color: theme.textSecondary,
+    fontSize: 12,
+    color: theme.textPrimary,
     letterSpacing: 2.5,
     textTransform: 'uppercase',
     flex: 1,
-    opacity: 0.85,
+    opacity: 1,
   },
   count: {
     fontFamily: 'Nunito_600SemiBold',
@@ -127,109 +127,125 @@ export const createSectionStyles = (theme: Theme) => StyleSheet.create({
   cardRow: { gap: 12, paddingRight: 4 },
 })
 
-export const createActiveCardStyles = (theme: Theme) => StyleSheet.create({
-  card: {
-    width: 180,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: `${theme.accentPrimary}26`,
-    padding: 14,
-    gap: 6,
-    overflow: 'hidden',
-    backgroundColor: theme.bgCard,
-  },
-  name: {
-    fontFamily: 'Cinzel_700Bold',
-    fontSize: 13,
-    color: theme.textPrimary,
-    letterSpacing: 0.5,
-  },
-  radius: {
-    fontFamily: 'Nunito_400Regular',
-    fontSize: 11,
-    color: theme.textTertiary,
-  },
-  progressBg: {
-    height: 4,
-    backgroundColor: `${theme.accentPrimary}1F`,
-    borderRadius: 2,
-    marginTop: 4,
-  },
-  progressFill: {
-    height: 4,
-    backgroundColor: theme.accentPrimary,
-    borderRadius: 2,
-  },
-  progressLabel: {
-    fontFamily: 'Nunito_400Regular',
-    fontSize: 10,
-    color: theme.textTertiary,
-  },
-  gems: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: -6,
-    marginTop: 2,
-  },
-  resumeBtn: { marginTop: 6 },
-  resumeGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 4,
-    borderRadius: 8,
-    paddingVertical: 7,
-  },
-  resumeText: {
-    fontFamily: 'Cinzel_700Bold',
-    fontSize: 10,
-    color: theme.textOnAccent,
-    letterSpacing: 1.5,
-    textTransform: 'uppercase',
-  },
-})
+export const createActiveCardStyles = (theme: Theme) => {
+  const isJungle = theme.id === 'mainQuest'
+  return StyleSheet.create({
+    card: {
+      width: 180,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: isJungle ? 'rgba(41,146,89,0.35)' : `${theme.accentPrimary}26`,
+      padding: 14,
+      gap: 6,
+      overflow: 'hidden',
+      backgroundColor: isJungle ? 'rgba(223,241,184,0.9)' : theme.bgCard,
+    },
+    name: {
+      fontFamily: 'Cinzel_700Bold',
+      fontSize: 13,
+      color: isJungle ? '#1e3a24' : theme.textPrimary,
+      letterSpacing: 0.5,
+    },
+    radius: {
+      fontFamily: 'Nunito_400Regular',
+      fontSize: 11,
+      color: isJungle ? '#4d7a3f' : theme.textTertiary,
+    },
+    progressBg: {
+      height: 4,
+      backgroundColor: isJungle ? 'rgba(41,146,89,0.2)' : `${theme.accentPrimary}1F`,
+      borderRadius: 2,
+      marginTop: 4,
+    },
+    progressFill: {
+      height: 4,
+      backgroundColor: isJungle ? '#299259' : theme.accentPrimary,
+      borderRadius: 2,
+    },
+    progressLabel: {
+      fontFamily: 'Nunito_400Regular',
+      fontSize: 10,
+      color: isJungle ? '#4d7a3f' : theme.textTertiary,
+    },
+    gems: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: -6,
+      marginTop: 2,
+    },
+    resumeBtn: { marginTop: 6 },
+    resumeGradient: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 4,
+      borderRadius: 8,
+      paddingVertical: 7,
+    },
+    resumeText: {
+      fontFamily: 'Cinzel_700Bold',
+      fontSize: 10,
+      color: isJungle ? '#FFFFFF' : theme.textOnAccent,
+      letterSpacing: 1.5,
+      textTransform: 'uppercase',
+    },
+  })
+}
 
-export const createFinishedRowStyles = (theme: Theme) => StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: theme.borderSubtle,
-    gap: 12,
-  },
-  icon: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    borderWidth: 1,
-    borderColor: `${theme.textPrimary}26`,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconPerfect: {
-    borderColor: `${theme.accentPrimary}66`,
-    backgroundColor: `${theme.accentPrimary}14`,
-  },
-  info: { flex: 1 },
-  name: {
-    fontFamily: 'Cinzel_700Bold',
-    fontSize: 13,
-    color: theme.textPrimary,
-    letterSpacing: 0.3,
-  },
-  meta: {
-    fontFamily: 'Nunito_400Regular',
-    fontSize: 11,
-    color: theme.textTertiary,
-    marginTop: 2,
-  },
-  gems: {
-    flexDirection: 'row',
-    gap: -8,
-    alignItems: 'center',
-  },
-})
+export const createFinishedRowStyles = (theme: Theme) => {
+  const isJungle = theme.id === 'mainQuest'
+  return StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      ...(isJungle
+        ? {
+          backgroundColor: 'rgba(223,241,184,0.9)',
+          borderRadius: 14,
+          paddingHorizontal: 14,
+          paddingVertical: 12,
+          marginBottom: 8,
+        }
+        : {
+          paddingVertical: 12,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderBottomColor: theme.borderSubtle,
+        }),
+    },
+    icon: {
+      width: 34,
+      height: 34,
+      borderRadius: 17,
+      borderWidth: 1,
+      borderColor: isJungle ? 'rgba(41,146,89,0.35)' : `${theme.textPrimary}26`,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    iconPerfect: {
+      borderColor: isJungle ? '#299259' : `${theme.accentPrimary}66`,
+      backgroundColor: isJungle ? 'rgba(41,146,89,0.16)' : `${theme.accentPrimary}14`,
+    },
+    info: { flex: 1 },
+    name: {
+      fontFamily: 'Cinzel_700Bold',
+      fontSize: 13,
+      color: isJungle ? '#1e3a24' : theme.textPrimary,
+      letterSpacing: 0.3,
+    },
+    meta: {
+      fontFamily: 'Nunito_400Regular',
+      fontSize: 11,
+      color: isJungle ? '#4d7a3f' : theme.textTertiary,
+      marginTop: 2,
+    },
+    gems: {
+      flexDirection: 'row',
+      gap: -8,
+      alignItems: 'center',
+    },
+  })
+}
 
 export const createDeleteSheetStyles = (theme: Theme) => StyleSheet.create({
   overlay: {

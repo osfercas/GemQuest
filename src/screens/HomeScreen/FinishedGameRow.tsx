@@ -16,6 +16,7 @@ function formatRadius(radius: number) {
 
 export default function FinishedGameRow({ game }: Props) {
   const { theme } = useTheme();
+  const isJungle = theme.id === 'mainQuest';
   const s = useMemo(() => createFinishedRowStyles(theme), [theme]);
   const perfect = game.gemsFound === game.gemsTotal;
 
@@ -25,7 +26,7 @@ export default function FinishedGameRow({ game }: Props) {
         <Feather
           name={perfect ? 'award' : 'check'}
           size={16}
-          color={perfect ? theme.accentPrimary : theme.textSecondary}
+          color={isJungle ? (perfect ? '#299259' : '#4d7a3f') : (perfect ? theme.accentPrimary : theme.textSecondary)}
         />
       </View>
 

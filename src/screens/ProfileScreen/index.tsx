@@ -15,6 +15,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
 import type { MainStackParamList } from '../../navigation/MainStack';
+import { ScreenBackground } from '../../components/ScreenBackground';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Profile'>;
 
@@ -44,8 +45,8 @@ export default function ProfileScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={[styles.root, { paddingTop: top, paddingBottom: bottom + 24 }]}>
-      <StatusBar style={theme.id === 'darkGold' ? 'light' : 'dark'} />
+    <ScreenBackground style={[styles.root, { paddingTop: top, paddingBottom: bottom + 24 }]}>
+      <StatusBar style={theme.id === 'mainQuest' ? 'light' : 'dark'} />
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12} activeOpacity={0.7}>
@@ -69,12 +70,12 @@ export default function ProfileScreen({ navigation }: Props) {
         <Feather name="log-out" size={18} color={theme.colorError} />
         <Text style={styles.signOutText}>Cerrar sesión</Text>
       </TouchableOpacity>
-    </View>
+    </ScreenBackground>
   );
 }
 
 const createStyles = (theme: Theme) => StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.bgRoot, paddingHorizontal: 24 },
+  root: { flex: 1, paddingHorizontal: 24 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

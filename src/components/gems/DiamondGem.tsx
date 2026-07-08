@@ -28,16 +28,17 @@ const TABLE_POINTS = pts([[43, 22], [57, 22], [66, 46], [34, 46]]);
 interface Props {
   size: number;
   collected?: boolean;
+  dimColor?: string;
 }
 
-export function DiamondGem({ size, collected = true }: Readonly<Props>) {
+export function DiamondGem({ size, collected = true, dimColor }: Readonly<Props>) {
   const { theme } = useTheme();
   // Contrato compartido con GemVisual: `size` es siempre el ALTO renderizado de la
   // gema; el ancho se deriva de la relación de aspecto propia del diseño (W > H aquí).
   const renderHeight = size;
   const renderWidth = size * (W / H);
   const scaleFactor = size / H;
-  const dimColor = `${theme.textPrimary}26`;
+  const dim = dimColor ?? `${theme.textPrimary}4D`;
 
   return (
     <View
@@ -64,11 +65,11 @@ export function DiamondGem({ size, collected = true }: Readonly<Props>) {
           <Polygon
             key={facet.points}
             points={facet.points}
-            fill={collected ? facet.color : dimColor}
+            fill={collected ? facet.color : dim}
           />
         ))}
 
-        <Polygon points={TABLE_POINTS} fill={collected ? 'url(#diamondTable)' : dimColor} />
+        <Polygon points={TABLE_POINTS} fill={collected ? 'url(#diamondTable)' : dim} />
       </Svg>
 
       <GemSparkle width={renderWidth} height={renderHeight} left={0.16} top={0.09} box={66 / W} delay={0}   gradientId="diamondSparkle1" dim={!collected} />

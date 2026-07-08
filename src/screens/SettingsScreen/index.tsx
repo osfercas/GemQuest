@@ -11,6 +11,7 @@ import type { MainStackParamList } from '../../navigation/MainStack';
 import { useTheme } from '../../theme/ThemeContext';
 import { THEMES } from '../../theme';
 import type { Theme } from '../../theme';
+import { ScreenBackground } from '../../components/ScreenBackground';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Settings'>;
 
@@ -20,7 +21,7 @@ export default function SettingsScreen({ navigation }: Props) {
   const s = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <View style={[s.root, { paddingTop: insets.top }]}>
+    <ScreenBackground style={[s.root, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={s.header}>
         <TouchableOpacity
@@ -58,7 +59,7 @@ export default function SettingsScreen({ navigation }: Props) {
           <Feather name="chevron-right" size={18} color={theme.textSecondary} />
         </Pressable>
       </ScrollView>
-    </View>
+    </ScreenBackground>
   );
 }
 
@@ -132,7 +133,6 @@ const dotStyles = StyleSheet.create({
 const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: theme.bgRoot,
   },
   header: {
     flexDirection: 'row',

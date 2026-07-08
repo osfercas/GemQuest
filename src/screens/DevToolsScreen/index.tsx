@@ -14,6 +14,7 @@ import { useGameStorage } from '../../storage/useGameStorage';
 import type { Game } from '../HomeScreen/types';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
+import { ScreenBackground } from '../../components/ScreenBackground';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'DevTools'>;
 
@@ -78,7 +79,7 @@ export default function DevToolsScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={[s.root, { paddingTop: insets.top }]}>
+    <ScreenBackground style={[s.root, { paddingTop: insets.top }]}>
       <View style={s.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
           <Feather name="arrow-left" size={20} color={`${theme.textPrimary}B3`} />
@@ -136,7 +137,7 @@ export default function DevToolsScreen({ navigation }: Props) {
 
         </ScrollView>
       )}
-    </View>
+    </ScreenBackground>
   );
 }
 
@@ -188,7 +189,7 @@ function Row({ label, value, mono = false, dim = false, s }: { label: string; va
 }
 
 const createStyles = (theme: Theme) => StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.bgRoot },
+  root: { flex: 1 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

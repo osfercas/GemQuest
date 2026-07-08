@@ -10,7 +10,7 @@ import { AmethystGem } from './gems/AmethystGem';
 import { SapphireGem } from './gems/SapphireGem';
 import { useTheme } from '../theme/ThemeContext';
 
-const GEM_SHAPES: Partial<Record<GemName, ComponentType<{ size: number; collected?: boolean }>>> = {
+const GEM_SHAPES: Partial<Record<GemName, ComponentType<{ size: number; collected?: boolean; dimColor?: string }>>> = {
   Ruby: RubyGem,
   Amber: AmberGem,
   Aquamarine: AquamarineGem,
@@ -37,9 +37,10 @@ interface Props {
   name: GemName;
   size: number;
   collected?: boolean;
+  dimColor?: string;
 }
 
-export function GemVisual({ name, size, collected = true }: Readonly<Props>) {
+export function GemVisual({ name, size, collected = true, dimColor }: Readonly<Props>) {
   const { theme } = useTheme();
   const g = GEM_COLORS[name];
 
@@ -59,7 +60,7 @@ export function GemVisual({ name, size, collected = true }: Readonly<Props>) {
 
     return (
       <View style={{ width: shapeWidth + pad * 2, height: size, alignItems: 'center', justifyContent: 'center' }}>
-        <Shape size={shapeSize} collected={collected} />
+        <Shape size={shapeSize} collected={collected} dimColor={dimColor} />
       </View>
     );
   }

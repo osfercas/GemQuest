@@ -1,3 +1,5 @@
+import type { ImageSourcePropType } from 'react-native'
+
 export interface Theme {
   id: string
   name: string
@@ -38,39 +40,46 @@ export interface Theme {
   circleStroke: string
   circleStrokeWidth: number
   circleFill: string
+  // Root screen background image + legibility overlay (optional — falls back to bgRoot when absent)
+  bgRootImage?: ImageSourcePropType
+  bgRootOverlay?: readonly [string, string, string]
+  bgRootOverlayLocations?: readonly [number, number, number]
 }
 
-export const darkGoldTheme: Theme = {
-  id: 'darkGold',
-  name: 'Oro Oscuro',
-  bgRoot: '#080B14',
-  bgCard: '#0E1220',
-  bgCardAlt: '#0A0D1A',
-  bgInput: 'rgba(255,255,255,0.04)',
-  bgOverlay: 'rgba(0,0,0,0.65)',
-  textPrimary: '#E8DDB5',
-  textSecondary: 'rgba(232,221,181,0.55)',
-  textTertiary: 'rgba(232,221,181,0.35)',
-  textOnAccent: '#0A0D1A',
-  accentPrimary: '#FFD700',
-  accentSecondary: '#C8860A',
-  accentDark: '#D4900A',
-  borderPrimary: 'rgba(255,215,0,0.18)',
-  borderSubtle: 'rgba(232,221,181,0.08)',
+export const mainQuestTheme: Theme = {
+  id: 'mainQuest',
+  name: 'Main Quest',
+  bgRoot: '#0A2A16',
+  bgCard: '#123A22',
+  bgCardAlt: '#0D3019',
+  bgInput: 'rgba(41,146,89,0.06)',
+  bgOverlay: 'rgba(10,42,22,0.7)',
+  textPrimary: '#DFF1B8',
+  textSecondary: 'rgba(223,241,184,0.62)',
+  textTertiary: 'rgba(223,241,184,0.35)',
+  textOnAccent: '#FFFFFF',
+  accentPrimary: '#299259',
+  accentSecondary: '#66C068',
+  accentDark: '#1e6b3f',
+  borderPrimary: 'rgba(41,146,89,0.28)',
+  borderSubtle: 'rgba(223,241,184,0.10)',
   colorError: '#FF6B6B',
-  colorSuccess: '#6BCB77',
-  gradientButton: ['#FFD700', '#D4900A'],
-  gradientCard: ['#0E1220', '#0A0D1A', '#080B14'],
-  gradientHero: ['#1A1400', '#0E0B00', '#080B14'],
-  gradientGlow: ['rgba(255,215,0,0.12)', 'transparent'],
-  termGem: 'Gema',
-  termGems: 'Gemas',
+  colorSuccess: '#66C068',
+  gradientButton: ['#299259', '#1e6b3f'],
+  gradientCard: ['#123A22', '#0D3019', '#0A2A16'],
+  gradientHero: ['#0D3019', '#0A2A16', '#061A0E'],
+  gradientGlow: ['rgba(254,121,20,0.22)', 'transparent'],
+  termGem: 'Gem',
+  termGems: 'Gems',
   numberedGems: false,
-  shadowColor: '#FFD700',
-  shadowTextColor: 'rgba(255,215,0,0.45)',
-  circleStroke: 'rgba(255,215,0,0.5)',
+  shadowColor: '#299259',
+  shadowTextColor: 'rgba(41,146,89,0.45)',
+  circleStroke: 'rgba(41,146,89,0.6)',
   circleStrokeWidth: 1.5,
-  circleFill: 'transparent',
+  circleFill: 'rgba(255,221,85,0.07)',
+  // bgRootImage: require('../../assets/jungle_bkg.png'),
+  bgRootOverlay: ['rgba(10,42,22,0.5)', 'rgba(10,42,22,0)', 'rgba(10,42,22,0.88)'],
+  bgRootOverlayLocations: [0, 0.5, 1],
 }
 
 export const animeMagicoTheme: Theme = {
@@ -96,8 +105,8 @@ export const animeMagicoTheme: Theme = {
   gradientCard: ['#F6ECE2', '#E4CDBC', '#D9C2AE'],
   gradientHero: ['#252525', '#8C2D0B', '#C60209'],
   gradientGlow: ['rgba(228, 191, 85, 0.3)', 'transparent'],
-  termGem: 'Bola',
-  termGems: 'Bolas',
+  termGem: 'Ball',
+  termGems: 'Balls',
   numberedGems: true,
   shadowColor: '#C60209',
   shadowTextColor: 'rgba(198, 2, 9, 0.4)',
@@ -107,8 +116,8 @@ export const animeMagicoTheme: Theme = {
 }
 
 export const THEMES: Record<string, Theme> = {
-  darkGold: darkGoldTheme,
+  mainQuest: mainQuestTheme,
   animeMagico: animeMagicoTheme,
 }
 
-export const DEFAULT_THEME_ID = 'darkGold'
+export const DEFAULT_THEME_ID = 'mainQuest'

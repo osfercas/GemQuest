@@ -68,8 +68,8 @@ interface Theme {
 
 ### 1. `src/theme/index.ts`
 - Define la interfaz `Theme`
-- Define los dos temas: `darkGoldTheme` y `animeMagicoTheme`
-- Exporta `THEMES: Record<string, Theme>` y `DEFAULT_THEME_ID = 'darkGold'`
+- Define los dos temas: `mainQuestTheme` y `animeMagicoTheme`
+- Exporta `THEMES: Record<string, Theme>` y `DEFAULT_THEME_ID = 'mainQuest'`
 
 **Tema Oro Oscuro** — extrae valores actuales:
 - `bgRoot: '#080B14'`, `accentPrimary: '#FFD700'`, `textPrimary: '#E8DDB5'`, etc.

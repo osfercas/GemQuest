@@ -35,16 +35,17 @@ function scaleAroundCenter(scale: number) {
 interface Props {
   size: number;
   collected?: boolean;
+  dimColor?: string;
 }
 
-export function AquamarineGem({ size, collected = true }: Readonly<Props>) {
+export function AquamarineGem({ size, collected = true, dimColor }: Readonly<Props>) {
   const { theme } = useTheme();
   // `size` es la dimensión mayor (H > W en el diseño original), así que la gema
   // siempre cabe dentro de una caja size×size sin desbordar, igual que el resto de gemas.
   const renderHeight = size;
   const renderWidth = size * (W / H);
   const scaleFactor = size / H;
-  const dimColor = `${theme.textPrimary}26`;
+  const dim = dimColor ?? `${theme.textPrimary}4D`;
 
   return (
     <View
@@ -83,7 +84,7 @@ export function AquamarineGem({ size, collected = true }: Readonly<Props>) {
                 />
               ))
             ) : (
-              <Rect x={0} y={0} width={W} height={H} fill={dimColor} />
+              <Rect x={0} y={0} width={W} height={H} fill={dim} />
             )}
           </G>
         </G>
@@ -91,7 +92,7 @@ export function AquamarineGem({ size, collected = true }: Readonly<Props>) {
         {/* table: cara plana central, escalada al 62% */}
         <G transform={scaleAroundCenter(0.62)}>
           <G clipPath="url(#aquaClip)">
-            <Rect x={0} y={0} width={W} height={H} fill={collected ? 'url(#aquaTable)' : dimColor} />
+            <Rect x={0} y={0} width={W} height={H} fill={collected ? 'url(#aquaTable)' : dim} />
           </G>
         </G>
       </Svg>
