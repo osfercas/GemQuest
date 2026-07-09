@@ -26,11 +26,11 @@ const { width: SW } = Dimensions.get('window');
 
 function mapFirebaseError(code: string): string {
   switch (code) {
-    case 'auth/email-already-in-use':   return 'Ya existe una cuenta con ese correo.';
-    case 'auth/invalid-email':           return 'Correo electrónico inválido.';
-    case 'auth/weak-password':           return 'La contraseña es demasiado débil.';
-    case 'auth/network-request-failed':  return 'Sin conexión a internet.';
-    default:                             return 'Algo salió mal. Inténtalo de nuevo.';
+    case 'auth/email-already-in-use': return 'Ya existe una cuenta con ese correo.';
+    case 'auth/invalid-email': return 'Correo electrónico inválido.';
+    case 'auth/weak-password': return 'La contraseña es demasiado débil.';
+    case 'auth/network-request-failed': return 'Sin conexión a internet.';
+    default: return 'Algo salió mal. Inténtalo de nuevo.';
   }
 }
 
@@ -209,10 +209,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   subtitle: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 11,
-    color: theme.accentSecondary,
+    color: theme.accentPrimary,
     letterSpacing: 3,
     marginTop: 6,
     textTransform: 'uppercase',
+    textShadowColor: theme.shadowTextColor,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   form: { width: SW - 48, gap: 14 },
   inputWrap: {
@@ -254,12 +257,22 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     textTransform: 'uppercase',
   },
   loginRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 4 },
-  loginText: { fontFamily: 'Nunito_400Regular', fontSize: 13, color: theme.textSecondary },
+  loginText: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 13,
+    color: theme.textSecondary,
+    textShadowColor: theme.shadowTextColor,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
+  },
   loginLink: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 13,
     color: theme.accentPrimary,
     textDecorationLine: 'underline',
     textDecorationColor: `${theme.accentPrimary}80`,
+    textShadowColor: theme.shadowTextColor,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
 });

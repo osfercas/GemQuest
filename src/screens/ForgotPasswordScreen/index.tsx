@@ -141,6 +141,9 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     letterSpacing: 3,
     marginTop: 6,
     textTransform: 'uppercase',
+    textShadowColor: theme.shadowTextColor,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   form: { width: SW - 48, gap: 14 },
   inputWrap: {
@@ -160,6 +163,9 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     fontSize: 13,
     textAlign: 'center',
     marginTop: -4,
+    textShadowColor: theme.shadowTextColor,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   primaryBtn: {
     borderRadius: 12,

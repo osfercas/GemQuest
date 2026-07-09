@@ -19,7 +19,7 @@ export function ScreenBackground({ style, children }: Readonly<Props>) {
           locations={theme.bgRootOverlayLocations}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
-          style={[StyleSheet.absoluteFill, { zIndex: 1 }]}
+          style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
         {children}
