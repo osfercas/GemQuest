@@ -1,48 +1,53 @@
 import { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { GemShape, GEM_COLORS } from '../../components/GemShape';
+import { GemVisual } from '../../components/GemVisual';
 import { createFinishedRowStyles } from './styles';
 import { Game } from './types';
 import { useTheme } from '../../theme/ThemeContext';
 
 interface Props {
   game: Game;
+  onDelete: () => void;
 }
 
 function formatRadius(radius: number) {
   return radius < 1 ? `${radius * 1000} m` : `${radius} km`;
 }
 
-export default function FinishedGameRow({ game }: Props) {
+export default function FinishedGameRow({ game, onDelete }: Props) {
   const { theme } = useTheme();
-  const isJungle = theme.id === 'mainQuest';
   const s = useMemo(() => createFinishedRowStyles(theme), [theme]);
   const perfect = game.gemsFound === game.gemsTotal;
 
   return (
-    <TouchableOpacity style={s.row} activeOpacity={0.75}>
-      <View style={[s.icon, perfect && s.iconPerfect]}>
-        <Feather
-          name={perfect ? 'award' : 'check'}
-          size={16}
-          color={isJungle ? (perfect ? '#299259' : '#4d7a3f') : (perfect ? theme.accentPrimary : theme.textSecondary)}
-        />
-      </View>
+    <View style={s.row}>
+      <View style={s.topRow}>
+        <View style={[s.icon, perfect && s.iconPerfect]}>
+          <Feather
+            name={perfect ? 'award' : 'check'}
+            size={16}
+            color={perfect ? theme.accentPrimary : theme.textSecondary}
+          />
+        </View>
 
-      <View style={s.info}>
-        <Text style={s.name}>{game.name}</Text>
-        <Text style={s.meta}>
-          {game.gemsFound}/{game.gemsTotal} {theme.termGems.toLowerCase()} · {formatRadius(game.radius)} · {game.date}
-        </Text>
+        <View style={s.info}>
+          <Text style={s.name}>{game.name}</Text>
+          <Text style={s.meta}>
+            {game.gemsFound}/{game.gemsTotal} {theme.termGems.toLowerCase()} · {formatRadius(game.radius)} · {game.date}
+          </Text>
+        </View>
+
+        <TouchableOpacity onPress={onDelete} hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }} activeOpacity={0.7}>
+          <Feather name="trash-2" size={14} color={`${theme.colorError}ac`} />
+        </TouchableOpacity>
       </View>
 
       <View style={s.gems}>
-        {game.gems.slice(0, 3).map(name => {
-          const g = GEM_COLORS[name];
-          return <GemShape key={name} color={g.color} light={g.light} dark={g.dark} size={10} />;
-        })}
+        {game.gems.map(name => (
+          <GemVisual key={name} name={name} size={26} collected />
+        ))}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }

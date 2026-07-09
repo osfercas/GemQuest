@@ -12,6 +12,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { MainStackParamList } from '../../navigation/MainStack';
 import { useGameStorage } from '../../storage/useGameStorage';
 import type { Game } from '../HomeScreen/types';
+import { GEM_NAMES } from '../MapScreen/utils';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
 import { ScreenBackground } from '../../components/ScreenBackground';
@@ -36,7 +37,7 @@ export default function DevToolsScreen({ navigation }: Props) {
   const [storageEntries, setStorageEntries] = useState<StorageEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { loadGames, loadGameState } = useGameStorage();
+  const { loadGames, loadGameState, upsertGame, saveGameState, generateId } = useGameStorage();
 
   const reload = useCallback(async () => {
     setLoading(true);
@@ -60,6 +61,31 @@ export default function DevToolsScreen({ navigation }: Props) {
   }, []);
 
   useFocusEffect(useCallback(() => { reload(); }, [reload]));
+
+  const handleSeedFinishedGame = async () => {
+    const id = generateId();
+    await upsertGame({
+      id,
+      name: 'Aventura de Prueba',
+      status: 'finished',
+      gemsFound: GEM_NAMES.length,
+      gemsTotal: GEM_NAMES.length,
+      radius: 1,
+      date: new Date().toISOString().slice(0, 10),
+      gems: GEM_NAMES,
+    });
+    await saveGameState(id, {
+      center: { latitude: 0, longitude: 0 },
+      gems: GEM_NAMES.map(name => ({
+        id: generateId(),
+        name,
+        latitude: 0,
+        longitude: 0,
+        collected: true,
+      })),
+    });
+    await reload();
+  };
 
   const handleClearAll = () => {
     Alert.alert(
@@ -98,6 +124,12 @@ export default function DevToolsScreen({ navigation }: Props) {
         <ScrollView contentContainerStyle={[s.scroll, { paddingBottom: insets.bottom + 24 }]}>
 
           <Text style={s.sectionLabel}>PARTIDAS · {entries.length}</Text>
+
+          <TouchableOpacity style={s.seedBtn} activeOpacity={0.75} onPress={handleSeedFinishedGame}>
+            <Feather name="plus-circle" size={15} color={theme.colorSuccess} />
+            <Text style={s.seedText}>Añadir partida terminada de muestra</Text>
+          </TouchableOpacity>
+
           {entries.length === 0 && <Text style={s.empty}>Sin partidas guardadas</Text>}
           {entries.map(({ game, stateGems }) => (
             <View key={game.id} style={s.card}>
@@ -107,9 +139,9 @@ export default function DevToolsScreen({ navigation }: Props) {
                 </View>
                 <Text style={s.gameName} numberOfLines={1}>{game.name}</Text>
               </View>
-              <Row label="id"       value={game.id} mono s={s} />
-              <Row label="radio"    value={`${game.radius} km`} s={s} />
-              <Row label="fecha"    value={game.date} s={s} />
+              <Row label="id" value={game.id} mono s={s} />
+              <Row label="radio" value={`${game.radius} km`} s={s} />
+              <Row label="fecha" value={game.date} s={s} />
               <Row label="progreso" value={`${game.gemsFound} / ${game.gemsTotal} gemas`} s={s} />
               {stateGems
                 ? <Row label="state gems" value={`${stateGems.collected} recogidas de ${stateGems.total}`} s={s} />
@@ -158,7 +190,7 @@ function AccordionEntry({ entry, s, theme }: { entry: StorageEntry; s: ReturnTyp
   const rotate = anim.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '90deg'] });
 
   let formatted = entry.value;
-  try { formatted = JSON.stringify(JSON.parse(entry.value), null, 2); } catch {}
+  try { formatted = JSON.stringify(JSON.parse(entry.value), null, 2); } catch { }
 
   return (
     <View style={s.accordion}>
@@ -220,6 +252,24 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     fontSize: 13,
     color: theme.textTertiary,
     marginBottom: 8,
+  },
+  seedBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    height: 44,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: `${theme.colorSuccess}4D`,
+    backgroundColor: `${theme.colorSuccess}14`,
+    marginBottom: 12,
+  },
+  seedText: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 11,
+    color: theme.colorSuccess,
+    letterSpacing: 0.5,
   },
   card: {
     backgroundColor: theme.bgInput,

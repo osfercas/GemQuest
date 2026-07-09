@@ -90,6 +90,7 @@ export const animeMagicoTheme: Theme = {
   bgCardAlt: '#D9C2AE',
   bgInput: 'rgba(37, 37, 37, 0.06)',
   bgOverlay: 'rgba(37, 37, 37, 0.75)',
+  bgRootImage: require('../../assets/dragonball_bkg.png'),
   textPrimary: '#252525',
   textSecondary: 'rgba(140, 45, 11, 0.75)',
   textTertiary: 'rgba(37, 37, 37, 0.35)',

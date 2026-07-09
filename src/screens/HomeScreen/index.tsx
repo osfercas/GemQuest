@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -80,11 +79,13 @@ export default function HomeScreen({ navigation }: Props) {
         {finishedGames.length > 0 && (
           <View style={ss.container}>
             <View style={ss.header}>
-              <Feather name="check-circle" size={13} color={theme.textTertiary} />
-              <Text style={[ss.title, { marginLeft: 6 }]}>Historial</Text>
+              <View style={ss.dot} />
+              <Text style={ss.title}>Historial</Text>
               <Text style={ss.count}>{finishedGames.length}</Text>
             </View>
-            {finishedGames.map(game => <FinishedGameRow key={game.id} game={game} />)}
+            {finishedGames.map(game => (
+              <FinishedGameRow key={game.id} game={game} onDelete={() => setPendingDelete(game)} />
+            ))}
           </View>
         )}
       </ScrollView>

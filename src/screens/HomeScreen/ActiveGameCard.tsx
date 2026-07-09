@@ -21,7 +21,6 @@ function formatRadius(radius: number) {
 
 export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
   const { theme } = useTheme();
-  const isJungle = theme.id === 'mainQuest';
   const { loadGameState } = useGameStorage();
   const s = useMemo(() => createActiveCardStyles(theme), [theme]);
   const progress = game.gemsFound / game.gemsTotal;
@@ -36,7 +35,7 @@ export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
   return (
     <TouchableOpacity style={s.card} activeOpacity={0.82}>
       <LinearGradient
-        colors={isJungle ? ['rgba(41,146,89,0.10)', 'rgba(41,146,89,0.02)'] : [`${theme.accentPrimary}12`, `${theme.accentPrimary}04`]}
+        colors={[`${theme.accentPrimary}12`, `${theme.accentPrimary}04`]}
         style={StyleSheet.absoluteFill}
       />
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
@@ -59,20 +58,19 @@ export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
             name={gem.name}
             size={12}
             collected={gem.collected}
-            dimColor={isJungle ? 'rgba(30,58,36,0.45)' : undefined}
           />
         ))}
       </View>
 
       <TouchableOpacity style={s.resumeBtn} activeOpacity={0.8} onPress={onResume}>
         <LinearGradient
-          colors={isJungle ? ['#299259', '#1e6b3f'] : theme.gradientButton}
+          colors={theme.gradientButton}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={s.resumeGradient}
         >
           <Text style={s.resumeText}>Continuar</Text>
-          <Feather name="arrow-right" size={12} color={isJungle ? '#FFFFFF' : theme.textOnAccent} />
+          <Feather name="arrow-right" size={12} color={theme.textOnAccent} />
         </LinearGradient>
       </TouchableOpacity>
     </TouchableOpacity>
