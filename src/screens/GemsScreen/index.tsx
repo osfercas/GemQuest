@@ -73,10 +73,9 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     width: '80%',
     alignItems: 'center',
     gap: 14,
-    backgroundColor: theme.bgCard,
+    backgroundColor: 'transparent',
     borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: theme.borderSubtle,
+    borderWidth: 0,
     paddingVertical: 24,
   },
   cardName: {

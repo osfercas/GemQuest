@@ -14,6 +14,7 @@ export interface Theme {
   textSecondary: string
   textTertiary: string
   textOnAccent: string
+  titleColor: string
   // Accents
   accentPrimary: string
   accentSecondary: string
@@ -58,6 +59,7 @@ export const mainQuestTheme: Theme = {
   textSecondary: 'rgba(223,241,184,0.62)',
   textTertiary: 'rgba(223,241,184,0.35)',
   textOnAccent: '#FFFFFF',
+  titleColor: '#DFF1B8',
   accentPrimary: '#299259',
   accentSecondary: '#66C068',
   accentDark: '#1e6b3f',
@@ -95,6 +97,7 @@ export const animeMagicoTheme: Theme = {
   textSecondary: 'rgba(140, 45, 11, 0.75)',
   textTertiary: 'rgba(37, 37, 37, 0.35)',
   textOnAccent: '#F6ECE2',
+  titleColor: '#FF6600',
   accentPrimary: '#C60209',
   accentSecondary: '#E4BF55',
   accentDark: '#8C2D0B',

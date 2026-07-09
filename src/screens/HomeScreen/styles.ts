@@ -27,11 +27,11 @@ export const createHeaderStyles = (theme: Theme) => StyleSheet.create({
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 22,
-    color: theme.textPrimary,
+    color: theme.accentPrimary,
     letterSpacing: 2,
     textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    textShadowRadius: 0,
   },
   avatar: {
     width: 40,
@@ -49,19 +49,18 @@ export const createHeaderStyles = (theme: Theme) => StyleSheet.create({
 
 export const createHeroStyles = (theme: Theme) => StyleSheet.create({
   card: {
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: `${theme.accentPrimary}40`,
+    backgroundColor: theme.bgCard,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: theme.accentPrimary,
     overflow: 'hidden',
     marginBottom: 28,
     height: 150,
-  },
-  glow: {
-    position: 'absolute',
-    inset: 0,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: `${theme.accentPrimary}26`,
+    shadowColor: theme.shadowColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 6,
   },
   content: {
     flex: 1,
