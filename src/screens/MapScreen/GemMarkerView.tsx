@@ -40,7 +40,7 @@ export default function GemMarkerView({ gem, isNear, onPress }: Props) {
   const glowColor = isAnime ? DRAGON_BALL_COLORS.glow : g.color;
 
   useEffect(() => {
-    const t = setTimeout(() => setTracksViews(false), 500);
+    const t = setTimeout(() => setTracksViews(false), 1200);
     return () => clearTimeout(t);
   }, [gem.collected]);
 
