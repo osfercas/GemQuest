@@ -66,7 +66,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: `${theme.bgRoot}EB`,
+    backgroundColor: theme.tooltipBg,
     borderRadius: 16,
     borderWidth: 1,
     paddingHorizontal: 20,

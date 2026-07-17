@@ -56,7 +56,7 @@ export default function SettingsScreen({ navigation }: Props) {
           android_ripple={{ color: `${theme.accentPrimary}20` }}
         >
           <Text style={s.linkRowText}>Ver {theme.termGems.toLowerCase()}</Text>
-          <Feather name="chevron-right" size={18} color={theme.textSecondary} />
+          <Feather name="chevron-right" size={18} color={`${theme.textOnCard}99`} />
         </Pressable>
       </ScrollView>
     </ScreenBackground>
@@ -210,7 +210,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   cardName: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
-    color: theme.textPrimary,
+    color: theme.textOnCard,
     letterSpacing: 0.5,
   },
   colorRow: {
@@ -238,7 +238,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   linkRowText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: theme.textPrimary,
+    color: theme.textOnCard,
     letterSpacing: 0.5,
   },
 });

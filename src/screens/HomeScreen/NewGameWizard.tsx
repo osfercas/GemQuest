@@ -60,11 +60,11 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
                 <Text style={s.stepTitle}>Nombre de la partida</Text>
                 <Text style={s.stepSub}>Dale un nombre épico a tu aventura</Text>
                 <View style={s.inputWrap}>
-                  <Feather name="edit-3" size={18} color={theme.textSecondary} style={{ marginRight: 12 }} />
+                  <Feather name="edit-3" size={18} color={`${theme.textOnCard}99`} style={{ marginRight: 12 }} />
                   <TextInput
                     style={s.input}
                     placeholder="Ej: Bosque encantado..."
-                    placeholderTextColor={theme.textTertiary}
+                    placeholderTextColor={`${theme.textOnCard}66`}
                     value={gameName}
                     onChangeText={setGameName}
                     autoFocus
@@ -97,7 +97,7 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
                       <Feather
                         name="map-pin"
                         size={18}
-                        color={selectedRadius === opt.value ? theme.textOnAccent : theme.textSecondary}
+                        color={selectedRadius === opt.value ? theme.textOnAccent : `${theme.textOnCard}99`}
                       />
                       <Text style={[s.radiusLabel, selectedRadius === opt.value && s.radiusLabelActive]}>
                         {opt.label}
@@ -111,7 +111,7 @@ export default function NewGameWizard({ visible, onClose, onStart, bottomInset =
             <View style={s.footer}>
               {step > 0 && (
                 <TouchableOpacity style={s.backBtn} activeOpacity={0.75} onPress={() => setStep(p => p - 1)}>
-                  <Feather name="arrow-left" size={18} color={theme.textSecondary} />
+                  <Feather name="arrow-left" size={18} color={`${theme.textOnCard}99`} />
                   <Text style={s.backBtnText}>Atrás</Text>
                 </TouchableOpacity>
               )}

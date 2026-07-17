@@ -27,7 +27,7 @@ export default function FinishedGameRow({ game, onDelete }: Props) {
           <Feather
             name={perfect ? 'award' : 'check'}
             size={16}
-            color={perfect ? theme.accentPrimary : theme.textSecondary}
+            color={perfect ? theme.accentPrimary : theme.textOnCard}
           />
         </View>
 

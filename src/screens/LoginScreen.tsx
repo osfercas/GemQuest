@@ -44,14 +44,14 @@ const STARS = Array.from({ length: 60 }, (_, i) => ({
 
 function mapFirebaseError(code: string): string {
   switch (code) {
-    case 'auth/invalid-email':            return 'Correo electrónico inválido.';
+    case 'auth/invalid-email': return 'Correo electrónico inválido.';
     case 'auth/user-not-found':
     case 'auth/wrong-password':
-    case 'auth/invalid-credential':       return 'Correo o contraseña incorrectos.';
-    case 'auth/too-many-requests':        return 'Demasiados intentos. Intenta más tarde.';
-    case 'auth/network-request-failed':   return 'Sin conexión a internet.';
-    case 'auth/user-disabled':            return 'Esta cuenta ha sido desactivada.';
-    default:                              return 'Algo salió mal. Inténtalo de nuevo.';
+    case 'auth/invalid-credential': return 'Correo o contraseña incorrectos.';
+    case 'auth/too-many-requests': return 'Demasiados intentos. Intenta más tarde.';
+    case 'auth/network-request-failed': return 'Sin conexión a internet.';
+    case 'auth/user-disabled': return 'Esta cuenta ha sido desactivada.';
+    default: return 'Algo salió mal. Inténtalo de nuevo.';
   }
 }
 
@@ -170,11 +170,11 @@ export default function LoginScreen({ navigation }: Props) {
 
         <View style={styles.form}>
           <View style={styles.inputWrap}>
-            <Feather name="mail" size={18} color={theme.textSecondary} style={styles.inputIcon} />
+            <Feather name="mail" size={18} color={`${theme.textOnCard}99`} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Correo electrónico"
-              placeholderTextColor={theme.textTertiary}
+              placeholderTextColor={`${theme.textOnCard}66`}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
@@ -185,11 +185,11 @@ export default function LoginScreen({ navigation }: Props) {
           </View>
 
           <View style={styles.inputWrap}>
-            <Feather name="lock" size={18} color={theme.textSecondary} style={styles.inputIcon} />
+            <Feather name="lock" size={18} color={`${theme.textOnCard}99`} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Contraseña"
-              placeholderTextColor={theme.textTertiary}
+              placeholderTextColor={`${theme.textOnCard}66`}
               secureTextEntry={!showPw}
               value={password}
               onChangeText={setPassword}
@@ -198,7 +198,7 @@ export default function LoginScreen({ navigation }: Props) {
               returnKeyType="go"
             />
             <TouchableOpacity onPress={() => setShowPw(v => !v)} hitSlop={8}>
-              <Feather name={showPw ? 'eye-off' : 'eye'} size={18} color={theme.textTertiary} />
+              <Feather name={showPw ? 'eye-off' : 'eye'} size={18} color={`${theme.textOnCard}66`} />
             </TouchableOpacity>
           </View>
 
@@ -257,11 +257,11 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 34,
-    color: theme.accentPrimary,
+    color: theme.titleColor,
     letterSpacing: 3,
-    textShadowColor: theme.shadowTextColor,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 16,
+    // textShadowColor: theme.shadowTextColor,
+    // textShadowOffset: { width: 0, height: 0 },
+    // textShadowRadius: 10,
   },
   taglineRow: { marginTop: 10 },
   tagline: {
@@ -277,7 +277,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   taglineSub: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 10,
-    color: theme.accentSecondary,
+    color: theme.textSecondary,
     letterSpacing: 3.5,
     marginTop: 5,
     textTransform: 'uppercase',
@@ -297,7 +297,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     paddingHorizontal: 16,
   },
   inputIcon: { marginRight: 12 },
-  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textPrimary },
+  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textOnCard },
   errorText: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
@@ -348,7 +348,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   googleGWrap: { width: 22, height: 22, alignItems: 'center', justifyContent: 'center' },
   googleGLetter: { fontSize: 17, fontWeight: '700' },
-  googleBtnText: { fontFamily: 'Nunito_600SemiBold', fontSize: 14, color: theme.textPrimary, letterSpacing: 0.4 },
+  googleBtnText: { fontFamily: 'Nunito_600SemiBold', fontSize: 14, color: theme.textOnCard, letterSpacing: 0.4 },
   forgotRow: { alignItems: 'flex-end', marginTop: -4 },
   forgotLink: {
     fontFamily: 'Nunito_400Regular',
@@ -370,9 +370,9 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   signupLink: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 13,
-    color: theme.accentPrimary,
+    color: theme.textSecondary,
     textDecorationLine: 'underline',
-    textDecorationColor: `${theme.accentPrimary}80`,
+    textDecorationColor: `${theme.textSecondary}80`,
     textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 6,

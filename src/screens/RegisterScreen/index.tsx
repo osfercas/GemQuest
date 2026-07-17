@@ -101,11 +101,11 @@ export default function RegisterScreen({ navigation }: Props) {
 
         <View style={styles.form}>
           <View style={styles.inputWrap}>
-            <Feather name="user" size={18} color={theme.textSecondary} style={styles.inputIcon} />
+            <Feather name="user" size={18} color={`${theme.textOnCard}99`} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Nombre de aventurero"
-              placeholderTextColor={theme.textTertiary}
+              placeholderTextColor={`${theme.textOnCard}66`}
               autoCapitalize="words"
               value={name}
               onChangeText={setName}
@@ -114,11 +114,11 @@ export default function RegisterScreen({ navigation }: Props) {
           </View>
 
           <View style={styles.inputWrap}>
-            <Feather name="mail" size={18} color={theme.textSecondary} style={styles.inputIcon} />
+            <Feather name="mail" size={18} color={`${theme.textOnCard}99`} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Correo electrónico"
-              placeholderTextColor={theme.textTertiary}
+              placeholderTextColor={`${theme.textOnCard}66`}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
@@ -129,27 +129,27 @@ export default function RegisterScreen({ navigation }: Props) {
           </View>
 
           <View style={styles.inputWrap}>
-            <Feather name="lock" size={18} color={theme.textSecondary} style={styles.inputIcon} />
+            <Feather name="lock" size={18} color={`${theme.textOnCard}99`} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Contraseña (mín. 8 caracteres)"
-              placeholderTextColor={theme.textTertiary}
+              placeholderTextColor={`${theme.textOnCard}66`}
               secureTextEntry={!showPw}
               value={password}
               onChangeText={setPassword}
               editable={!submitting}
             />
             <TouchableOpacity onPress={() => setShowPw(v => !v)} hitSlop={8}>
-              <Feather name={showPw ? 'eye-off' : 'eye'} size={18} color={theme.textTertiary} />
+              <Feather name={showPw ? 'eye-off' : 'eye'} size={18} color={`${theme.textOnCard}66`} />
             </TouchableOpacity>
           </View>
 
           <View style={styles.inputWrap}>
-            <Feather name="lock" size={18} color={theme.textSecondary} style={styles.inputIcon} />
+            <Feather name="lock" size={18} color={`${theme.textOnCard}99`} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Confirmar contraseña"
-              placeholderTextColor={theme.textTertiary}
+              placeholderTextColor={`${theme.textOnCard}66`}
               secureTextEntry={!showConfirm}
               value={confirm}
               onChangeText={setConfirm}
@@ -158,7 +158,7 @@ export default function RegisterScreen({ navigation }: Props) {
               returnKeyType="go"
             />
             <TouchableOpacity onPress={() => setShowConfirm(v => !v)} hitSlop={8}>
-              <Feather name={showConfirm ? 'eye-off' : 'eye'} size={18} color={theme.textTertiary} />
+              <Feather name={showConfirm ? 'eye-off' : 'eye'} size={18} color={`${theme.textOnCard}66`} />
             </TouchableOpacity>
           </View>
 
@@ -200,7 +200,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 28,
-    color: theme.accentPrimary,
+    color: theme.titleColor,
     letterSpacing: 2,
     textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
@@ -209,7 +209,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   subtitle: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 11,
-    color: theme.accentPrimary,
+    color: theme.textPrimary,
     letterSpacing: 3,
     marginTop: 6,
     textTransform: 'uppercase',
@@ -229,7 +229,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     paddingHorizontal: 16,
   },
   inputIcon: { marginRight: 12 },
-  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textPrimary },
+  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textOnCard },
   errorText: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
@@ -268,9 +268,9 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   loginLink: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 13,
-    color: theme.accentPrimary,
+    color: theme.textSecondary,
     textDecorationLine: 'underline',
-    textDecorationColor: `${theme.accentPrimary}80`,
+    textDecorationColor: `${theme.textSecondary}80`,
     textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 6,

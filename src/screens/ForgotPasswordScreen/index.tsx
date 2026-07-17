@@ -24,7 +24,7 @@ const { width: SW } = Dimensions.get('window');
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>;
 
-export default function ForgotPasswordScreen({ navigation }: Props) {
+export default function ForgotPasswordScreen({ navigation }: Readonly<Props>) {
   const { bottom } = useSafeAreaInsets();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -81,11 +81,11 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
 
       <View style={styles.form}>
         <View style={styles.inputWrap}>
-          <Feather name="mail" size={18} color={theme.textSecondary} style={styles.inputIcon} />
+          <Feather name="mail" size={18} color={`${theme.textOnCard}99`} style={styles.inputIcon} />
           <TextInput
             style={styles.input}
             placeholder="Correo electrónico"
-            placeholderTextColor={theme.textTertiary}
+            placeholderTextColor={`${theme.textOnCard}66`}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
@@ -128,7 +128,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 26,
-    color: theme.accentPrimary,
+    color: theme.titleColor,
     letterSpacing: 2,
     textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
@@ -137,7 +137,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   subtitle: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 11,
-    color: theme.accentSecondary,
+    color: theme.textPrimary,
     letterSpacing: 3,
     marginTop: 6,
     textTransform: 'uppercase',
@@ -157,7 +157,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     paddingHorizontal: 16,
   },
   inputIcon: { marginRight: 12 },
-  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textPrimary },
+  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textOnCard },
   feedbackText: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
