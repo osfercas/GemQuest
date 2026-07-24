@@ -6,12 +6,10 @@ interface Props {
   theme: Theme
 }
 
-export default function AppSplash({ theme }: Props) {
+export default function AppSplash({ theme }: Readonly<Props>) {
   return (
     <View style={styles.container}>
-      <View style={styles.imageWrapper}>
-        <Image source={theme.splashImage} style={styles.logo} resizeMode="contain" />
-      </View>
+      <Image source={theme.splashImage} style={styles.background} resizeMode="cover" />
       <ActivityIndicator size="large" color={theme.accentPrimary} style={styles.indicator} />
     </View>
   )
@@ -20,19 +18,19 @@ export default function AppSplash({ theme }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    paddingVertical: 48,
     backgroundColor: '#000000',
   },
-  imageWrapper: {
-    flex: 1,
-    width: '100%',
-  },
-  logo: {
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: '100%',
     height: '100%',
   },
   indicator: {
-    marginTop: 24,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 64,
   },
 })
