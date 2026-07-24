@@ -79,7 +79,7 @@ const mainQuestPalette = {
 export const mainQuestTheme: Theme = {
   id: 'mainQuest',
   name: 'Main Quest',
-  splashImage: require('../../assets/sheron-gems.png'),
+  splashImage: require('../../assets/gemquest_splash.png'),
   accentDark: mainQuestPalette.forestGreen,
   accentPrimary: mainQuestPalette.boyGreen,
   accentSecondary: mainQuestPalette.camouflageGreen,
@@ -132,7 +132,7 @@ const animePalette = {
 export const animeTheme: Theme = {
   id: 'animeMagico',
   name: 'Anime Mágico',
-  splashImage: require('../../assets/sheron-balls.png'),
+  splashImage: require('../../assets/ballquest_splash.png'),
   accentDark: animePalette.primitiveRed,
   accentPrimary: animePalette.sportRed,
   accentSecondary: animePalette.shockingGold,
