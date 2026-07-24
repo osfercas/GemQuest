@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, ScrollView, TouchableOpacity,
+  View, Text, StyleSheet, Pressable, ScrollView, TouchableOpacity, Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -12,12 +12,14 @@ import { useTheme } from '../../theme/ThemeContext';
 import { THEMES } from '../../theme';
 import type { Theme } from '../../theme';
 import { ScreenBackground } from '../../components/ScreenBackground';
+import AppSplash from '../../components/AppSplash';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Settings'>;
 
 export default function SettingsScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const { theme, setTheme } = useTheme();
+  const [showSplashPreview, setShowSplashPreview] = useState(false);
   const s = useMemo(() => createStyles(theme), [theme]);
 
   return (
@@ -58,7 +60,26 @@ export default function SettingsScreen({ navigation }: Props) {
           <Text style={s.linkRowText}>Ver {theme.termGems.toLowerCase()}</Text>
           <Feather name="chevron-right" size={18} color={`${theme.textOnCard}99`} />
         </Pressable>
+
+        <Pressable
+          style={s.linkRow}
+          onPress={() => setShowSplashPreview(true)}
+          android_ripple={{ color: `${theme.accentPrimary}20` }}
+        >
+          <Text style={s.linkRowText}>Ver pantalla de bienvenida</Text>
+          <Feather name="chevron-right" size={18} color={`${theme.textOnCard}99`} />
+        </Pressable>
       </ScrollView>
+
+      <Modal
+        visible={showSplashPreview}
+        animationType="fade"
+        onRequestClose={() => setShowSplashPreview(false)}
+      >
+        <Pressable style={s.splashPreview} onPress={() => setShowSplashPreview(false)}>
+          <AppSplash theme={theme} />
+        </Pressable>
+      </Modal>
     </ScreenBackground>
   );
 }
@@ -240,5 +261,8 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     fontSize: 13,
     color: theme.textOnCard,
     letterSpacing: 0.5,
+  },
+  splashPreview: {
+    flex: 1,
   },
 });
