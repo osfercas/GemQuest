@@ -18,12 +18,13 @@ import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { sendPasswordReset } from '../../services/auth';
 import { useTheme } from '../../theme/ThemeContext';
 import type { Theme } from '../../theme';
+import { ScreenBackground } from '../../components/ScreenBackground';
 
 const { width: SW } = Dimensions.get('window');
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>;
 
-export default function ForgotPasswordScreen({ navigation }: Props) {
+export default function ForgotPasswordScreen({ navigation }: Readonly<Props>) {
   const { bottom } = useSafeAreaInsets();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -67,8 +68,8 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={[styles.root, { paddingBottom: 48 + bottom }]}>
-      <StatusBar style={theme.id === 'darkGold' ? 'light' : 'dark'} />
+    <ScreenBackground style={[styles.root, { paddingBottom: 48 + bottom }]}>
+      <StatusBar style={theme.id === 'mainQuest' ? 'light' : 'dark'} />
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} hitSlop={12}>
@@ -80,11 +81,11 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
 
       <View style={styles.form}>
         <View style={styles.inputWrap}>
-          <Feather name="mail" size={18} color={theme.textSecondary} style={styles.inputIcon} />
+          <Feather name="mail" size={18} color={`${theme.textOnCard}99`} style={styles.inputIcon} />
           <TextInput
             style={styles.input}
             placeholder="Correo electrónico"
-            placeholderTextColor={theme.textTertiary}
+            placeholderTextColor={`${theme.textOnCard}66`}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
@@ -116,18 +117,18 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
           </LinearGradient>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScreenBackground>
   );
 }
 
 const createStyles = (theme: Theme) => StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.bgRoot, paddingHorizontal: 24, paddingTop: 64 },
+  root: { flex: 1, paddingHorizontal: 24, paddingTop: 64 },
   header: { marginBottom: 40 },
   backBtn: { marginBottom: 24 },
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 26,
-    color: theme.accentPrimary,
+    color: theme.titleColor,
     letterSpacing: 2,
     textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
@@ -136,10 +137,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   subtitle: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 11,
-    color: theme.accentSecondary,
+    color: theme.textPrimary,
     letterSpacing: 3,
     marginTop: 6,
     textTransform: 'uppercase',
+    textShadowColor: theme.shadowTextColor,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   form: { width: SW - 48, gap: 14 },
   inputWrap: {
@@ -153,12 +157,15 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     paddingHorizontal: 16,
   },
   inputIcon: { marginRight: 12 },
-  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textPrimary },
+  input: { flex: 1, fontFamily: 'Nunito_400Regular', fontSize: 15, color: theme.textOnCard },
   feedbackText: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
     textAlign: 'center',
     marginTop: -4,
+    textShadowColor: theme.shadowTextColor,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   primaryBtn: {
     borderRadius: 12,

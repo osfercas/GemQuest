@@ -24,8 +24,8 @@ export default function Header({ username = 'A', onDevTools, onSettings, onProfi
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         {onDevTools && (
-          <TouchableOpacity onPress={onDevTools} activeOpacity={0.7} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Feather name="terminal" size={16} color={`${theme.textPrimary}59`} />
+          <TouchableOpacity onPress={onDevTools} activeOpacity={1} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Feather name="terminal" size={18} color={`${theme.textPrimary}80`} />
           </TouchableOpacity>
         )}
         <Pressable onPress={onSettings} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>

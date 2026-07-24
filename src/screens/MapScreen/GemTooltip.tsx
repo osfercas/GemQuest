@@ -56,12 +56,12 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
       >
         <View style={[s.card, { borderColor: accentColor }]}>
           <View style={s.header}>
-            <GemVisual name={gem.name} size={theme.numberedGems ? 70 : 20} stars={theme.numberedGems ? gemIndex : undefined} />
+            <GemVisual name={gem.name} size={theme.numberedGems ? 105 : 30} />
             <Text style={[s.name, { color: accentColor }]}>
               {theme.numberedGems ? `${theme.termGem} ${gemIndex}` : gem.name}
             </Text>
             <View style={s.distanceBadge}>
-              <Feather name="navigation" size={11} color={theme.textSecondary} />
+              <Feather name="navigation" size={11} color={`${theme.tooltipText}99`} />
               <Text style={s.distanceText}>{distText}</Text>
             </View>
           </View>
@@ -87,10 +87,10 @@ export default function GemTooltip({ gem, distanceM, canCollect, repositioning, 
                 activeOpacity={0.7}
               >
                 {repositioning ? (
-                  <ActivityIndicator size="small" color={theme.textPrimary} />
+                  <ActivityIndicator size="small" color={theme.tooltipText} />
                 ) : (
                   <>
-                    <Feather name="refresh-cw" size={13} color={theme.textPrimary} />
+                    <Feather name="refresh-cw" size={13} color={theme.tooltipText} />
                     <Text style={s.btnSecondaryText}>Reposicionar</Text>
                     <Text style={s.repositionsLeft}>{repositionsLeft}/3</Text>
                   </>
@@ -113,7 +113,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   card: {
     width: '100%',
-    backgroundColor: `${theme.bgRoot}F0`,
+    backgroundColor: theme.tooltipBg,
     borderRadius: 16,
     borderWidth: 1,
     paddingHorizontal: 18,
@@ -139,12 +139,12 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   distanceText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 12,
-    color: theme.textSecondary,
+    color: `${theme.tooltipText}99`,
     letterSpacing: 0.5,
   },
   coords: {
     fontSize: 11,
-    color: theme.textTertiary,
+    color: `${theme.tooltipText}66`,
     fontFamily: 'Cinzel_700Bold',
     letterSpacing: 0.5,
   },
@@ -161,14 +161,14 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     paddingVertical: 9,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: `${theme.textPrimary}33`,
+    borderColor: `${theme.tooltipText}33`,
     minWidth: 44,
     justifyContent: 'center',
   },
   btnSecondaryText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 12,
-    color: theme.textPrimary,
+    color: theme.tooltipText,
     letterSpacing: 0.5,
   },
   btnPrimary: {
@@ -190,7 +190,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   repositionsLeft: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 11,
-    color: theme.textSecondary,
+    color: `${theme.tooltipText}99`,
     letterSpacing: 0.5,
     marginLeft: 2,
   },

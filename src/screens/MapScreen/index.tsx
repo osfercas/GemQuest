@@ -190,7 +190,7 @@ export default function MapScreen({ route, navigation }: Props) {
 
   const radius = game?.radius ?? 0.5;
   const gameName = game?.name ?? 'Aventura';
-  const mapStyle = theme.id === 'darkGold' ? DARK_MAP_STYLE : LIGHT_MAP_STYLE;
+  const mapStyle = theme.id === 'mainQuest' ? SAND_MAP_STYLE : LIGHT_MAP_STYLE;
 
   return (
     <View style={[s.root, { paddingBottom: insets.bottom }]}>
@@ -271,20 +271,22 @@ export default function MapScreen({ route, navigation }: Props) {
   );
 }
 
-const DARK_MAP_STYLE = [
-  { elementType: 'geometry', stylers: [{ color: '#0e1220' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#0e1220' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#1a2035' }] },
-  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#0e1220' }] },
-  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#9ca5b3' }] },
-  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#2a3550' }] },
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#050a14' }] },
-  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#3d4d58' }] },
+const SAND_MAP_STYLE = [
   { featureType: 'poi', stylers: [{ visibility: 'off' }] },
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-  { featureType: 'administrative', elementType: 'geometry', stylers: [{ color: '#1a2035' }] },
-  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#0e1220' }] },
+  { elementType: 'geometry', stylers: [{ color: '#E8D2A0' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#3A2E1F' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#F3E6C8' }] },
+  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#E8D2A0' }] },
+  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#DDC183' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#8FB8C7' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#3A6B7A' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#1A1A1A' }] },
+  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#000000' }] },
+  { featureType: 'road', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#0D0D0D' }] },
+  { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#000000' }] },
+  { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#A38A5C' }] },
 ];
 
 const LIGHT_MAP_STYLE = [

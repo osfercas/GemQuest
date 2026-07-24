@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -17,6 +16,7 @@ import ActiveGameCard from './ActiveGameCard';
 import FinishedGameRow from './FinishedGameRow';
 import NewGameWizard from './NewGameWizard';
 import DeleteConfirmSheet from './DeleteConfirmSheet';
+import { ScreenBackground } from '../../components/ScreenBackground';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Home'>;
 
@@ -25,7 +25,7 @@ export default function HomeScreen({ navigation }: Props) {
   const { theme } = useTheme();
   const { user } = useAuth();
   const { loadGames, deleteGame } = useGameStorage();
-  const s = useMemo(() => createRootStyles(theme), [theme]);
+  const s = useMemo(() => createRootStyles(), []);
   const ss = useMemo(() => createSectionStyles(theme), [theme]);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [games, setGames] = useState<Game[]>([]);
@@ -41,7 +41,7 @@ export default function HomeScreen({ navigation }: Props) {
   const finishedGames = games.filter(g => g.status === 'finished');
 
   return (
-    <View style={[s.root, { paddingTop: insets.top }]}>
+    <ScreenBackground style={[s.root, { paddingTop: insets.top }]}>
       <Header
         username={user?.displayName ?? 'A'}
         onDevTools={() => navigation.navigate('DevTools')}
@@ -79,11 +79,13 @@ export default function HomeScreen({ navigation }: Props) {
         {finishedGames.length > 0 && (
           <View style={ss.container}>
             <View style={ss.header}>
-              <Feather name="check-circle" size={13} color={theme.textTertiary} />
-              <Text style={[ss.title, { marginLeft: 6 }]}>Historial</Text>
+              <View style={ss.dot} />
+              <Text style={ss.title}>Historial</Text>
               <Text style={ss.count}>{finishedGames.length}</Text>
             </View>
-            {finishedGames.map(game => <FinishedGameRow key={game.id} game={game} />)}
+            {finishedGames.map(game => (
+              <FinishedGameRow key={game.id} game={game} onDelete={() => setPendingDelete(game)} />
+            ))}
           </View>
         )}
       </ScrollView>
@@ -110,6 +112,6 @@ export default function HomeScreen({ navigation }: Props) {
         }}
         bottomInset={insets.bottom}
       />
-    </View>
+    </ScreenBackground>
   );
 }

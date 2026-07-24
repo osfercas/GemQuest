@@ -59,12 +59,12 @@ export default function GameHUD({ gameName, gems, topInset, onBack }: Readonly<P
           { top: headerHeight, maxHeight, opacity, overflow: 'hidden' },
         ]}
       >
-        {GEM_NAMES.map((name, i) => {
+        {GEM_NAMES.map((name) => {
           const gem = gems.find(g => g.name === name);
           const collected = gem?.collected ?? false;
           return (
             <View key={name} style={s.gemSlot}>
-              <GemVisual name={name} size={28} collected={collected} stars={theme.numberedGems ? i + 1 : undefined} />
+              <GemVisual name={name} size={28} collected={collected} />
               {theme.numberedGems ? null : (
                 <Text style={[s.gemSlotLabel, collected && s.gemSlotCollected]}>
                   {name.slice(0, 3).toUpperCase()}

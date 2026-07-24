@@ -41,7 +41,7 @@ export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <Text style={[s.name, { flex: 1, marginRight: 6 }]} numberOfLines={1}>{game.name}</Text>
         <TouchableOpacity onPress={onDelete} hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }} activeOpacity={0.7}>
-          <Feather name="trash-2" size={14} color={`${theme.colorError}8C`} />
+          <Feather name="trash-2" size={14} color={`${theme.colorError}ac`} />
         </TouchableOpacity>
       </View>
       <Text style={s.radius}>{formatRadius(game.radius)}</Text>
@@ -53,7 +53,12 @@ export default function ActiveGameCard({ game, onResume, onDelete }: Props) {
 
       <View style={s.gems}>
         {gemMarkers.map(gem => (
-          <GemVisual key={gem.id} name={gem.name} size={12} collected={gem.collected} />
+          <GemVisual
+            key={gem.id}
+            name={gem.name}
+            size={12}
+            collected={gem.collected}
+          />
         ))}
       </View>
 

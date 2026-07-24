@@ -3,8 +3,8 @@ import type { Theme } from '../../theme'
 
 const { width: SW } = Dimensions.get('window')
 
-export const createRootStyles = (theme: Theme) => StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.bgRoot },
+export const createRootStyles = () => StyleSheet.create({
+  root: { flex: 1 },
   scroll: { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingTop: 8 },
 })
@@ -19,19 +19,19 @@ export const createHeaderStyles = (theme: Theme) => StyleSheet.create({
   },
   greeting: {
     fontFamily: 'Nunito_400Regular',
-    fontSize: 12,
-    color: theme.textSecondary,
+    fontSize: 14,
+    color: theme.textPrimary,
     letterSpacing: 0.5,
-    opacity: 0.7,
+    opacity: 1,
   },
   title: {
     fontFamily: 'CinzelDecorative_900Black',
     fontSize: 22,
-    color: theme.accentPrimary,
+    color: theme.titleColor,
     letterSpacing: 2,
     textShadowColor: theme.shadowTextColor,
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    textShadowRadius: 0,
   },
   avatar: {
     width: 40,
@@ -49,19 +49,18 @@ export const createHeaderStyles = (theme: Theme) => StyleSheet.create({
 
 export const createHeroStyles = (theme: Theme) => StyleSheet.create({
   card: {
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: `${theme.accentPrimary}40`,
+    backgroundColor: theme.bgCard,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: theme.accentPrimary,
     overflow: 'hidden',
     marginBottom: 28,
     height: 150,
-  },
-  glow: {
-    position: 'absolute',
-    inset: 0,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: `${theme.accentPrimary}26`,
+    shadowColor: theme.shadowColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 6,
   },
   content: {
     flex: 1,
@@ -92,7 +91,7 @@ export const createHeroStyles = (theme: Theme) => StyleSheet.create({
   sub: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 12,
-    color: theme.textSecondary,
+    color: `${theme.textOnCard}99`,
   },
 })
 
@@ -108,16 +107,16 @@ export const createSectionStyles = (theme: Theme) => StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: theme.accentPrimary,
+    backgroundColor: theme.accentDark,
   },
   title: {
     fontFamily: 'Cinzel_700Bold',
-    fontSize: 11,
-    color: theme.textSecondary,
+    fontSize: 12,
+    color: theme.textPrimary,
     letterSpacing: 2.5,
     textTransform: 'uppercase',
     flex: 1,
-    opacity: 0.85,
+    opacity: 1,
   },
   count: {
     fontFamily: 'Nunito_600SemiBold',
@@ -130,9 +129,9 @@ export const createSectionStyles = (theme: Theme) => StyleSheet.create({
 export const createActiveCardStyles = (theme: Theme) => StyleSheet.create({
   card: {
     width: 180,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: `${theme.accentPrimary}26`,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: theme.borderSubtle,
     padding: 14,
     gap: 6,
     overflow: 'hidden',
@@ -141,13 +140,13 @@ export const createActiveCardStyles = (theme: Theme) => StyleSheet.create({
   name: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: theme.textPrimary,
+    color: theme.textOnCard,
     letterSpacing: 0.5,
   },
   radius: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 11,
-    color: theme.textTertiary,
+    color: `${theme.textOnCard}99`,
   },
   progressBg: {
     height: 4,
@@ -163,7 +162,7 @@ export const createActiveCardStyles = (theme: Theme) => StyleSheet.create({
   progressLabel: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 10,
-    color: theme.textTertiary,
+    color: `${theme.textOnCard}99`,
   },
   gems: {
     flexDirection: 'row',
@@ -191,11 +190,18 @@ export const createActiveCardStyles = (theme: Theme) => StyleSheet.create({
 
 export const createFinishedRowStyles = (theme: Theme) => StyleSheet.create({
   row: {
+    gap: 10,
+    backgroundColor: theme.bgCard,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: theme.borderSubtle,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    marginBottom: 10,
+  },
+  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: theme.borderSubtle,
     gap: 12,
   },
   icon: {
@@ -203,7 +209,7 @@ export const createFinishedRowStyles = (theme: Theme) => StyleSheet.create({
     height: 34,
     borderRadius: 17,
     borderWidth: 1,
-    borderColor: `${theme.textPrimary}26`,
+    borderColor: `${theme.textOnCard}26`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -215,19 +221,19 @@ export const createFinishedRowStyles = (theme: Theme) => StyleSheet.create({
   name: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: theme.textPrimary,
+    color: theme.textOnCard,
     letterSpacing: 0.3,
   },
   meta: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 11,
-    color: theme.textTertiary,
+    color: `${theme.textOnCard}99`,
     marginTop: 2,
   },
   gems: {
     flexDirection: 'row',
-    gap: -8,
-    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
   },
 })
 
@@ -250,7 +256,7 @@ export const createDeleteSheetStyles = (theme: Theme) => StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: `${theme.textPrimary}33`,
+    backgroundColor: `${theme.textOnCard}33`,
     marginTop: 12,
     marginBottom: 20,
   },
@@ -269,7 +275,7 @@ export const createDeleteSheetStyles = (theme: Theme) => StyleSheet.create({
   title: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 18,
-    color: theme.textPrimary,
+    color: theme.textOnCard,
     letterSpacing: 1,
     textAlign: 'center',
     marginBottom: 8,
@@ -284,7 +290,7 @@ export const createDeleteSheetStyles = (theme: Theme) => StyleSheet.create({
   sub: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
-    color: theme.textSecondary,
+    color: `${theme.textOnCard}99`,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 28,
@@ -298,14 +304,14 @@ export const createDeleteSheetStyles = (theme: Theme) => StyleSheet.create({
     height: 52,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: `${theme.textPrimary}33`,
+    borderColor: `${theme.textOnCard}33`,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cancelText: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: theme.textSecondary,
+    color: `${theme.textOnCard}99`,
     letterSpacing: 1,
   },
   deleteBtn: {
@@ -347,7 +353,7 @@ export const createWizardStyles = (theme: Theme) => StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: `${theme.textPrimary}33`,
+    backgroundColor: `${theme.textOnCard}33`,
     marginTop: 12,
     marginBottom: 20,
   },
@@ -361,7 +367,7 @@ export const createWizardStyles = (theme: Theme) => StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: `${theme.textPrimary}26`,
+    backgroundColor: `${theme.textOnCard}26`,
   },
   stepDotActive: {
     backgroundColor: theme.accentPrimary,
@@ -371,13 +377,13 @@ export const createWizardStyles = (theme: Theme) => StyleSheet.create({
   stepTitle: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 18,
-    color: theme.textPrimary,
+    color: theme.textOnCard,
     letterSpacing: 1,
   },
   stepSub: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 13,
-    color: theme.textSecondary,
+    color: `${theme.textOnCard}99`,
     marginBottom: 8,
   },
   inputWrap: {
@@ -394,7 +400,7 @@ export const createWizardStyles = (theme: Theme) => StyleSheet.create({
     flex: 1,
     fontFamily: 'Nunito_400Regular',
     fontSize: 15,
-    color: theme.textPrimary,
+    color: theme.textOnCard,
   },
   radiusGrid: {
     flexDirection: 'row',
@@ -406,7 +412,7 @@ export const createWizardStyles = (theme: Theme) => StyleSheet.create({
     minWidth: (SW - 72) / 2,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: `${theme.textPrimary}26`,
+    borderColor: `${theme.textOnCard}26`,
     height: 72,
     alignItems: 'center',
     justifyContent: 'center',
@@ -417,7 +423,7 @@ export const createWizardStyles = (theme: Theme) => StyleSheet.create({
   radiusLabel: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 13,
-    color: theme.textSecondary,
+    color: `${theme.textOnCard}99`,
     letterSpacing: 1,
   },
   radiusLabelActive: { color: theme.textOnAccent },
@@ -438,7 +444,7 @@ export const createWizardStyles = (theme: Theme) => StyleSheet.create({
   backBtnText: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 14,
-    color: theme.textSecondary,
+    color: `${theme.textOnCard}99`,
   },
   nextBtnWrap: { flex: 1 },
   nextBtn: {

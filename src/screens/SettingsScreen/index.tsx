@@ -11,6 +11,7 @@ import type { MainStackParamList } from '../../navigation/MainStack';
 import { useTheme } from '../../theme/ThemeContext';
 import { THEMES } from '../../theme';
 import type { Theme } from '../../theme';
+import { ScreenBackground } from '../../components/ScreenBackground';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Settings'>;
 
@@ -20,7 +21,7 @@ export default function SettingsScreen({ navigation }: Props) {
   const s = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <View style={[s.root, { paddingTop: insets.top }]}>
+    <ScreenBackground style={[s.root, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={s.header}>
         <TouchableOpacity
@@ -46,8 +47,19 @@ export default function SettingsScreen({ navigation }: Props) {
             parentTheme={theme}
           />
         ))}
+
+        <Text style={[s.sectionLabel, { marginTop: 10 }]}>{theme.termGems.toUpperCase()}</Text>
+
+        <Pressable
+          style={s.linkRow}
+          onPress={() => navigation.navigate('Gems')}
+          android_ripple={{ color: `${theme.accentPrimary}20` }}
+        >
+          <Text style={s.linkRowText}>Ver {theme.termGems.toLowerCase()}</Text>
+          <Feather name="chevron-right" size={18} color={`${theme.textOnCard}99`} />
+        </Pressable>
       </ScrollView>
-    </View>
+    </ScreenBackground>
   );
 }
 
@@ -121,7 +133,6 @@ const dotStyles = StyleSheet.create({
 const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: theme.bgRoot,
   },
   header: {
     flexDirection: 'row',
@@ -199,7 +210,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   cardName: {
     fontFamily: 'Cinzel_700Bold',
     fontSize: 14,
-    color: theme.textPrimary,
+    color: theme.textOnCard,
     letterSpacing: 0.5,
   },
   colorRow: {
@@ -212,5 +223,22 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  linkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: theme.bgCard,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: theme.borderSubtle,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  linkRowText: {
+    fontFamily: 'Cinzel_700Bold',
+    fontSize: 13,
+    color: theme.textOnCard,
+    letterSpacing: 0.5,
   },
 });
