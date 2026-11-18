@@ -3,7 +3,7 @@ import type { Theme } from '../../theme'
 
 export const createMapStyles = (theme: Theme) => StyleSheet.create({
   root: { flex: 1, backgroundColor: theme.bgRoot },
-  map:  { flex: 1 },
+  map: { flex: 1 },
 })
 
 export const createHudStyles = (theme: Theme) => StyleSheet.create({
